@@ -1,0 +1,37 @@
+syntax="proto3";
+
+package auth_service;
+option go_package="genproto/auth_service";
+
+import "google/protobuf/empty.proto";
+import "auth.proto";
+
+service UserService {
+  // User
+  rpc CreateUser(User) returns (User) {}
+  rpc GetUser(GetUserReq) returns (User) {}
+  rpc GetUserList(GetUserListReq) returns (GetUserListReq) {}
+  rpc UpdateUser(User) returns (User) {}
+  rpc DeleteUser(DeleteUserReq) returns (google.protobuf.Empty) {}
+//  rpc ResetPassword(ResetPasswordRequest) returns (User) {}
+//  rpc SendMessageToEmail(SendMessageToEmailRequest) returns (google.protobuf.Empty) {}
+}
+
+message GetUserReq {
+  string id = 1;
+}
+
+message GetUserListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+}
+
+message GetUserListRes {
+  repeated User users = 1;
+  int32 count = 2;
+}
+
+message DeleteUserReq {
+  string id = 1;
+}

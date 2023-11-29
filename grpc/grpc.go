@@ -1,0 +1,25 @@
+package grpc
+
+import (
+	"editory_submission/config"
+	"editory_submission/genproto/auth_service"
+	"editory_submission/grpc/client"
+	auth "editory_submission/grpc/service/auth_service"
+	"editory_submission/storage"
+
+	"github.com/saidamir98/udevs_pkg/logger"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+)
+
+func SetUpServer(cfg config.Config, log logger.LoggerI, strg storage.StorageI, svcs client.ServiceManagerI) (grpcServer *grpc.Server) {
+	grpcServer = grpc.NewServer()
+
+	// auth
+	auth_service.RegisterUserServiceServer(grpcServer, auth.NewUserService(cfg, log, strg, svcs))
+
+	// content
+
+	reflection.Register(grpcServer)
+	return
+}
