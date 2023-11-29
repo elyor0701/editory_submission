@@ -43,6 +43,8 @@ type Config struct {
 
 	AuthServiceHost string
 	AuthGRPCPort    string
+
+	MigrationPath string
 }
 
 // Load ...
@@ -55,7 +57,7 @@ func Load() Config {
 
 	config := Config{}
 
-	config.ServiceName = cast.ToString(getOrReturnDefaultValue("SERVICE_NAME", ""))
+	config.ServiceName = cast.ToString(getOrReturnDefaultValue("SERVICE_NAME", "editory_submission"))
 	config.Environment = cast.ToString(getOrReturnDefaultValue("ENVIRONMENT", DebugMode))
 	config.Version = cast.ToString(getOrReturnDefaultValue("VERSION", "1.0"))
 
@@ -80,6 +82,8 @@ func Load() Config {
 
 	config.AuthServiceHost = cast.ToString(getOrReturnDefaultValue("AUTH_SERVICE_HOST", "localhost"))
 	config.AuthGRPCPort = cast.ToString(getOrReturnDefaultValue("AUTH_GRPC_PORT", ":8998"))
+
+	config.MigrationPath = cast.ToString(getOrReturnDefaultValue("MIGRATION_PATH", "/home/euler/Documents/projects/editory_submission/migrations/postgres"))
 
 	return config
 }

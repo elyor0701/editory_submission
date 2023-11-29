@@ -28,6 +28,9 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	r.GET("/ping", h.Ping)
 	r.GET("/config", h.GetConfig)
 
+	// auth
+	//r.GET()
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return
 }
