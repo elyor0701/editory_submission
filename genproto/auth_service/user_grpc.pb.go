@@ -26,7 +26,7 @@ type UserServiceClient interface {
 	// User
 	CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 	GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*User, error)
-	GetUserList(ctx context.Context, in *GetUserListReq, opts ...grpc.CallOption) (*GetUserListReq, error)
+	GetUserList(ctx context.Context, in *GetUserListReq, opts ...grpc.CallOption) (*GetUserListRes, error)
 	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 	DeleteUser(ctx context.Context, in *DeleteUserReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -57,8 +57,8 @@ func (c *userServiceClient) GetUser(ctx context.Context, in *GetUserReq, opts ..
 	return out, nil
 }
 
-func (c *userServiceClient) GetUserList(ctx context.Context, in *GetUserListReq, opts ...grpc.CallOption) (*GetUserListReq, error) {
-	out := new(GetUserListReq)
+func (c *userServiceClient) GetUserList(ctx context.Context, in *GetUserListReq, opts ...grpc.CallOption) (*GetUserListRes, error) {
+	out := new(GetUserListRes)
 	err := c.cc.Invoke(ctx, "/auth_service.UserService/GetUserList", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -91,7 +91,7 @@ type UserServiceServer interface {
 	// User
 	CreateUser(context.Context, *User) (*User, error)
 	GetUser(context.Context, *GetUserReq) (*User, error)
-	GetUserList(context.Context, *GetUserListReq) (*GetUserListReq, error)
+	GetUserList(context.Context, *GetUserListReq) (*GetUserListRes, error)
 	UpdateUser(context.Context, *User) (*User, error)
 	DeleteUser(context.Context, *DeleteUserReq) (*emptypb.Empty, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -107,7 +107,7 @@ func (UnimplementedUserServiceServer) CreateUser(context.Context, *User) (*User,
 func (UnimplementedUserServiceServer) GetUser(context.Context, *GetUserReq) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedUserServiceServer) GetUserList(context.Context, *GetUserListReq) (*GetUserListReq, error) {
+func (UnimplementedUserServiceServer) GetUserList(context.Context, *GetUserListReq) (*GetUserListRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
 }
 func (UnimplementedUserServiceServer) UpdateUser(context.Context, *User) (*User, error) {

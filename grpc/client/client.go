@@ -8,11 +8,11 @@ import (
 )
 
 type ServiceManagerI interface {
-	AuthService() auth_service.UserServiceClient
+	UserService() auth_service.UserServiceClient
 }
 
 type grpcClients struct {
-	authService auth_service.UserServiceClient
+	userService auth_service.UserServiceClient
 }
 
 func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
@@ -26,10 +26,10 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 	}
 
 	return &grpcClients{
-		authService: auth_service.NewUserServiceClient(connAuthService),
+		userService: auth_service.NewUserServiceClient(connAuthService),
 	}, nil
 }
 
-func (g *grpcClients) AuthService() auth_service.UserServiceClient {
-	return g.authService
+func (g *grpcClients) UserService() auth_service.UserServiceClient {
+	return g.userService
 }

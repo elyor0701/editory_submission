@@ -22,32 +22,10 @@ DROP TABLE IF EXISTS "education";
 DROP TABLE IF EXISTS "session";
 DROP TABLE IF EXISTS "role";
 
-CREATE TYPE "status_editor_type" AS ENUM (
-    'NEW',
-    'PENDING',
-    'DENIED',
-    'CONFIRMED',
-    'PUBLISHED'
-    );
-
 CREATE TYPE "file_type" AS ENUM (
     'MANUSCRIPT',
     'COVER_LETTER',
     'SUPPLEMENTAL'
-    );
-
-CREATE TYPE "status_reviewer_type" AS ENUM (
-    'NEW',
-    'PENDING',
-    'DENIED',
-    'APPROVED'
-    );
-
-CREATE TYPE "step_type" AS ENUM (
-    'NEW',
-    'EDITOR',
-    'REVIEWER',
-    'PROOFREADER'
     );
 
 CREATE TYPE "role_type" AS ENUM (
@@ -61,61 +39,33 @@ CREATE TYPE "role_type" AS ENUM (
 CREATE TABLE "journal" (
                            "id" uuid PRIMARY KEY,
                            "cover_photo" varchar(255),
-                           "title" varchar(255),
+                           "title" varchar(255) not null,
                            "access" bool,
                            "description" text,
                            "price" int,
-                           "isbn" varchar(255),
+                           "isbn" varchar(255) not null unique,
                            "author" varchar(255),
-                           "created_at" timestamp,
-                           "updated_at" timestamp
+                           "created_at" timestamp default CURRENT_TIMESTAMP,
+                           "updated_at" timestamp default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "article" (
                            "id" uuid PRIMARY KEY,
-                           "journal_id" uuid,
-                           "subject_id" uuid,
+                           "journal_id" uuid not null,
+                           "article_type" varchar(255),
                            "title" varchar(255),
                            "author_id" uuid,
                            "description" text,
-                           "created_at" timestamp,
-                           "updated_at" timestamp
-);
-
-CREATE TABLE "draft" (
-                         "id" uuid PRIMARY KEY,
-                         "journal_id" uuid,
-                         "subject_id" uuid,
-                         "article_id" uuid,
-                         "editor_id" uuid,
-                         "title" varchar(255),
-                         "status" status_editor_type,
-                         "step" step_type,
-                         "author_id" uuid,
-                         "description" text,
-                         "created_at" timestamp,
-                         "updated_at" timestamp
+                           "created_at" timestamp default CURRENT_TIMESTAMP,
+                           "updated_at" timestamp default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "file" (
                         "id" uuid PRIMARY KEY,
+                        "url" varchar not null,
                         "file_type" file_type,
                         "draft_id" uuid,
                         "article_id" uuid
-);
-
-CREATE TABLE "draft_reviewer" (
-                                  "id" uuid PRIMARY KEY,
-                                  "draft_id" uuid,
-                                  "reviewer_id" uuid,
-                                  "status" status_reviewer_type,
-                                  "description" text
-);
-
-CREATE TABLE "comment" (
-                           "id" uuid PRIMARY KEY,
-                           "draft_id" uuid,
-                           "description" text
 );
 
 CREATE TABLE "coauthor" (
@@ -159,15 +109,17 @@ CREATE TABLE "user" (
                         "last_name" varchar(255),
                         "phone" varchar(255),
                         "extra_phone" varchar(255),
-                        "email" varchar(255),
-                        "email_verification" bool,
+                        "email" varchar(255) not null unique,
+                        "email_verification" bool default false,
                         "password" varchar(255),
                         "country_id" uuid,
                         "city_id" uuid,
                         "prof_sphere" varchar(255),
                         "degree" varchar(255),
                         "address" varchar(255),
-                        "post_code" varchar(255)
+                        "post_code" varchar(255),
+                        "created_at" timestamp default CURRENT_TIMESTAMP,
+                        "updated_at" timestamp default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "keyword" (
@@ -192,8 +144,8 @@ CREATE TABLE "session" (
                            "ip" inet,
                            "data" text,
                            "expires_at" timestamp,
-                           "created_at" timestamp,
-                           "updated_at" timestamp
+                           "created_at" timestamp default CURRENT_TIMESTAMP,
+                           "updated_at" timestamp default CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "role" (
@@ -205,29 +157,9 @@ CREATE TABLE "role" (
 
 ALTER TABLE "article" ADD FOREIGN KEY ("journal_id") REFERENCES "journal" ("id");
 
-ALTER TABLE "article" ADD FOREIGN KEY ("subject_id") REFERENCES "subject" ("id");
-
 ALTER TABLE "article" ADD FOREIGN KEY ("author_id") REFERENCES "user" ("id");
 
-ALTER TABLE "draft" ADD FOREIGN KEY ("journal_id") REFERENCES "journal" ("id");
-
-ALTER TABLE "draft" ADD FOREIGN KEY ("subject_id") REFERENCES "subject" ("id");
-
-ALTER TABLE "draft" ADD FOREIGN KEY ("article_id") REFERENCES "article" ("id");
-
-ALTER TABLE "draft" ADD FOREIGN KEY ("editor_id") REFERENCES "user" ("id");
-
-ALTER TABLE "draft" ADD FOREIGN KEY ("author_id") REFERENCES "user" ("id");
-
-ALTER TABLE "file" ADD FOREIGN KEY ("draft_id") REFERENCES "draft" ("id");
-
 ALTER TABLE "file" ADD FOREIGN KEY ("article_id") REFERENCES "article" ("id");
-
-ALTER TABLE "draft_reviewer" ADD FOREIGN KEY ("draft_id") REFERENCES "draft" ("id");
-
-ALTER TABLE "draft_reviewer" ADD FOREIGN KEY ("reviewer_id") REFERENCES "user" ("id");
-
-ALTER TABLE "comment" ADD FOREIGN KEY ("draft_id") REFERENCES "draft" ("id");
 
 ALTER TABLE "coauthor" ADD FOREIGN KEY ("article_id") REFERENCES "article" ("id");
 

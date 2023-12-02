@@ -10,7 +10,7 @@ service UserService {
   // User
   rpc CreateUser(User) returns (User) {}
   rpc GetUser(GetUserReq) returns (User) {}
-  rpc GetUserList(GetUserListReq) returns (GetUserListReq) {}
+  rpc GetUserList(GetUserListReq) returns (GetUserListRes) {}
   rpc UpdateUser(User) returns (User) {}
   rpc DeleteUser(DeleteUserReq) returns (google.protobuf.Empty) {}
 //  rpc ResetPassword(ResetPasswordRequest) returns (User) {}
