@@ -7,8 +7,9 @@ import (
 )
 
 type authRepo struct {
-	db   *pgxpool.Pool
-	user storage.UserRepoI
+	db      *pgxpool.Pool
+	user    storage.UserRepoI
+	session storage.SessionRepoI
 }
 
 func NewAuthRepo(db *pgxpool.Pool) storage.AuthRepoI {
@@ -23,4 +24,12 @@ func (s *authRepo) User() storage.UserRepoI {
 	}
 
 	return s.user
+}
+
+func (s *authRepo) Session() storage.SessionRepoI {
+	if s.session == nil {
+		s.session = NewSessionRepo(s.db)
+	}
+
+	return s.session
 }

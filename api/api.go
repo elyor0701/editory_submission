@@ -37,6 +37,11 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	//r.PUT("/user/reset-password", h.ResetPassword)
 	//r.POST("/user/send-message", h.SendMessageToUserEmail)
 
+	r.POST("/login", h.Login)
+	r.DELETE("/logout", h.Logout)
+	r.PUT("/refresh", h.RefreshToken)
+	r.POST("/has-access", h.HasAccess)
+
 	// content
 	r.POST("/journal", h.CreateJournal)
 	r.GET("/journal", h.GetJournalList)

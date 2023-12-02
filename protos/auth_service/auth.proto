@@ -20,3 +20,30 @@ message User {
   string address = 14;
   string post_code = 15;
 }
+
+message Token {
+  string access_token = 1;
+  string refresh_token = 2;
+  string created_at = 3;
+  string updated_at = 4;
+  string expires_at = 5;
+  int32 refresh_in_seconds = 6;
+}
+
+message Session {
+  string id = 1;
+  string user_id = 2;
+  string role_id = 3;
+  string ip = 4;
+  string data = 5;
+  string expires_at = 6;
+  string created_at = 7;
+  string updated_at = 8;
+}
+
+message Role {
+  string id = 1;
+  string user_id = 2;
+  string role_type = 3;
+  string journal_id = 4;
+}

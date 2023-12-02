@@ -19,6 +19,7 @@ service UserService {
 
 message GetUserReq {
   string id = 1;
+  string email = 2;
 }
 
 message GetUserListReq {

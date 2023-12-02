@@ -19,6 +19,7 @@ func SetUpServer(cfg config.Config, log logger.LoggerI, strg storage.StorageI, s
 
 	// auth
 	auth_service.RegisterUserServiceServer(grpcServer, auth.NewUserService(cfg, log, strg, svcs))
+	auth_service.RegisterSessionServiceServer(grpcServer, auth.NewSessionService(cfg, log, strg, svcs))
 
 	// content
 	content_service.RegisterContentServiceServer(grpcServer, content.NewContentService(cfg, log, strg, svcs))

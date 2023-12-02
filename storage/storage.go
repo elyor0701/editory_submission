@@ -14,6 +14,7 @@ type StorageI interface {
 
 type AuthRepoI interface {
 	User() UserRepoI
+	Session() SessionRepoI
 }
 
 type ContentRepoI interface {
@@ -27,6 +28,17 @@ type UserRepoI interface {
 	GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb.GetUserListRes, err error)
 	Update(ctx context.Context, req *pb.User) (rowsAffected int64, err error)
 	Delete(ctx context.Context, req *pb.DeleteUserReq) (rowsAffected int64, err error)
+	GetByEmail(ctx context.Context, req *pb.GetUserReq) (res *pb.User, err error)
+}
+
+type SessionRepoI interface {
+	Create(ctx context.Context, in *pb.CreateSessionReq) (pKey *pb.Session, err error)
+	GetList(ctx context.Context, in *pb.SessionGetList) (res *pb.GetSessionListRes, err error)
+	GetByPK(ctx context.Context, in *pb.SessionPrimaryKey) (res *pb.Session, err error)
+	Update(ctx context.Context, in *pb.UpdateSessionReq) (res *pb.Session, err error)
+	Delete(ctx context.Context, in *pb.SessionPrimaryKey) (rowsAffected int64, err error)
+	DeleteExpiredUserSessions(ctx context.Context, userID string) (rowsAffected int64, err error)
+	GetSessionListByUserID(ctx context.Context, userID string) (res *pb.GetSessionListRes, err error)
 }
 
 type JournalRepoI interface {

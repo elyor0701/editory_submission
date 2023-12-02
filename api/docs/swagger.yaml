@@ -52,6 +52,118 @@ definitions:
           $ref: '#/definitions/editory_submission_genproto_auth_service.User'
         type: array
     type: object
+  editory_submission_genproto_auth_service.HasAccessReq:
+    properties:
+      access_token:
+        type: string
+      method:
+        type: string
+      path:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.HasAccessRes:
+    properties:
+      created_at:
+        type: string
+      data:
+        type: string
+      expires_at:
+        type: string
+      id:
+        type: string
+      ip:
+        type: string
+      role_id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.LoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.LoginRes:
+    properties:
+      role:
+        $ref: '#/definitions/editory_submission_genproto_auth_service.Role'
+      sessions:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_auth_service.Session'
+        type: array
+      token:
+        $ref: '#/definitions/editory_submission_genproto_auth_service.Token'
+      user:
+        $ref: '#/definitions/editory_submission_genproto_auth_service.User'
+      user_found:
+        type: boolean
+    type: object
+  editory_submission_genproto_auth_service.LogoutReq:
+    properties:
+      access_token:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.RefreshTokenReq:
+    properties:
+      refresh_token:
+        type: string
+      role_id:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.RefreshTokenRes:
+    properties:
+      token:
+        $ref: '#/definitions/editory_submission_genproto_auth_service.Token'
+    type: object
+  editory_submission_genproto_auth_service.Role:
+    properties:
+      id:
+        type: string
+      journal_id:
+        type: string
+      role_type:
+        type: string
+      user_id:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.Session:
+    properties:
+      created_at:
+        type: string
+      data:
+        type: string
+      expires_at:
+        type: string
+      id:
+        type: string
+      ip:
+        type: string
+      role_id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.Token:
+    properties:
+      access_token:
+        type: string
+      created_at:
+        type: string
+      expires_at:
+        type: string
+      refresh_in_seconds:
+        type: integer
+      refresh_token:
+        type: string
+      updated_at:
+        type: string
+    type: object
   editory_submission_genproto_auth_service.User:
     properties:
       address:
@@ -1203,6 +1315,52 @@ paths:
           schema:
             $ref: '#/definitions/http.Response'
       summary: get config data on the debug mode
+  /has-access:
+    post:
+      consumes:
+      - application/json
+      description: Has Access
+      operationId: has_access
+      parameters:
+      - description: HasAccessRequestBody
+        in: body
+        name: has-access
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_auth_service.HasAccessReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_auth_service.HasAccessRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Has Access
+      tags:
+      - Session
   /journal:
     get:
       consumes:
@@ -1427,6 +1585,91 @@ paths:
       summary: Get Journal By ID
       tags:
       - Journal
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      operationId: login
+      parameters:
+      - description: LoginRequestBody
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_auth_service.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_auth_service.LoginRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Login
+      tags:
+      - Session
+  /logout:
+    delete:
+      consumes:
+      - application/json
+      description: Logout User
+      operationId: logout
+      parameters:
+      - description: LogoutRequest
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_auth_service.LogoutReq'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Logout User
+      tags:
+      - Session
   /ping:
     get:
       consumes:
@@ -1450,6 +1693,52 @@ paths:
           schema:
             $ref: '#/definitions/http.Response'
       summary: returns "pong" message
+  /refresh:
+    put:
+      consumes:
+      - application/json
+      description: Refresh Token
+      operationId: refresh
+      parameters:
+      - description: RefreshTokenRequestBody
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_auth_service.RefreshTokenReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_auth_service.RefreshTokenRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Refresh Token
+      tags:
+      - Session
   /user:
     get:
       consumes:

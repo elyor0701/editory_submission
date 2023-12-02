@@ -65,16 +65,8 @@ func ExtractToken(bearer string) (token string, err error) {
 }
 
 type TokenInfo struct {
-	ID     string
-	Tables []Table
-	// ProjectID        string
-	// ClientPlatformID string
-	// ClientTypeID     string
-	// UserID           string
-	RoleID           string
-	// IP               string
-	// Data             string
-	LoginTableSlug string
+	ID string
+	//RoleID           string
 }
 
 type Table struct {
@@ -91,31 +83,11 @@ func ParseClaims(token string, secretKey string) (result TokenInfo, err error) {
 		return result, err
 	}
 	result.ID, ok = claims["id"].(string)
-	result.RoleID = claims["role_id"].(string)
+	//result.RoleID = claims["role_id"].(string)
 	if !ok {
 		err = errors.New("cannot parse 'id' field")
 		return result, err
 	}
-	if claims["tables"] != nil {
-		for _, item := range claims["tables"].([]interface{}) {
-			var table Table
-			table.ObjectID = item.(map[string]interface{})["object_id"].(string)
-			table.TableSlug = item.(map[string]interface{})["table_slug"].(string)
-			result.Tables = append(result.Tables, table)
-		}
-	}
-	loginTableSlug, ok := claims["login_table_slug"]
-	if ok {
-		result.LoginTableSlug = loginTableSlug.(string)
-	}
-
-	// projectID := claims["project_id"].(string)
-	// clientPlatformID := claims["client_platform_id"].(string)
-	// clientTypeID := claims["client_type_id"].(string)
-	// userID := claims["user_id"].(string)
-	// roleID := claims["role_id"].(string)
-	// ip := claims["ip"].(string)
-	// data := claims["data"].(string)
 
 	return
 }

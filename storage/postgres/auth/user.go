@@ -268,3 +268,55 @@ func (s *UserRepo) Delete(ctx context.Context, req *pb.DeleteUserReq) (rowsAffec
 
 	return rowsAffected, err
 }
+
+func (s *UserRepo) GetByEmail(ctx context.Context, req *pb.GetUserReq) (res *pb.User, err error) {
+	res = &pb.User{}
+
+	query := `SELECT
+		id,                 
+    	coalesce(username, ''),           
+    	first_name,         
+    	last_name,        
+    	phone,              
+    	coalesce(extra_phone, ''),        
+    	email,      
+    	email_verification,
+    	password,
+    	coalesce(country_id::VARCHAR, ''),         
+    	coalesce(city_id::VARCHAR, ''),            
+    	coalesce(prof_sphere, ''),        
+    	coalesce(degree, ''),             
+    	coalesce(address, ''),            
+    	coalesce(post_code, '') 
+	FROM
+		"user"
+	WHERE
+		email = $1`
+
+	err = s.db.QueryRow(
+		ctx,
+		query,
+		req.GetEmail()).Scan(
+		&res.Id,
+		&res.Username,
+		&res.FirstName,
+		&res.LastName,
+		&res.Phone,
+		&res.ExtraPhone,
+		&res.Email,
+		&res.EmailVerification,
+		&res.Password,
+		&res.CountryId,
+		&res.CityId,
+		&res.ProfSphere,
+		&res.Degree,
+		&res.Address,
+		&res.PostCode,
+	)
+
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
