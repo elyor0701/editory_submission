@@ -4,15 +4,17 @@ import (
 	"context"
 	"editory_submission/config"
 	"editory_submission/storage"
-	"editory_submission/storage/postgres/auth"
+	auth "editory_submission/storage/postgres/auth"
+	content "editory_submission/storage/postgres/content"
 	"fmt"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type Store struct {
-	db   *pgxpool.Pool
-	auth storage.AuthRepoI
+	db      *pgxpool.Pool
+	auth    storage.AuthRepoI
+	content storage.ContentRepoI
 }
 
 func NewPostgres(ctx context.Context, cfg config.Config) (storage.StorageI, error) {
@@ -57,4 +59,12 @@ func (s *Store) Auth() storage.AuthRepoI {
 	}
 
 	return s.auth
+}
+
+func (s *Store) Content() storage.ContentRepoI {
+	if s.content == nil {
+		s.content = content.NewContentRepo(s.db)
+	}
+
+	return s.content
 }

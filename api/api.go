@@ -37,6 +37,20 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	//r.PUT("/user/reset-password", h.ResetPassword)
 	//r.POST("/user/send-message", h.SendMessageToUserEmail)
 
+	// content
+	r.POST("/journal", h.CreateJournal)
+	r.GET("/journal", h.GetJournalList)
+	r.GET("/journal/:journal-id", h.GetJournalByID)
+	r.PUT("/journal", h.UpdateJournal)
+	r.DELETE("/journal/:journal-id", h.DeleteJournal)
+
+	r.POST("/article", h.CreateArticle)
+	r.GET("/article", h.GetArticleList)
+	r.GET("/article/:article-id", h.GetArticleByID)
+	r.PUT("/article", h.UpdateArticle)
+	r.DELETE("/article/:article-id", h.DeleteArticle)
+
+	// swagger
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return
 }

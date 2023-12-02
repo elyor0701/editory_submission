@@ -1,4 +1,85 @@
 syntax="proto3";
 
-package auth_service;
-option go_package="genproto/auth_service";
+package content_service;
+option go_package="genproto/content_service";
+
+import "google/protobuf/empty.proto";
+
+service ContentService {
+  // Journal
+  rpc CreateJournal(CreateJournalReq) returns (Journal) {}
+  rpc GetJournal(PrimaryKey) returns (Journal) {}
+  rpc GetJournalList(GetList) returns (GetJournalListRes) {}
+  rpc UpdateJournal(Journal) returns (Journal) {}
+  rpc DeleteJournal(PrimaryKey) returns (google.protobuf.Empty) {}
+
+  // Article
+  rpc CreateArticle(CreateArticleReq) returns (Article) {}
+  rpc GetArticle(PrimaryKey) returns (Article) {}
+  rpc GetArticleList(GetList) returns (GetArticleListRes) {}
+  rpc UpdateArticle(Article) returns (Article) {}
+  rpc DeleteArticle(PrimaryKey) returns (google.protobuf.Empty) {}
+}
+
+message PrimaryKey {
+  string id = 1;
+}
+
+message PrimaryKeyList {
+  repeated string ids = 1;
+}
+
+message GetList {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+}
+
+message Journal {
+  string id = 1;
+  string cover_photo = 2;
+  string title = 3;
+  bool access = 4;
+  string description = 5;
+  int32 price = 6;
+  string isbn = 7;
+  string author = 8;
+}
+
+message Article {
+  string id = 1;
+  string journal_id = 2;
+  string article_type = 3;
+  string title = 4;
+  string author_id = 5;
+  string description = 6;
+  string created_at = 7;
+}
+
+message CreateJournalReq {
+  string cover_photo = 2;
+  string title = 3;
+  bool access = 4;
+  string description = 5;
+  int32 price = 6;
+  string isbn = 7;
+  string author = 8;
+}
+
+message CreateArticleReq {
+  string journal_id = 2;
+  string article_type = 3;
+  string title = 4;
+  string author_id = 5;
+  string description = 6;
+}
+
+message GetJournalListRes {
+  repeated Journal journals = 1;
+  int32 count = 2;
+}
+
+message GetArticleListRes {
+  repeated Article articles = 1;
+  int32 count = 2;
+}

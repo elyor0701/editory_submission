@@ -85,6 +85,90 @@ definitions:
       username:
         type: string
     type: object
+  editory_submission_genproto_content_service.Article:
+    properties:
+      article_type:
+        type: string
+      author_id:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      journal_id:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.CreateArticleReq:
+    properties:
+      article_type:
+        type: string
+      author_id:
+        type: string
+      description:
+        type: string
+      journal_id:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.CreateJournalReq:
+    properties:
+      access:
+        type: boolean
+      author:
+        type: string
+      cover_photo:
+        type: string
+      description:
+        type: string
+      isbn:
+        type: string
+      price:
+        type: integer
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.GetArticleListRes:
+    properties:
+      articles:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+        type: array
+      count:
+        type: integer
+    type: object
+  editory_submission_genproto_content_service.GetJournalListRes:
+    properties:
+      count:
+        type: integer
+      journals:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.Journal'
+        type: array
+    type: object
+  editory_submission_genproto_content_service.Journal:
+    properties:
+      access:
+        type: boolean
+      author:
+        type: string
+      cover_photo:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      isbn:
+        type: string
+      price:
+        type: integer
+      title:
+        type: string
+    type: object
   http.Header:
     additionalProperties:
       items:
@@ -871,6 +955,230 @@ info:
   description: This is a api gateway
   termsOfService: https://udevs.io
 paths:
+  /article:
+    get:
+      consumes:
+      - application/json
+      description: Get Article List
+      operationId: get_article_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetArticleListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetArticleListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Article List
+      tags:
+      - Article
+    post:
+      consumes:
+      - application/json
+      description: Create Article
+      operationId: create_article
+      parameters:
+      - description: CreateArticleRequestBody
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.CreateArticleReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Article data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Article
+      tags:
+      - Article
+    put:
+      consumes:
+      - application/json
+      description: Update Article
+      operationId: update_article
+      parameters:
+      - description: UpdateArticleRequestBody
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Article data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Article
+      tags:
+      - Article
+  /article/{article-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Get Article
+      operationId: delete_article
+      parameters:
+      - description: article-id
+        in: path
+        name: article-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Article
+      tags:
+      - Article
+    get:
+      consumes:
+      - application/json
+      description: Get Article By ID
+      operationId: get_article_by_id
+      parameters:
+      - description: article-id
+        in: path
+        name: article-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ArticleBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Article By ID
+      tags:
+      - Article
   /config:
     get:
       consumes:
@@ -895,6 +1203,230 @@ paths:
           schema:
             $ref: '#/definitions/http.Response'
       summary: get config data on the debug mode
+  /journal:
+    get:
+      consumes:
+      - application/json
+      description: Get Journal List
+      operationId: get_journal_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetJournalListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetJournalListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Journal List
+      tags:
+      - Journal
+    post:
+      consumes:
+      - application/json
+      description: Create Journal
+      operationId: create_journal
+      parameters:
+      - description: CreateJournalRequestBody
+        in: body
+        name: journal
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.CreateJournalReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Journal data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Journal'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Journal
+      tags:
+      - Journal
+    put:
+      consumes:
+      - application/json
+      description: Update Journal
+      operationId: update_journal
+      parameters:
+      - description: UpdateJournalRequestBody
+        in: body
+        name: journal
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.Journal'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Journal data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Journal'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Journal
+      tags:
+      - Journal
+  /journal/{journal-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Get Journal
+      operationId: delete_journal
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Journal
+      tags:
+      - Journal
+    get:
+      consumes:
+      - application/json
+      description: Get Journal By ID
+      operationId: get_journal_by_id
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: JournalBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Journal'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Journal By ID
+      tags:
+      - Journal
   /ping:
     get:
       consumes:
