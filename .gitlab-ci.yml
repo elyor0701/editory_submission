@@ -1,0 +1,49 @@
+image: docker:19.03.12
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  NAMESPACE: "microservices-submission"
+
+services:
+  - docker:19.03.12-dind
+before_script:
+  - docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD
+  - apk update && apk --no-cache --update add build-base openssh curl
+
+stages:
+  - build
+  - deploy
+
+build_image:
+  stage: build
+  script:
+    - make build-image TAG=$CI_PIPELINE_IID PROJECT_NAME=$CI_PROJECT_NAMESPACE
+    - make push-image TAG=$CI_PIPELINE_IID PROJECT_NAME=$CI_PROJECT_NAMESPACE
+  only:
+    - master
+
+migrate_prod:
+  stage: migrate
+  before_script:
+    - apk add wget && wget https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz
+    - tar -xvf migrate.linux-amd64.tar.gz && mv migrate.linux-amd64 migrate && chmod +x migrate
+  script:
+    - ./migrate -path=$PWD/migrations/postgres -database="${EDITORY_SUBMISSION_DB}?sslmode=require&connect_timeout=0&x-migrations-table=migrations_$CI_PROJECT_NAME" up
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  script:
+    - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+    - chmod +x ./kubectl && mkdir -p ~/.kube && mv ./kubectl ~/.kube && export PATH=$PATH:$HOME/.kube
+    - cp $EDITORY_KUBECONFIG ~/.kube/config
+    - DEPLOYMENT=$(echo $CI_PROJECT_NAME | sed s/_/-/g)
+    - echo $DEPLOYMENT
+    - kubectl apply -f .kube/
+    - kubectl set image -n $NAMESPACE deployment/$DEPLOYMENT $DEPLOYMENT=$CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_PIPELINE_IID
+    - rm -rf ~/.kube
+  only:
+    - master
+
