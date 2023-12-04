@@ -1,4 +1,4 @@
-FROM golang:1.20 as builder
+FROM golang:1.20-alpine as builder
 
 RUN mkdir -p $GOPATH/src/gitlab.com/editory_submission/es_backend 
 WORKDIR $GOPATH/src/gitlab.com/editory_submission/es_backend
