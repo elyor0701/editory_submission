@@ -4,7 +4,7 @@ RUN mkdir -p $GOPATH/src/gitlab.com/editory_submission/es_backend
 WORKDIR $GOPATH/src/gitlab.com/editory_submission/es_backend
 
 COPY . ./
-
+RUN apk add build-base
 RUN export CGO_ENABLED=0 && \
     export GOOS=linux && \
     go mod vendor && \
