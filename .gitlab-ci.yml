@@ -9,7 +9,7 @@ services:
   - docker:19.03.12-dind
 before_script:
   - docker login $CI_REGISTRY --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD
-  - apk update && apk --no-cache --update add build-base openssh curl
+  - apk update && apk --no-cache --update add build-base curl
 
 stages:
   - build
