@@ -3,6 +3,7 @@ CURRENT_DIR=$(shell pwd)
 APP=$(shell basename ${CURRENT_DIR})
 APP_CMD_DIR=${CURRENT_DIR}/cmd
 
+REGISTRY=registry.gitlab.com
 TAG=latest
 ENV_TAG=latest
 DOCKERFILE=Dockerfile
@@ -27,7 +28,7 @@ build:
 	CGO_ENABLED=0 GOOS=linux go build -mod=vendor -a -installsuffix cgo -o ${CURRENT_DIR}/bin/${APP} ${APP_CMD_DIR}/main.go
 
 build-image:
-	docker build --rm -t ${REGISTRY}/${PROJECT_NAME}/${APP}:${TAG} . -f ${DOCKERFILE}
+	docker build --rm -t ${REGISTRY}/${PROJECT_NAME}/${APP}:${TAG} .
 	docker tag ${REGISTRY}/${PROJECT_NAME}/${APP}:${TAG} ${REGISTRY}/${PROJECT_NAME}/${APP}:${ENV_TAG}
 
 push-image:
