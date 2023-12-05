@@ -9,6 +9,7 @@ import (
 	"editory_submission/storage"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"time"
 )
 
 type sessionRepo struct {
@@ -240,9 +241,9 @@ func (r *sessionRepo) Delete(ctx context.Context, in *pb.SessionPrimaryKey) (row
 
 func (r *sessionRepo) DeleteExpiredUserSessions(ctx context.Context, userID string) (rowsAffected int64, err error) {
 
-	query := `DELETE FROM "session" WHERE user_id = $1 AND expires_at < CURRENT_TIMESTAMP`
+	query := `DELETE FROM "session" WHERE user_id = $1 AND expires_at < $2`
 
-	result, err := r.db.Exec(ctx, query, userID)
+	result, err := r.db.Exec(ctx, query, userID, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		return 0, err
 	}

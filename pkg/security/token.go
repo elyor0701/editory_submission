@@ -1,6 +1,7 @@
 package security
 
 import (
+	"encoding/json"
 	"errors"
 	"strings"
 	"time"
@@ -65,13 +66,10 @@ func ExtractToken(bearer string) (token string, err error) {
 }
 
 type TokenInfo struct {
-	ID string
+	ID        string
+	ExpiresAt time.Time
+	CreatedAt time.Time
 	//RoleID           string
-}
-
-type Table struct {
-	TableSlug string
-	ObjectID  string
 }
 
 func ParseClaims(token string, secretKey string) (result TokenInfo, err error) {
@@ -83,11 +81,25 @@ func ParseClaims(token string, secretKey string) (result TokenInfo, err error) {
 		return result, err
 	}
 	result.ID, ok = claims["id"].(string)
-	//result.RoleID = claims["role_id"].(string)
 	if !ok {
 		err = errors.New("cannot parse 'id' field")
 		return result, err
 	}
+
+	exp, ok := claims["exp"]
+	if !ok {
+		err = errors.New("cannot parse 'expires_at' field")
+		return result, err
+	}
+
+	result.ExpiresAt = ParseFloat64UnixTimestamp(exp)
+
+	iat, ok := claims["iat"]
+	if !ok {
+		err = errors.New("cannot parse 'created_at' field")
+		return result, err
+	}
+	result.CreatedAt = ParseFloat64UnixTimestamp(iat)
 
 	return
 }
@@ -133,4 +145,18 @@ func ParsePasscodeClaims(token string, secretKey string) (result PasscodeTokenIn
 	}
 
 	return
+}
+
+func ParseFloat64UnixTimestamp(date interface{}) time.Time {
+	var tm time.Time
+	switch t := date.(type) {
+	case float64:
+		tm = time.Unix(int64(t), 0)
+	case int64:
+		tm = time.Unix(t, 0)
+	case json.Number:
+		v, _ := t.Int64()
+		tm = time.Unix(v, 0)
+	}
+	return tm
 }

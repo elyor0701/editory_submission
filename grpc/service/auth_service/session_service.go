@@ -36,7 +36,7 @@ func NewSessionService(cfg config.Config, log logger.LoggerI, strg storage.Stora
 func (s *sessionService) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginRes, error) {
 	res := &pb.LoginRes{}
 
-	if util.IsValidEmail(req.GetEmail()) {
+	if !util.IsValidEmail(req.GetEmail()) {
 		err := errors.New("invalid username")
 		s.log.Error("!!!Login--->", logger.Error(err))
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -180,6 +180,12 @@ func (s *sessionService) RefreshToken(ctx context.Context, req *pb.RefreshTokenR
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
+	if tokenInfo.ExpiresAt.Unix() < time.Now().Unix() {
+		err := errors.New("token has been expired")
+		s.log.Error("!!!HasAccess--->", logger.Error(err))
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	session := &pb.Session{}
 
 	session, err = s.strg.Auth().Session().GetByPK(ctx, &pb.SessionPrimaryKey{
@@ -253,6 +259,12 @@ func (s *sessionService) HasAccess(ctx context.Context, req *pb.HasAccessReq) (*
 
 	tokenInfo, err := security.ParseClaims(req.AccessToken, s.cfg.SecretKey)
 	if err != nil {
+		s.log.Error("!!!HasAccess--->", logger.Error(err))
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if tokenInfo.ExpiresAt.Unix() < time.Now().Unix() {
+		err := errors.New("token has been expired")
 		s.log.Error("!!!HasAccess--->", logger.Error(err))
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}

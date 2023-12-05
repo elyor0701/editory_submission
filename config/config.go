@@ -1,11 +1,8 @@
 package config
 
 import (
-	"fmt"
-	"os"
-
-	"github.com/joho/godotenv"
 	"github.com/spf13/cast"
+	"os"
 )
 
 const (
@@ -49,11 +46,12 @@ type Config struct {
 
 // Load ...
 func Load() Config {
-	if err := godotenv.Load("/app/.env"); err != nil {
-		fmt.Println("No .env file found [/app/.env]")
-	} else if err := godotenv.Load(".env"); err != nil {
-		fmt.Println("No .env file found [.env]")
-	}
+	//ReadEnvValue()
+	//if err := godotenv.Load("/app/.env"); err != nil {
+	//	fmt.Println("No .env file found [/app/.env]")
+	//} else if err := godotenv.Load(".env"); err != nil {
+	//	fmt.Println("No .env file found [.env]")
+	//}
 
 	config := Config{}
 
@@ -88,12 +86,42 @@ func Load() Config {
 	return config
 }
 
-func getOrReturnDefaultValue(key string, defaultValue interface{}) interface{} {
-	val, exists := os.LookupEnv(key)
+//func getOrReturnDefaultValue(key string, defaultValue interface{}) interface{} {
+//	val, exists := os.LookupEnv(key)
+//
+//	if exists {
+//		return val
+//	}
+//
+//	return defaultValue
+//}
 
-	if exists {
+func getOrReturnDefaultValue(key string, defaultValue interface{}) interface{} {
+	val := os.Getenv(key)
+
+	if val != "" {
 		return val
 	}
 
 	return defaultValue
 }
+
+//func ReadEnvValue() map[string]interface{} {
+//	// Create a scanner to read from stdin
+//	scanner := bufio.NewScanner(os.Stdin)
+//	m := make(map[string]interface{})
+//	s := make([]string, 0)
+//	// Read a line from stdin
+//	for scanner.Scan() {
+//		val := scanner.Text()
+//		if val == "" {
+//			break
+//		}
+//		s = append(s, val)
+//	}
+//
+//	strings.Split()
+//
+//	fmt.Println(s, len(s))
+//	return m
+//}
