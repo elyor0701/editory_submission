@@ -48,6 +48,13 @@ const docTemplate = `{
                         "description": "search",
                         "name": "search",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "journal_id",
+                        "name": "journal_id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1916,9 +1923,6 @@ const docTemplate = `{
         "editory_submission_genproto_content_service.Article": {
             "type": "object",
             "properties": {
-                "article_type": {
-                    "type": "string"
-                },
                 "author_id": {
                     "type": "string"
                 },
@@ -1928,6 +1932,12 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_content_service.File"
+                    }
+                },
                 "id": {
                     "type": "string"
                 },
@@ -1936,25 +1946,34 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
         "editory_submission_genproto_content_service.CreateArticleReq": {
             "type": "object",
             "properties": {
-                "article_type": {
-                    "type": "string"
-                },
                 "author_id": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
                 },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_content_service.File"
+                    }
+                },
                 "journal_id": {
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -1981,6 +2000,26 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_content_service.File": {
+            "type": "object",
+            "properties": {
+                "article_id": {
+                    "type": "string"
+                },
+                "draft_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "url": {
                     "type": "string"
                 }
             }

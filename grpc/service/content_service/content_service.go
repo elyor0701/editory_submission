@@ -119,7 +119,7 @@ func (s *contentService) GetArticle(ctx context.Context, req *pb.PrimaryKey) (re
 	return res, nil
 }
 
-func (s *contentService) GetArticleList(ctx context.Context, req *pb.GetList) (res *pb.GetArticleListRes, err error) {
+func (s *contentService) GetArticleList(ctx context.Context, req *pb.GetArticleListReq) (res *pb.GetArticleListRes, err error) {
 	s.log.Info("---GetArticleList--->", logger.Any("req", req))
 
 	res, err = s.strg.Content().Article().GetList(ctx, req)

@@ -3,6 +3,7 @@ package handlers
 import (
 	"editory_submission/api/http"
 	"editory_submission/genproto/content_service"
+	"errors"
 
 	"github.com/saidamir98/udevs_pkg/util"
 
@@ -54,6 +55,7 @@ func (h *Handler) CreateArticle(c *gin.Context) {
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
 // @Param search query string false "search"
+// @Param journal_id query string true "journal_id"
 // @Success 200 {object} http.Response{data=content_service.GetArticleListRes} "GetArticleListResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
@@ -71,12 +73,20 @@ func (h *Handler) GetArticleList(c *gin.Context) {
 		return
 	}
 
+	journalId := c.Query("journal_id")
+	if !util.IsValidUUID(journalId) {
+		err = errors.New("invalid journal id")
+		h.handleResponse(c, http.InvalidArgument, err.Error())
+		return
+	}
+
 	resp, err := h.services.ContentService().GetArticleList(
 		c.Request.Context(),
-		&content_service.GetList{
-			Limit:  int32(limit),
-			Offset: int32(offset),
-			Search: c.DefaultQuery("search", ""),
+		&content_service.GetArticleListReq{
+			Limit:     int32(limit),
+			Offset:    int32(offset),
+			Search:    c.DefaultQuery("search", ""),
+			JournalId: journalId,
 		},
 	)
 

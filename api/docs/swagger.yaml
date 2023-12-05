@@ -199,32 +199,40 @@ definitions:
     type: object
   editory_submission_genproto_content_service.Article:
     properties:
-      article_type:
-        type: string
       author_id:
         type: string
       created_at:
         type: string
       description:
         type: string
+      files:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.File'
+        type: array
       id:
         type: string
       journal_id:
         type: string
       title:
         type: string
+      type:
+        type: string
     type: object
   editory_submission_genproto_content_service.CreateArticleReq:
     properties:
-      article_type:
-        type: string
       author_id:
         type: string
       description:
         type: string
+      files:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.File'
+        type: array
       journal_id:
         type: string
       title:
+        type: string
+      type:
         type: string
     type: object
   editory_submission_genproto_content_service.CreateJournalReq:
@@ -242,6 +250,19 @@ definitions:
       price:
         type: integer
       title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.File:
+    properties:
+      article_id:
+        type: string
+      draft_id:
+        type: string
+      id:
+        type: string
+      type:
+        type: string
+      url:
         type: string
     type: object
   editory_submission_genproto_content_service.GetArticleListRes:
@@ -1085,6 +1106,11 @@ paths:
       - description: search
         in: query
         name: search
+        type: string
+      - description: journal_id
+        in: query
+        name: journal_id
+        required: true
         type: string
       produces:
       - application/json

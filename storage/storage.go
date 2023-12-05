@@ -52,7 +52,7 @@ type JournalRepoI interface {
 type ArticleRepoI interface {
 	Create(ctx context.Context, in *cs_pb.CreateArticleReq) (*cs_pb.Article, error)
 	Get(ctx context.Context, in *cs_pb.PrimaryKey) (*cs_pb.Article, error)
-	GetList(ctx context.Context, in *cs_pb.GetList) (*cs_pb.GetArticleListRes, error)
+	GetList(ctx context.Context, in *cs_pb.GetArticleListReq) (*cs_pb.GetArticleListRes, error)
 	Update(ctx context.Context, in *cs_pb.Article) (*cs_pb.Article, error)
 	Delete(ctx context.Context, in *cs_pb.PrimaryKey) (rowsAffected int64, err error)
 }

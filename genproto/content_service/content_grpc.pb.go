@@ -32,7 +32,7 @@ type ContentServiceClient interface {
 	// Article
 	CreateArticle(ctx context.Context, in *CreateArticleReq, opts ...grpc.CallOption) (*Article, error)
 	GetArticle(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*Article, error)
-	GetArticleList(ctx context.Context, in *GetList, opts ...grpc.CallOption) (*GetArticleListRes, error)
+	GetArticleList(ctx context.Context, in *GetArticleListReq, opts ...grpc.CallOption) (*GetArticleListRes, error)
 	UpdateArticle(ctx context.Context, in *Article, opts ...grpc.CallOption) (*Article, error)
 	DeleteArticle(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -108,7 +108,7 @@ func (c *contentServiceClient) GetArticle(ctx context.Context, in *PrimaryKey, o
 	return out, nil
 }
 
-func (c *contentServiceClient) GetArticleList(ctx context.Context, in *GetList, opts ...grpc.CallOption) (*GetArticleListRes, error) {
+func (c *contentServiceClient) GetArticleList(ctx context.Context, in *GetArticleListReq, opts ...grpc.CallOption) (*GetArticleListRes, error) {
 	out := new(GetArticleListRes)
 	err := c.cc.Invoke(ctx, "/content_service.ContentService/GetArticleList", in, out, opts...)
 	if err != nil {
@@ -148,7 +148,7 @@ type ContentServiceServer interface {
 	// Article
 	CreateArticle(context.Context, *CreateArticleReq) (*Article, error)
 	GetArticle(context.Context, *PrimaryKey) (*Article, error)
-	GetArticleList(context.Context, *GetList) (*GetArticleListRes, error)
+	GetArticleList(context.Context, *GetArticleListReq) (*GetArticleListRes, error)
 	UpdateArticle(context.Context, *Article) (*Article, error)
 	DeleteArticle(context.Context, *PrimaryKey) (*emptypb.Empty, error)
 	mustEmbedUnimplementedContentServiceServer()
@@ -179,7 +179,7 @@ func (UnimplementedContentServiceServer) CreateArticle(context.Context, *CreateA
 func (UnimplementedContentServiceServer) GetArticle(context.Context, *PrimaryKey) (*Article, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetArticle not implemented")
 }
-func (UnimplementedContentServiceServer) GetArticleList(context.Context, *GetList) (*GetArticleListRes, error) {
+func (UnimplementedContentServiceServer) GetArticleList(context.Context, *GetArticleListReq) (*GetArticleListRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetArticleList not implemented")
 }
 func (UnimplementedContentServiceServer) UpdateArticle(context.Context, *Article) (*Article, error) {
@@ -328,7 +328,7 @@ func _ContentService_GetArticle_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _ContentService_GetArticleList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetList)
+	in := new(GetArticleListReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -340,7 +340,7 @@ func _ContentService_GetArticleList_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/content_service.ContentService/GetArticleList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContentServiceServer).GetArticleList(ctx, req.(*GetList))
+		return srv.(ContentServiceServer).GetArticleList(ctx, req.(*GetArticleListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

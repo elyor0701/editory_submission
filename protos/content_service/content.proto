@@ -16,9 +16,24 @@ service ContentService {
   // Article
   rpc CreateArticle(CreateArticleReq) returns (Article) {}
   rpc GetArticle(PrimaryKey) returns (Article) {}
-  rpc GetArticleList(GetList) returns (GetArticleListRes) {}
+  rpc GetArticleList(GetArticleListReq) returns (GetArticleListRes) {}
   rpc UpdateArticle(Article) returns (Article) {}
   rpc DeleteArticle(PrimaryKey) returns (google.protobuf.Empty) {}
+
+  // File
+  //  rpc CreateFile(CreateFileReq) returns (PrimaryKey) {}
+  //  rpc GetFile(PrimaryKey) returns (Article) {}
+  //  rpc GetFileList(GetList) returns (GetArticleListRes) {}
+  //  rpc UpdateFile(UpdateFileReq) returns (PrimaryKey) {}
+  //  rpc DeleteFile(PrimaryKey) returns (google.protobuf.Empty) {}
+}
+
+message File {
+  string id = 1;
+  string url = 2;
+  string type = 3;
+  string draft_id = 4;
+  string article_id = 5;
 }
 
 message PrimaryKey {
@@ -35,6 +50,13 @@ message GetList {
   string search = 3;
 }
 
+message GetArticleListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string journal_id = 4;
+}
+
 message Journal {
   string id = 1;
   string cover_photo = 2;
@@ -49,11 +71,12 @@ message Journal {
 message Article {
   string id = 1;
   string journal_id = 2;
-  string article_type = 3;
+  string type = 3;
   string title = 4;
   string author_id = 5;
   string description = 6;
   string created_at = 7;
+  repeated File files = 8;
 }
 
 message CreateJournalReq {
@@ -68,10 +91,11 @@ message CreateJournalReq {
 
 message CreateArticleReq {
   string journal_id = 2;
-  string article_type = 3;
+  string type = 3;
   string title = 4;
   string author_id = 5;
   string description = 6;
+  repeated File files = 7;
 }
 
 message GetJournalListRes {
@@ -83,3 +107,18 @@ message GetArticleListRes {
   repeated Article articles = 1;
   int32 count = 2;
 }
+
+//message CreateFileReq {
+//  string url = 1;
+//  string type = 2;
+//  string draft_id = 3;
+//  string article_id = 4;
+//}
+//
+//message UpdateFileReq {
+//  string id = 1;
+//  string url = 2;
+//  string type = 3;
+//  string draft_id = 4;
+//  string article_id = 5;
+//}
