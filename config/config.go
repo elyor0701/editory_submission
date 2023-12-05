@@ -46,7 +46,6 @@ type Config struct {
 
 // Load ...
 func Load() Config {
-	//ReadEnvValue()
 	//if err := godotenv.Load("/app/.env"); err != nil {
 	//	fmt.Println("No .env file found [/app/.env]")
 	//} else if err := godotenv.Load(".env"); err != nil {
@@ -105,23 +104,3 @@ func getOrReturnDefaultValue(key string, defaultValue interface{}) interface{} {
 
 	return defaultValue
 }
-
-//func ReadEnvValue() map[string]interface{} {
-//	// Create a scanner to read from stdin
-//	scanner := bufio.NewScanner(os.Stdin)
-//	m := make(map[string]interface{})
-//	s := make([]string, 0)
-//	// Read a line from stdin
-//	for scanner.Scan() {
-//		val := scanner.Text()
-//		if val == "" {
-//			break
-//		}
-//		s = append(s, val)
-//	}
-//
-//	strings.Split()
-//
-//	fmt.Println(s, len(s))
-//	return m
-//}
