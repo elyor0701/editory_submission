@@ -2,11 +2,14 @@ package auth
 
 import (
 	"context"
+	"editory_submission/config"
 	pb "editory_submission/genproto/auth_service"
 	"editory_submission/pkg/helper"
 	"editory_submission/pkg/util"
 	"editory_submission/storage"
+	"editory_submission/storage/postgres/models"
 	"github.com/google/uuid"
+	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -77,9 +80,25 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 		util.NewNullString(req.GetPostCode()),
 	)
 
-	req.Id = id.String()
+	res = &pb.User{
+		Id:                id.String(),
+		Username:          req.GetUsername(),
+		FirstName:         req.GetFirstName(),
+		LastName:          req.GetLastName(),
+		Phone:             req.GetPhone(),
+		ExtraPhone:        req.GetExtraPhone(),
+		Email:             req.GetEmail(),
+		EmailVerification: false,
+		Password:          req.GetPassword(),
+		CountryId:         req.GetCountryId(),
+		CityId:            req.GetCityId(),
+		ProfSphere:        req.GetProfSphere(),
+		Degree:            req.GetDegree(),
+		Address:           req.GetAddress(),
+		PostCode:          req.GetPostCode(),
+	}
 
-	return req, err
+	return res, err
 }
 
 func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, err error) {
@@ -319,4 +338,127 @@ func (s *UserRepo) GetByEmail(ctx context.Context, req *pb.GetUserReq) (res *pb.
 	}
 
 	return res, nil
+}
+
+func (s *UserRepo) CreateEmailVerification(ctx context.Context, req *models.CreateEmailVerificationReq) (res *models.CreateEmailVerificationRes, err error) {
+	query := `INSERT INTO "email_verification" (
+		email,
+        token,
+        expires_at
+	) VALUES (
+		$1,
+		$2,
+		$3
+	)`
+
+	_, err = s.db.Exec(ctx, query,
+		req.Email,
+		req.Token,
+		req.ExpiresAt,
+	)
+
+	res = &models.CreateEmailVerificationRes{
+		Email:     req.Email,
+		Token:     req.Token,
+		ExpiresAt: req.ExpiresAt,
+	}
+
+	return res, err
+}
+func (s *UserRepo) GetEmailVerificationList(ctx context.Context, req *models.GetEmailVerificationListReq) (res *models.GetEmailVerificationListRes, err error) {
+	res = &models.GetEmailVerificationListRes{}
+
+	query := `SELECT
+		email,
+		token,
+		sent,
+		COALESCE(TO_CHAR(expires_at, ` + config.DatabaseQueryTimeLayout + `)::TEXT, '') AS expires_at,
+		COALESCE(TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `)::TEXT, '') AS created_at
+	FROM
+		"email_verification"
+	WHERE
+		email = $1`
+
+	rows, err := s.db.Query(ctx, query, req.Email)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		obj := &models.EmailVerification{}
+
+		err = rows.Scan(
+			&obj.Email,
+			&obj.Token,
+			&obj.Sent,
+			&obj.ExpiresAt,
+			&obj.CreatedAt,
+		)
+		if err != nil {
+			continue
+		}
+
+		res.Tokens = append(res.Tokens, obj)
+		res.Count++
+	}
+
+	return res, nil
+}
+func (s *UserRepo) DeleteEmailVerification(ctx context.Context, req *models.DeleteEmailVerificationReq) (rowsAffected int64, err error) {
+	query := `DELETE FROM "email_verification" WHERE email = $1 OR expires_at < $2`
+
+	result, err := s.db.Exec(ctx, query, req.Email, time.Now().Format("2006-01-02 15:04:05"))
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected = result.RowsAffected()
+
+	return rowsAffected, err
+}
+func (s *UserRepo) UpdateEmailVerification(ctx context.Context, req *models.UpdateEmailVerificationReq) (res *models.UpdateEmailVerificationRes, err error) {
+	query := `UPDATE "email_verification" SET                
+    	sent = $1
+	WHERE
+		email = $2 AND token = $3`
+
+	_, err = s.db.Exec(ctx,
+		query,
+		req.Sent,
+		req.Email,
+		req.Token,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	res = &models.UpdateEmailVerificationRes{
+		Email: req.Email,
+		Token: req.Token,
+		Sent:  req.Sent,
+	}
+
+	return res, nil
+}
+
+func (s *UserRepo) UpdateUserEmailVerificationStatus(ctx context.Context, req *models.UpdateUserEmailVerificationStatusReq) (rowsAffected int64, err error) {
+	query := `UPDATE "user" SET                
+    	email_verification = $1
+	WHERE
+		email = $2`
+
+	result, err := s.db.Exec(ctx,
+		query,
+		req.VerificationStatus,
+		req.Email,
+	)
+	if err != nil {
+
+		return 0, err
+	}
+
+	rowsAffected = result.RowsAffected()
+
+	return rowsAffected, nil
 }

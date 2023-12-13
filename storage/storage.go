@@ -4,6 +4,7 @@ import (
 	"context"
 	pb "editory_submission/genproto/auth_service"
 	cs_pb "editory_submission/genproto/content_service"
+	"editory_submission/storage/postgres/models"
 )
 
 type StorageI interface {
@@ -29,6 +30,11 @@ type UserRepoI interface {
 	Update(ctx context.Context, req *pb.User) (rowsAffected int64, err error)
 	Delete(ctx context.Context, req *pb.DeleteUserReq) (rowsAffected int64, err error)
 	GetByEmail(ctx context.Context, req *pb.GetUserReq) (res *pb.User, err error)
+	CreateEmailVerification(ctx context.Context, req *models.CreateEmailVerificationReq) (res *models.CreateEmailVerificationRes, err error)
+	GetEmailVerificationList(ctx context.Context, req *models.GetEmailVerificationListReq) (res *models.GetEmailVerificationListRes, err error)
+	DeleteEmailVerification(ctx context.Context, req *models.DeleteEmailVerificationReq) (rowsAffected int64, err error)
+	UpdateEmailVerification(ctx context.Context, req *models.UpdateEmailVerificationReq) (res *models.UpdateEmailVerificationRes, err error)
+	UpdateUserEmailVerificationStatus(ctx context.Context, req *models.UpdateUserEmailVerificationStatusReq) (rowsAffected int64, err error)
 }
 
 type SessionRepoI interface {

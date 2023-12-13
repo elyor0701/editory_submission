@@ -27,6 +27,7 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 
 	r.GET("/ping", h.Ping)
 	r.GET("/config", h.GetConfig)
+	r.POST("/upload", h.Upload)
 
 	// auth
 	r.POST("/user", h.CreateUser)
@@ -36,6 +37,8 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	r.DELETE("/user/:user-id", h.DeleteUser)
 	//r.PUT("/user/reset-password", h.ResetPassword)
 	//r.POST("/user/send-message", h.SendMessageToUserEmail)
+	r.POST("/send-verification-message", h.SendVerificationMessage)
+	r.PUT("/verification", h.EmailVerification)
 
 	r.POST("/login", h.Login)
 	r.DELETE("/logout", h.Logout)

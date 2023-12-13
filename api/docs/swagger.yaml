@@ -1,4 +1,11 @@
 definitions:
+  api_handlers.Path:
+    properties:
+      filename:
+        type: string
+      hash:
+        type: string
+    type: object
   big.Int:
     type: object
   config.Config:
@@ -11,6 +18,12 @@ definitions:
         type: string
       defaultOffset:
         type: string
+      emailPassword:
+        type: string
+      emailUsername:
+        type: string
+      emailVerificationUrl:
+        type: string
       environment:
         description: debug, test, release
         type: string
@@ -19,6 +32,14 @@ definitions:
       httpscheme:
         type: string
       migrationPath:
+        type: string
+      minioAccessKeyID:
+        type: string
+      minioEndpoint:
+        type: string
+      minioProtocol:
+        type: boolean
+      minioSecretAccessKey:
         type: string
       passcodeLength:
         type: integer
@@ -42,6 +63,11 @@ definitions:
         type: string
       version:
         type: string
+    type: object
+  editory_submission_genproto_auth_service.EmailVerificationRes:
+    properties:
+      status:
+        type: boolean
     type: object
   editory_submission_genproto_auth_service.GetUserListRes:
     properties:
@@ -1765,6 +1791,91 @@ paths:
       summary: Refresh Token
       tags:
       - Session
+  /send-verification-message:
+    post:
+      consumes:
+      - application/json
+      description: SendVerificationMessage
+      operationId: send_verification_message
+      parameters:
+      - description: User Id
+        in: query
+        name: user-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Send Verification Message
+      tags:
+      - User
+  /upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload
+      operationId: upload
+      parameters:
+      - description: file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Path
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/api_handlers.Path'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Upload
+      tags:
+      - file
   /user:
     get:
       consumes:
@@ -1987,6 +2098,56 @@ paths:
                   type: string
               type: object
       summary: Get User By ID
+      tags:
+      - User
+  /verification:
+    put:
+      consumes:
+      - application/json
+      description: Verification
+      operationId: email_verification
+      parameters:
+      - description: Email
+        in: query
+        name: email
+        required: true
+        type: string
+      - description: Token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Status
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_auth_service.EmailVerificationRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Verification
       tags:
       - User
 swagger: "2.0"

@@ -12,12 +12,11 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/saidamir98/udevs_pkg/logger"
-	"net"
-
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/golang-migrate/migrate/v4/source/github"
+	"github.com/saidamir98/udevs_pkg/logger"
+	"net"
 )
 
 func main() {

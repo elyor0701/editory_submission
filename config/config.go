@@ -42,6 +42,15 @@ type Config struct {
 	AuthGRPCPort    string
 
 	MigrationPath string
+
+	EmailUsername        string
+	EmailPassword        string
+	EmailVerificationUrl string
+
+	MinioEndpoint        string
+	MinioAccessKeyID     string
+	MinioSecretAccessKey string
+	MinioProtocol        bool
 }
 
 // Load ...
@@ -81,6 +90,15 @@ func Load() Config {
 	config.AuthGRPCPort = cast.ToString(getOrReturnDefaultValue("AUTH_GRPC_PORT", ":8998"))
 
 	config.MigrationPath = cast.ToString(getOrReturnDefaultValue("MIGRATION_PATH", "/home/euler/Documents/projects/editory_submission/migrations/postgres"))
+
+	config.EmailUsername = cast.ToString(getOrReturnDefaultValue("EMAIL_USERNAME", "editorysubmission@gmail.com"))
+	config.EmailPassword = cast.ToString(getOrReturnDefaultValue("EMAIL_PASSWORD", "occo pbku zktc oqqt"))
+	config.EmailVerificationUrl = cast.ToString(getOrReturnDefaultValue("EMAIL_VERIFICATION_URL", "localhost:8082/verification"))
+
+	config.MinioAccessKeyID = cast.ToString(getOrReturnDefaultValue("MINIO_ACCESS_KEY", "fczbKQdzXNSjxCDu7aEatAnKjqpxHXp7km7HGveQyKCSZFPK"))
+	config.MinioSecretAccessKey = cast.ToString(getOrReturnDefaultValue("MINIO_SECRET_KEY", "kQffPzZRcEz8UNyzcV9WMEGFb2fhUAKXMxCJbCXJhKrdGLWY"))
+	config.MinioEndpoint = cast.ToString(getOrReturnDefaultValue("MINIO_ENDPOINT", "test.cdn.editorypress.uz"))
+	config.MinioProtocol = cast.ToBool(getOrReturnDefaultValue("MINIO_PROTOCOL", true))
 
 	return config
 }

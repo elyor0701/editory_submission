@@ -8,11 +8,13 @@ import (
 	"editory_submission/pkg/security"
 	"editory_submission/pkg/util"
 	"editory_submission/storage"
+	"editory_submission/storage/postgres/models"
 	"fmt"
 	"github.com/saidamir98/udevs_pkg/logger"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"time"
 )
 
 type userService struct {
@@ -121,4 +123,80 @@ func (s *userService) DeleteUser(ctx context.Context, req *pb.DeleteUserReq) (re
 	}
 
 	return res, nil
+}
+
+func (s *userService) GenerateEmailVerificationToken(ctx context.Context, req *pb.GenerateEmailVerificationTokenReq) (res *pb.GenerateEmailVerificationTokenRes, err error) {
+	s.log.Info("---GenerateEmailVerificationToken--->", logger.Any("req", req))
+
+	token, err := security.GenerateRandomString(64)
+	if err != nil {
+		s.log.Error("!!!GenerateEmailVerificationToken--->", logger.Error(err))
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	expiresAt := time.Now().Add(24 * time.Hour).Format("2006-01-02 15:04:05")
+
+	emailVerif, err := s.strg.Auth().User().CreateEmailVerification(ctx, &models.CreateEmailVerificationReq{
+		Email:     req.GetEmail(),
+		Token:     token,
+		ExpiresAt: expiresAt,
+	})
+	if err != nil {
+		s.log.Error("!!!GenerateEmailVerificationToken--->", logger.Error(err))
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &pb.GenerateEmailVerificationTokenRes{
+		Email:     emailVerif.Email,
+		Token:     emailVerif.Token,
+		ExpiresAt: emailVerif.ExpiresAt,
+	}, err
+}
+
+func (s *userService) EmailVerification(ctx context.Context, req *pb.EmailVerificationReq) (res *pb.EmailVerificationRes, err error) {
+	s.log.Info("---EmailVerification--->", logger.Any("req", req))
+
+	tokens, err := s.strg.Auth().User().GetEmailVerificationList(ctx, &models.GetEmailVerificationListReq{
+		Email: req.GetEmail(),
+	})
+	if err != nil {
+		s.log.Error("!!!EmailVerification--->", logger.Error(err))
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	found := false
+
+	for _, v := range tokens.Tokens {
+		expiresAt, _ := time.Parse(time.RFC3339, v.ExpiresAt)
+		if v.Token == req.GetToken() && expiresAt.After(time.Now()) {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		return &pb.EmailVerificationRes{
+			Status: found,
+		}, nil
+	}
+
+	_, err = s.strg.Auth().User().UpdateUserEmailVerificationStatus(ctx, &models.UpdateUserEmailVerificationStatusReq{
+		Email:              req.GetEmail(),
+		VerificationStatus: true,
+	})
+	if err != nil {
+		s.log.Error("!!!EmailVerification--->", logger.Error(err))
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	_, err = s.strg.Auth().User().DeleteEmailVerification(ctx, &models.DeleteEmailVerificationReq{
+		Email: req.GetEmail(),
+	})
+	if err != nil {
+		s.log.Error("!!!EmailVerification--->", logger.Error(err))
+	}
+
+	return &pb.EmailVerificationRes{
+		Status: true,
+	}, err
 }

@@ -3,7 +3,6 @@ package handlers
 import (
 	"editory_submission/api/http"
 	"editory_submission/config"
-
 	"github.com/gin-gonic/gin"
 )
 

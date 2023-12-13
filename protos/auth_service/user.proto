@@ -15,6 +15,28 @@ service UserService {
   rpc DeleteUser(DeleteUserReq) returns (google.protobuf.Empty) {}
 //  rpc ResetPassword(ResetPasswordRequest) returns (User) {}
 //  rpc SendMessageToEmail(SendMessageToEmailRequest) returns (google.protobuf.Empty) {}
+  rpc GenerateEmailVerificationToken(GenerateEmailVerificationTokenReq) returns (GenerateEmailVerificationTokenRes) {}
+  rpc EmailVerification(EmailVerificationReq) returns (EmailVerificationRes) {}
+}
+
+message EmailVerificationReq {
+  string email = 1;
+  string token = 2;
+}
+
+message EmailVerificationRes {
+  bool status = 1;
+}
+
+message GenerateEmailVerificationTokenReq {
+  string email = 1;
+}
+
+message GenerateEmailVerificationTokenRes {
+  string email = 1;
+  string token = 2;
+  string expires_at = 3;
+  string created_at = 4;
 }
 
 message GetUserReq {
