@@ -21,6 +21,7 @@ type AuthRepoI interface {
 type ContentRepoI interface {
 	Journal() JournalRepoI
 	Article() ArticleRepoI
+	CountryAndCity() CountryAndCityRepoI
 }
 
 type UserRepoI interface {
@@ -61,4 +62,9 @@ type ArticleRepoI interface {
 	GetList(ctx context.Context, in *cs_pb.GetArticleListReq) (*cs_pb.GetArticleListRes, error)
 	Update(ctx context.Context, in *cs_pb.Article) (*cs_pb.Article, error)
 	Delete(ctx context.Context, in *cs_pb.PrimaryKey) (rowsAffected int64, err error)
+}
+
+type CountryAndCityRepoI interface {
+	GetCountyList(ctx context.Context, in *cs_pb.GetCountryListReq) (*cs_pb.GetCountryListRes, error)
+	GetCityList(ctx context.Context, in *cs_pb.GetCityListReq) (*cs_pb.GetCityListRes, error)
 }

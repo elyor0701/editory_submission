@@ -422,6 +422,104 @@ const docTemplate = `{
                 }
             }
         },
+        "/city": {
+            "get": {
+                "description": "Get City List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Content"
+                ],
+                "summary": "Get City List",
+                "operationId": "get_city_list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "country-id",
+                        "name": "country-id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetCityListResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_content_service.GetCityListRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/config": {
             "get": {
                 "description": "show service config data when the service environment set to debug mode",
@@ -456,6 +554,98 @@ const docTemplate = `{
                         "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/http.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/country": {
+            "get": {
+                "description": "Get Country List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Content"
+                ],
+                "summary": "Get Country List",
+                "operationId": "get_country_list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetCountryListResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_content_service.GetCountryListRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -2232,6 +2422,43 @@ const docTemplate = `{
                 }
             }
         },
+        "editory_submission_genproto_content_service.City": {
+            "type": "object",
+            "properties": {
+                "country_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "title_ru": {
+                    "type": "string"
+                },
+                "title_uz": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_content_service.Country": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "title_ru": {
+                    "type": "string"
+                },
+                "title_uz": {
+                    "type": "string"
+                }
+            }
+        },
         "editory_submission_genproto_content_service.CreateArticleReq": {
             "type": "object",
             "properties": {
@@ -2279,6 +2506,9 @@ const docTemplate = `{
                 "price": {
                     "type": "integer"
                 },
+                "status": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 }
@@ -2315,6 +2545,34 @@ const docTemplate = `{
                 },
                 "count": {
                     "type": "integer"
+                }
+            }
+        },
+        "editory_submission_genproto_content_service.GetCityListRes": {
+            "type": "object",
+            "properties": {
+                "cities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_content_service.City"
+                    }
+                },
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "editory_submission_genproto_content_service.GetCountryListRes": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "countries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_content_service.Country"
+                    }
                 }
             }
         },
@@ -2355,6 +2613,9 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "integer"
+                },
+                "status": {
+                    "type": "string"
                 },
                 "title": {
                     "type": "string"

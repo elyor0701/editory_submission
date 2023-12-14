@@ -35,6 +35,9 @@ type ContentServiceClient interface {
 	GetArticleList(ctx context.Context, in *GetArticleListReq, opts ...grpc.CallOption) (*GetArticleListRes, error)
 	UpdateArticle(ctx context.Context, in *Article, opts ...grpc.CallOption) (*Article, error)
 	DeleteArticle(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Countries and cities
+	GetCountryList(ctx context.Context, in *GetCountryListReq, opts ...grpc.CallOption) (*GetCountryListRes, error)
+	GetCityList(ctx context.Context, in *GetCityListReq, opts ...grpc.CallOption) (*GetCityListRes, error)
 }
 
 type contentServiceClient struct {
@@ -135,6 +138,24 @@ func (c *contentServiceClient) DeleteArticle(ctx context.Context, in *PrimaryKey
 	return out, nil
 }
 
+func (c *contentServiceClient) GetCountryList(ctx context.Context, in *GetCountryListReq, opts ...grpc.CallOption) (*GetCountryListRes, error) {
+	out := new(GetCountryListRes)
+	err := c.cc.Invoke(ctx, "/content_service.ContentService/GetCountryList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) GetCityList(ctx context.Context, in *GetCityListReq, opts ...grpc.CallOption) (*GetCityListRes, error) {
+	out := new(GetCityListRes)
+	err := c.cc.Invoke(ctx, "/content_service.ContentService/GetCityList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ContentServiceServer is the server API for ContentService service.
 // All implementations must embed UnimplementedContentServiceServer
 // for forward compatibility
@@ -151,6 +172,9 @@ type ContentServiceServer interface {
 	GetArticleList(context.Context, *GetArticleListReq) (*GetArticleListRes, error)
 	UpdateArticle(context.Context, *Article) (*Article, error)
 	DeleteArticle(context.Context, *PrimaryKey) (*emptypb.Empty, error)
+	// Countries and cities
+	GetCountryList(context.Context, *GetCountryListReq) (*GetCountryListRes, error)
+	GetCityList(context.Context, *GetCityListReq) (*GetCityListRes, error)
 	mustEmbedUnimplementedContentServiceServer()
 }
 
@@ -187,6 +211,12 @@ func (UnimplementedContentServiceServer) UpdateArticle(context.Context, *Article
 }
 func (UnimplementedContentServiceServer) DeleteArticle(context.Context, *PrimaryKey) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticle not implemented")
+}
+func (UnimplementedContentServiceServer) GetCountryList(context.Context, *GetCountryListReq) (*GetCountryListRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCountryList not implemented")
+}
+func (UnimplementedContentServiceServer) GetCityList(context.Context, *GetCityListReq) (*GetCityListRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCityList not implemented")
 }
 func (UnimplementedContentServiceServer) mustEmbedUnimplementedContentServiceServer() {}
 
@@ -381,6 +411,42 @@ func _ContentService_DeleteArticle_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ContentService_GetCountryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCountryListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).GetCountryList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/content_service.ContentService/GetCountryList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).GetCountryList(ctx, req.(*GetCountryListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_GetCityList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCityListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).GetCityList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/content_service.ContentService/GetCityList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).GetCityList(ctx, req.(*GetCityListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ContentService_ServiceDesc is the grpc.ServiceDesc for ContentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -427,6 +493,14 @@ var ContentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteArticle",
 			Handler:    _ContentService_DeleteArticle_Handler,
+		},
+		{
+			MethodName: "GetCountryList",
+			Handler:    _ContentService_GetCountryList_Handler,
+		},
+		{
+			MethodName: "GetCityList",
+			Handler:    _ContentService_GetCityList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -26,6 +26,48 @@ service ContentService {
   //  rpc GetFileList(GetList) returns (GetArticleListRes) {}
   //  rpc UpdateFile(UpdateFileReq) returns (PrimaryKey) {}
   //  rpc DeleteFile(PrimaryKey) returns (google.protobuf.Empty) {}
+
+  // Countries and cities
+  rpc GetCountryList(GetCountryListReq) returns (GetCountryListRes) {}
+  rpc GetCityList(GetCityListReq) returns (GetCityListRes) {}
+}
+
+message Country {
+  string id = 1;
+  string title = 2;
+  string title_uz = 3;
+  string title_ru = 4;
+}
+
+message City {
+  string id = 1;
+  string title = 2;
+  string title_uz = 3;
+  string title_ru = 4;
+  string country_id = 5;
+}
+
+message GetCountryListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+}
+
+message GetCountryListRes {
+  repeated Country countries = 1;
+  int32 count = 2;
+}
+
+message GetCityListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string country_id = 4;
+}
+
+message GetCityListRes {
+  repeated City cities = 1;
+  int32 count = 2;
 }
 
 message File {
@@ -66,6 +108,7 @@ message Journal {
   int32 price = 6;
   string isbn = 7;
   string author = 8;
+  string status = 9;
 }
 
 message Article {
@@ -87,6 +130,7 @@ message CreateJournalReq {
   int32 price = 6;
   string isbn = 7;
   string author = 8;
+  string status = 9;
 }
 
 message CreateArticleReq {

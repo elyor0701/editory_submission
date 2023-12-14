@@ -244,6 +244,30 @@ definitions:
       type:
         type: string
     type: object
+  editory_submission_genproto_content_service.City:
+    properties:
+      country_id:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      title_ru:
+        type: string
+      title_uz:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.Country:
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+      title_ru:
+        type: string
+      title_uz:
+        type: string
+    type: object
   editory_submission_genproto_content_service.CreateArticleReq:
     properties:
       author_id:
@@ -275,6 +299,8 @@ definitions:
         type: string
       price:
         type: integer
+      status:
+        type: string
       title:
         type: string
     type: object
@@ -299,6 +325,24 @@ definitions:
         type: array
       count:
         type: integer
+    type: object
+  editory_submission_genproto_content_service.GetCityListRes:
+    properties:
+      cities:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.City'
+        type: array
+      count:
+        type: integer
+    type: object
+  editory_submission_genproto_content_service.GetCountryListRes:
+    properties:
+      count:
+        type: integer
+      countries:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.Country'
+        type: array
     type: object
   editory_submission_genproto_content_service.GetJournalListRes:
     properties:
@@ -325,6 +369,8 @@ definitions:
         type: string
       price:
         type: integer
+      status:
+        type: string
       title:
         type: string
     type: object
@@ -1343,6 +1389,62 @@ paths:
       summary: Get Article By ID
       tags:
       - Article
+  /city:
+    get:
+      consumes:
+      - application/json
+      description: Get City List
+      operationId: get_city_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      - description: country-id
+        in: query
+        name: country-id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetCityListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetCityListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get City List
+      tags:
+      - Content
   /config:
     get:
       consumes:
@@ -1367,6 +1469,58 @@ paths:
           schema:
             $ref: '#/definitions/http.Response'
       summary: get config data on the debug mode
+  /country:
+    get:
+      consumes:
+      - application/json
+      description: Get Country List
+      operationId: get_country_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetCountryListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetCountryListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Country List
+      tags:
+      - Content
   /has-access:
     post:
       consumes:

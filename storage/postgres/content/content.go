@@ -7,9 +7,10 @@ import (
 )
 
 type contentRepo struct {
-	db      *pgxpool.Pool
-	journal storage.JournalRepoI
-	article storage.ArticleRepoI
+	db             *pgxpool.Pool
+	journal        storage.JournalRepoI
+	article        storage.ArticleRepoI
+	countryAndCity storage.CountryAndCityRepoI
 }
 
 func NewContentRepo(db *pgxpool.Pool) storage.ContentRepoI {
@@ -32,4 +33,12 @@ func (s *contentRepo) Article() storage.ArticleRepoI {
 	}
 
 	return s.article
+}
+
+func (s *contentRepo) CountryAndCity() storage.CountryAndCityRepoI {
+	if s.countryAndCity == nil {
+		s.countryAndCity = NewCountryAndCityRepo(s.db)
+	}
+
+	return s.countryAndCity
 }

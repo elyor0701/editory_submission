@@ -56,6 +56,14 @@ func (s *userService) CreateUser(ctx context.Context, req *pb.User) (res *pb.Use
 	}
 	req.Password = hashedPassword
 
+	if !util.IsValidPhone(req.GetPhone()) {
+		req.Phone = ""
+	}
+
+	if !util.IsValidPhone(req.GetExtraPhone()) {
+		req.ExtraPhone = ""
+	}
+
 	res, err = s.strg.Auth().User().Create(ctx, req)
 	if err != nil {
 		s.log.Error("!!!CreateUser--->", logger.Error(err))
@@ -93,6 +101,8 @@ func (s *userService) GetUserList(ctx context.Context, req *pb.GetUserListReq) (
 
 func (s *userService) UpdateUser(ctx context.Context, req *pb.User) (res *pb.User, err error) {
 	s.log.Info("---UpdateUser--->", logger.Any("req", req))
+
+	// validate data
 
 	rowsAffected, err := s.strg.Auth().User().Update(ctx, req)
 	if err != nil {

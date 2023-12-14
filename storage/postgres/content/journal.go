@@ -29,7 +29,8 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
     	description,              
     	price,        
     	isbn,              
-    	author          
+    	author,
+    	status
 	) VALUES (
 		$1,
 		$2,
@@ -38,7 +39,8 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
 		$5,
 		$6,
 		$7,
-		$8
+		$8,
+		$9
 	)`
 
 	id, err := uuid.NewRandom()
@@ -55,6 +57,7 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
 		req.GetPrice(),
 		req.GetIsbn(),
 		req.GetAuthor(),
+		req.GetStatus(),
 	)
 	if err != nil {
 		return nil, err
@@ -69,6 +72,7 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
 		Price:       req.GetPrice(),
 		Isbn:        req.GetIsbn(),
 		Author:      req.GetAuthor(),
+		Status:      req.GetStatus(),
 	}
 
 	return res, nil
@@ -203,6 +207,7 @@ func (s *JournalRepo) Update(ctx context.Context, req *pb.Journal) (res *pb.Jour
     	price = :price,                              
     	isbn = :isbn,         
     	author = :author,
+    	status = :status,
     	updated_at = CURRENT_TIMESTAMP
 	WHERE
 		id = :id`
@@ -216,6 +221,7 @@ func (s *JournalRepo) Update(ctx context.Context, req *pb.Journal) (res *pb.Jour
 		"isbn":        req.GetIsbn(),
 		"author":      req.GetAuthor(),
 		"id":          req.GetId(),
+		"status":      req.GetStatus(),
 	}
 
 	q, arr := helper.ReplaceQueryParams(query, params)

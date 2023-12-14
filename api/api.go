@@ -58,6 +58,9 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	r.PUT("/article", h.UpdateArticle)
 	r.DELETE("/article/:article-id", h.DeleteArticle)
 
+	r.GET("/country", h.GetCountryList)
+	r.GET("/city", h.GetCityList)
+
 	// swagger
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return

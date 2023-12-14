@@ -160,3 +160,27 @@ func (s *contentService) DeleteArticle(ctx context.Context, req *pb.PrimaryKey) 
 
 	return res, nil
 }
+
+func (s *contentService) GetCountryList(ctx context.Context, req *pb.GetCountryListReq) (res *pb.GetCountryListRes, err error) {
+	s.log.Info("---GetCountryList--->", logger.Any("req", req))
+
+	res, err = s.strg.Content().CountryAndCity().GetCountyList(ctx, req)
+	if err != nil {
+		s.log.Error("!!!GetCountryList--->", logger.Error(err))
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return res, nil
+}
+
+func (s *contentService) GetCityList(ctx context.Context, req *pb.GetCityListReq) (res *pb.GetCityListRes, err error) {
+	s.log.Info("---GetCityList--->", logger.Any("req", req))
+
+	res, err = s.strg.Content().CountryAndCity().GetCityList(ctx, req)
+	if err != nil {
+		s.log.Error("!!!GetCityList--->", logger.Error(err))
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return res, nil
+}
