@@ -22,6 +22,7 @@ type ContentRepoI interface {
 	Journal() JournalRepoI
 	Article() ArticleRepoI
 	CountryAndCity() CountryAndCityRepoI
+	University() UniversityRepoI
 }
 
 type UserRepoI interface {
@@ -67,4 +68,12 @@ type ArticleRepoI interface {
 type CountryAndCityRepoI interface {
 	GetCountyList(ctx context.Context, in *cs_pb.GetCountryListReq) (*cs_pb.GetCountryListRes, error)
 	GetCityList(ctx context.Context, in *cs_pb.GetCityListReq) (*cs_pb.GetCityListRes, error)
+}
+
+type UniversityRepoI interface {
+	Create(ctx context.Context, in *cs_pb.CreateUniversityReq) (*cs_pb.CreateUniversityRes, error)
+	Get(ctx context.Context, in *cs_pb.GetUniversityReq) (*cs_pb.GetUniversityRes, error)
+	GetList(ctx context.Context, in *cs_pb.GetUniversityListReq) (*cs_pb.GetUniversityListRes, error)
+	Update(ctx context.Context, in *cs_pb.UpdateUniversityReq) (*cs_pb.UpdateUniversityRes, error)
+	Delete(ctx context.Context, in *cs_pb.DeleteUniversityReq) (rowsAffected int64, err error)
 }

@@ -1,0 +1,68 @@
+syntax="proto3";
+
+package content_service;
+option go_package="genproto/content_service";
+
+import "google/protobuf/empty.proto";
+
+service UniversityService {
+  rpc CreateUniversity(CreateUniversityReq) returns (CreateUniversityRes) {}
+  rpc GetUniversity(GetUniversityReq) returns (GetUniversityRes) {}
+  rpc GetUniversityList(GetUniversityListReq) returns (GetUniversityListRes) {}
+  rpc UpdateUniversity(UpdateUniversityReq) returns (UpdateUniversityRes) {}
+  rpc DeleteUniversity(DeleteUniversityReq) returns (google.protobuf.Empty) {}
+}
+
+message University {
+  string id = 1;
+  string title = 2;
+  string logo = 3;
+}
+
+message CreateUniversityReq {
+  string title = 1;
+  string logo = 2;
+}
+
+message CreateUniversityRes {
+  string id = 1;
+  string title = 2;
+  string logo = 3;
+}
+
+message GetUniversityReq {
+  string id = 1;
+}
+
+message GetUniversityRes {
+  string id = 1;
+  string title = 2;
+  string logo = 3;
+}
+
+message GetUniversityListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+}
+
+message GetUniversityListRes {
+  repeated University universities = 1;
+  int32 count = 2;
+}
+
+message UpdateUniversityReq {
+  string id = 1;
+  string title = 2;
+  string logo = 3;
+}
+
+message UpdateUniversityRes {
+  string id = 1;
+  string title = 2;
+  string logo = 3;
+}
+
+message DeleteUniversityReq {
+  string id = 1;
+}

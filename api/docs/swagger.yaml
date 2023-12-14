@@ -243,6 +243,8 @@ definitions:
         type: string
       type:
         type: string
+      udpated_at:
+        type: string
     type: object
   editory_submission_genproto_content_service.City:
     properties:
@@ -304,6 +306,22 @@ definitions:
       title:
         type: string
     type: object
+  editory_submission_genproto_content_service.CreateUniversityReq:
+    properties:
+      logo:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.CreateUniversityRes:
+    properties:
+      id:
+        type: string
+      logo:
+        type: string
+      title:
+        type: string
+    type: object
   editory_submission_genproto_content_service.File:
     properties:
       article_id:
@@ -353,6 +371,24 @@ definitions:
           $ref: '#/definitions/editory_submission_genproto_content_service.Journal'
         type: array
     type: object
+  editory_submission_genproto_content_service.GetUniversityListRes:
+    properties:
+      count:
+        type: integer
+      universities:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.University'
+        type: array
+    type: object
+  editory_submission_genproto_content_service.GetUniversityRes:
+    properties:
+      id:
+        type: string
+      logo:
+        type: string
+      title:
+        type: string
+    type: object
   editory_submission_genproto_content_service.Journal:
     properties:
       access:
@@ -360,6 +396,8 @@ definitions:
       author:
         type: string
       cover_photo:
+        type: string
+      created_at:
         type: string
       description:
         type: string
@@ -370,6 +408,35 @@ definitions:
       price:
         type: integer
       status:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.University:
+    properties:
+      id:
+        type: string
+      logo:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.UpdateUniversityReq:
+    properties:
+      id:
+        type: string
+      logo:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.UpdateUniversityRes:
+    properties:
+      id:
+        type: string
+      logo:
         type: string
       title:
         type: string
@@ -1983,6 +2050,230 @@ paths:
       summary: Send Verification Message
       tags:
       - User
+  /university:
+    get:
+      consumes:
+      - application/json
+      description: Get University List
+      operationId: get_university_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetUniversityListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetUniversityListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get University List
+      tags:
+      - University
+    post:
+      consumes:
+      - application/json
+      description: Create University
+      operationId: create_university
+      parameters:
+      - description: CreateUniversityRequestBody
+        in: body
+        name: university
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.CreateUniversityReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: University data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.CreateUniversityRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create University
+      tags:
+      - University
+    put:
+      consumes:
+      - application/json
+      description: Update University
+      operationId: update_university
+      parameters:
+      - description: UpdateUniversityRequestBody
+        in: body
+        name: university
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.UpdateUniversityReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: University data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.UpdateUniversityRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update University
+      tags:
+      - University
+  /university/{university-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Get University
+      operationId: delete_university
+      parameters:
+      - description: university-id
+        in: path
+        name: university-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete University
+      tags:
+      - University
+    get:
+      consumes:
+      - application/json
+      description: Get University By ID
+      operationId: get_university_by_id
+      parameters:
+      - description: university-id
+        in: path
+        name: university-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: UniversityBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetUniversityRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get University By ID
+      tags:
+      - University
   /upload:
     post:
       consumes:

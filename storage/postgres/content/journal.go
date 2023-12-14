@@ -282,7 +282,7 @@ func (s *JournalRepo) Update(ctx context.Context, req *pb.Journal) (res *pb.Jour
 		return nil, err
 	}
 
-	return req, nil
+	return res, nil
 }
 func (s *JournalRepo) Delete(ctx context.Context, req *pb.PrimaryKey) (rowsAffected int64, err error) {
 	query := `DELETE FROM "journal" WHERE id = $1`

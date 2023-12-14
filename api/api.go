@@ -58,6 +58,13 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	r.PUT("/article", h.UpdateArticle)
 	r.DELETE("/article/:article-id", h.DeleteArticle)
 
+	// university
+	r.POST("/university", h.CreateUniversity)
+	r.GET("/university", h.GetUniversityList)
+	r.GET("/university/:university-id", h.GetUniversityByID)
+	r.PUT("/university", h.UpdateUniversity)
+	r.DELETE("/university/:university-id", h.DeleteUniversity)
+
 	r.GET("/country", h.GetCountryList)
 	r.GET("/city", h.GetCityList)
 
