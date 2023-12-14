@@ -109,6 +109,8 @@ message Journal {
   string isbn = 7;
   string author = 8;
   string status = 9;
+  string created_at = 10;
+  string updated_at = 11;
 }
 
 message Article {
@@ -120,6 +122,7 @@ message Article {
   string description = 6;
   string created_at = 7;
   repeated File files = 8;
+  string udpated_at = 9;
 }
 
 message CreateJournalReq {

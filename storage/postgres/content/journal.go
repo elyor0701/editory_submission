@@ -2,6 +2,7 @@ package content
 
 import (
 	"context"
+	"editory_submission/config"
 	pb "editory_submission/genproto/content_service"
 	"editory_submission/pkg/helper"
 	"editory_submission/storage"
@@ -20,6 +21,8 @@ func NewJournalRepo(db *pgxpool.Pool) storage.JournalRepoI {
 }
 
 func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res *pb.Journal, err error) {
+
+	res = &pb.Journal{}
 
 	query := `INSERT INTO "journal" (
 		id,                 
@@ -41,14 +44,25 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
 		$7,
 		$8,
 		$9
-	)`
+	) RETURNING 
+	    id, 
+	    cover_photo, 
+	    title, 
+	    access, 
+	    description, 
+	    price, 
+	    isbn, 
+	    author,
+	    status,
+	    TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at, 
+	    TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at`
 
 	id, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = s.db.Exec(ctx, query,
+	err = s.db.QueryRow(ctx, query,
 		id.String(),
 		req.GetCoverPhoto(),
 		req.GetTitle(),
@@ -58,21 +72,21 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
 		req.GetIsbn(),
 		req.GetAuthor(),
 		req.GetStatus(),
+	).Scan(
+		&res.Id,
+		&res.CoverPhoto,
+		&res.Title,
+		&res.Access,
+		&res.Description,
+		&res.Price,
+		&res.Isbn,
+		&res.Author,
+		&res.Status,
+		&res.CreatedAt,
+		&res.UpdatedAt,
 	)
 	if err != nil {
 		return nil, err
-	}
-
-	res = &pb.Journal{
-		Id:          id.String(),
-		CoverPhoto:  req.GetCoverPhoto(),
-		Title:       req.GetTitle(),
-		Access:      req.GetAccess(),
-		Description: req.GetDescription(),
-		Price:       req.GetPrice(),
-		Isbn:        req.GetIsbn(),
-		Author:      req.GetAuthor(),
-		Status:      req.GetStatus(),
 	}
 
 	return res, nil
@@ -89,7 +103,10 @@ func (s *JournalRepo) Get(ctx context.Context, req *pb.PrimaryKey) (res *pb.Jour
     	description,              
     	price,        
     	isbn,              
-    	author
+    	author,
+    	status,
+    	TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at, 
+	    TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at
 	FROM
 		"journal"
 	WHERE
@@ -107,6 +124,9 @@ func (s *JournalRepo) Get(ctx context.Context, req *pb.PrimaryKey) (res *pb.Jour
 		&res.Price,
 		&res.Isbn,
 		&res.Author,
+		&res.Status,
+		&res.CreatedAt,
+		&res.UpdatedAt,
 	)
 
 	if err != nil {
@@ -129,7 +149,10 @@ func (s *JournalRepo) GetList(ctx context.Context, req *pb.GetList) (res *pb.Get
     	description,              
     	price,        
     	isbn,              
-    	author
+    	author,
+    	status,
+    	TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at, 
+	    TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at
 	FROM
 		"journal"`
 	filter := " WHERE 1=1"
@@ -187,6 +210,9 @@ func (s *JournalRepo) GetList(ctx context.Context, req *pb.GetList) (res *pb.Get
 			&obj.Price,
 			&obj.Isbn,
 			&obj.Author,
+			&obj.Status,
+			&obj.CreatedAt,
+			&obj.UpdatedAt,
 		)
 		if err != nil {
 			return res, err
@@ -199,6 +225,8 @@ func (s *JournalRepo) GetList(ctx context.Context, req *pb.GetList) (res *pb.Get
 }
 
 func (s *JournalRepo) Update(ctx context.Context, req *pb.Journal) (res *pb.Journal, err error) {
+	res = &pb.Journal{}
+
 	query := `UPDATE "journal" SET                
     	title = :title,           
     	cover_photo = :cover_photo,         
@@ -210,7 +238,19 @@ func (s *JournalRepo) Update(ctx context.Context, req *pb.Journal) (res *pb.Jour
     	status = :status,
     	updated_at = CURRENT_TIMESTAMP
 	WHERE
-		id = :id`
+		id = :id
+	RETURNING 
+		id,
+		cover_photo,
+		title,
+		access,
+		description,
+		price,
+		isbn,
+		author,
+		status,
+		TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at, 
+	    TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at`
 
 	params := map[string]interface{}{
 		"title":       req.GetTitle(),
@@ -225,9 +265,21 @@ func (s *JournalRepo) Update(ctx context.Context, req *pb.Journal) (res *pb.Jour
 	}
 
 	q, arr := helper.ReplaceQueryParams(query, params)
-	_, err = s.db.Exec(ctx, q, arr...)
+	err = s.db.QueryRow(ctx, q, arr...).Scan(
+		&res.Id,
+		&res.CoverPhoto,
+		&res.Title,
+		&res.Access,
+		&res.Description,
+		&res.Price,
+		&res.Isbn,
+		&res.Author,
+		&res.Status,
+		&res.CreatedAt,
+		&res.UpdatedAt,
+	)
 	if err != nil {
-		return &pb.Journal{}, err
+		return nil, err
 	}
 
 	return req, nil
