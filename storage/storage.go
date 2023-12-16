@@ -55,6 +55,8 @@ type JournalRepoI interface {
 	GetList(ctx context.Context, in *cs_pb.GetList) (*cs_pb.GetJournalListRes, error)
 	Update(ctx context.Context, in *cs_pb.Journal) (*cs_pb.Journal, error)
 	Delete(ctx context.Context, in *cs_pb.PrimaryKey) (rowsAffected int64, err error)
+	UpsertJournalData(ctx context.Context, in *cs_pb.JournalData) (*cs_pb.JournalData, error)
+	GetJournalData(ctx context.Context, in *cs_pb.PrimaryKey) ([]*cs_pb.JournalData, error)
 }
 
 type ArticleRepoI interface {

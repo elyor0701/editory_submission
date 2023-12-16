@@ -38,6 +38,14 @@ func (s *contentService) CreateJournal(ctx context.Context, req *pb.CreateJourna
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
+	for _, val := range req.GetJournalData() {
+		_, err = s.strg.Content().Journal().UpsertJournalData(ctx, val)
+		if err != nil {
+			s.log.Error("!!!CreateJournalData--->", logger.Error(err))
+			continue
+		}
+	}
+
 	return res, nil
 }
 
@@ -49,6 +57,16 @@ func (s *contentService) GetJournal(ctx context.Context, req *pb.PrimaryKey) (re
 		s.log.Error("!!!GetJournal--->", logger.Error(err))
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
+
+	journalData, err := s.strg.Content().Journal().GetJournalData(ctx, &pb.PrimaryKey{
+		Id: req.GetId(),
+	})
+	if err != nil {
+		s.log.Error("!!!GetJournalData--->", logger.Error(err))
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	res.JournalData = journalData
 
 	return res, nil
 }
@@ -72,6 +90,14 @@ func (s *contentService) UpdateJournal(ctx context.Context, req *pb.Journal) (re
 	if err != nil {
 		s.log.Error("!!!UpdateJournal--->", logger.Error(err))
 		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	for _, val := range req.GetJournalData() {
+		_, err = s.strg.Content().Journal().UpsertJournalData(ctx, val)
+		if err != nil {
+			s.log.Error("!!!CreateJournalData--->", logger.Error(err))
+			continue
+		}
 	}
 
 	return res, nil

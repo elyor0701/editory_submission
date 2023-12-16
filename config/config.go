@@ -43,9 +43,8 @@ type Config struct {
 
 	MigrationPath string
 
-	EmailUsername        string
-	EmailPassword        string
-	EmailVerificationUrl string
+	EmailUsername string
+	EmailPassword string
 
 	MinioEndpoint        string
 	MinioAccessKeyID     string
@@ -93,7 +92,6 @@ func Load() Config {
 
 	config.EmailUsername = cast.ToString(getOrReturnDefaultValue("EMAIL_USERNAME", "editorysubmission@gmail.com"))
 	config.EmailPassword = cast.ToString(getOrReturnDefaultValue("EMAIL_PASSWORD", "occo pbku zktc oqqt"))
-	config.EmailVerificationUrl = cast.ToString(getOrReturnDefaultValue("EMAIL_VERIFICATION_URL", "localhost:8082/verification"))
 
 	config.MinioAccessKeyID = cast.ToString(getOrReturnDefaultValue("MINIO_ACCESS_KEY", "fczbKQdzXNSjxCDu7aEatAnKjqpxHXp7km7HGveQyKCSZFPK"))
 	config.MinioSecretAccessKey = cast.ToString(getOrReturnDefaultValue("MINIO_SECRET_KEY", "kQffPzZRcEz8UNyzcV9WMEGFb2fhUAKXMxCJbCXJhKrdGLWY"))

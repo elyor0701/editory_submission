@@ -296,3 +296,74 @@ func (s *JournalRepo) Delete(ctx context.Context, req *pb.PrimaryKey) (rowsAffec
 
 	return rowsAffected, err
 }
+
+func (s *JournalRepo) UpsertJournalData(ctx context.Context, in *pb.JournalData) (*pb.JournalData, error) {
+	res := &pb.JournalData{}
+
+	query := `INSERT INTO journal_data(
+                         journal_id, 
+                         text, 
+                         type
+            	) VALUES (
+            	          $1,
+            	          $2,
+            	          $3
+            	) ON CONFLICT ON CONSTRAINT unique_journal_id_type DO
+            	UPDATE SET
+            	        	text = $2
+				RETURNING 
+							journal_id,
+							text,
+							type`
+
+	err := s.db.QueryRow(ctx, query,
+		in.GetJournalId(),
+		in.GetText(),
+		in.GetType(),
+	).Scan(
+		&res.JournalId,
+		&res.Text,
+		&res.Type,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (s *JournalRepo) GetJournalData(ctx context.Context, in *pb.PrimaryKey) ([]*pb.JournalData, error) {
+	res := make([]*pb.JournalData, 0, 10)
+
+	query := `select
+					journal_id,
+					text,
+					type
+				from journal_data
+				where journal_id = $1`
+
+	rows, err := s.db.Query(ctx, query, in.GetId())
+	if err != nil {
+
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		obj := &pb.JournalData{}
+
+		err = rows.Scan(
+			&obj.JournalId,
+			&obj.Text,
+			&obj.Type,
+		)
+		if err != nil {
+			continue
+		}
+
+		res = append(res, obj)
+	}
+
+	return res, nil
+}

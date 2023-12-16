@@ -40,7 +40,8 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
     	prof_sphere,        
     	degree,             
     	address,            
-    	post_code          
+    	post_code,
+        gender
 	) VALUES (
 		$1,
 		$2,
@@ -55,7 +56,8 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 		$11,
 		$12,
 		$13,
-		$14
+		$14,
+		$15
 	)`
 
 	id, err := uuid.NewRandom()
@@ -78,6 +80,7 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 		util.NewNullString(req.GetDegree()),
 		util.NewNullString(req.GetAddress()),
 		util.NewNullString(req.GetPostCode()),
+		util.NewNullString(req.GetGender()),
 	)
 
 	res = &pb.User{
@@ -96,6 +99,7 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 		Degree:            req.GetDegree(),
 		Address:           req.GetAddress(),
 		PostCode:          req.GetPostCode(),
+		Gender:            req.GetGender(),
 	}
 
 	return res, err
@@ -118,7 +122,8 @@ func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, e
     	coalesce(prof_sphere, ''),        
     	coalesce(degree, ''),             
     	coalesce(address, ''),            
-    	coalesce(post_code, '') 
+    	coalesce(post_code, ''), 
+    	coalesce(gender, '') 
 	FROM
 		"user"
 	WHERE
@@ -142,6 +147,7 @@ func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, e
 		&res.Degree,
 		&res.Address,
 		&res.PostCode,
+		&res.Gender,
 	)
 
 	if err != nil {
@@ -164,7 +170,8 @@ func (s *UserRepo) GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb
     	phone,                      
     	email,      
     	coalesce(country_id::VARCHAR, ''),         
-    	coalesce(city_id::VARCHAR, '')
+    	coalesce(city_id::VARCHAR, ''),
+    	coalesce(gender, '')
 	FROM
 		"user"`
 	filter := " WHERE 1=1"
@@ -223,6 +230,7 @@ func (s *UserRepo) GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb
 			&obj.Email,
 			&obj.CountryId,
 			&obj.CityId,
+			&obj.Gender,
 		)
 		if err != nil {
 			return res, err
@@ -245,7 +253,8 @@ func (s *UserRepo) Update(ctx context.Context, req *pb.User) (rowsAffected int64
     	prof_sphere = :prof_sphere,        
     	degree = :degree,             
     	address = :address,            
-    	post_code = :post_code  
+    	post_code = :post_code,
+    	gender = :gender
 	WHERE
 		id = :id OR email = :email`
 
@@ -263,6 +272,7 @@ func (s *UserRepo) Update(ctx context.Context, req *pb.User) (rowsAffected int64
 		"post_code":   req.GetPostCode(),
 		"id":          req.GetId(),
 		"email":       req.GetEmail(),
+		"gender":      util.NewNullString(req.GetGender()),
 	}
 
 	q, arr := helper.ReplaceQueryParams(query, params)

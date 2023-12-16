@@ -2,14 +2,13 @@ package handlers
 
 import (
 	"editory_submission/api/http"
+	"editory_submission/api/models"
 	"editory_submission/genproto/auth_service"
 	"editory_submission/pkg/helper"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/saidamir98/udevs_pkg/logger"
 	"github.com/saidamir98/udevs_pkg/util"
-	"net/url"
 )
 
 // CreateUser godoc
@@ -45,20 +44,20 @@ func (h *Handler) CreateUser(c *gin.Context) {
 
 	// @TODO create function to work with queries
 
-	reqURL := c.Request.URL
-
-	queryParams, _ := url.ParseQuery(reqURL.RawQuery)
-
-	queryParams.Add("user-id", resp.GetId())
-
-	reqURL.RawQuery = queryParams.Encode()
-
-	c.Request.URL = reqURL
-
-	err = h.SendVerificationMessageShared(c)
-	if err != nil {
-		h.log.Error("send verification message is failed", logger.Any("error", err.Error()))
-	}
+	//reqURL := c.Request.URL
+	//
+	//queryParams, _ := url.ParseQuery(reqURL.RawQuery)
+	//
+	//queryParams.Add("user-id", resp.GetId())
+	//
+	//reqURL.RawQuery = queryParams.Encode()
+	//
+	//c.Request.URL = reqURL
+	//
+	//err = h.SendVerificationMessageShared(c)
+	//if err != nil {
+	//	h.log.Error("send verification message is failed", logger.Any("error", err.Error()))
+	//}
 
 	h.handleResponse(c, http.Created, resp)
 }
@@ -219,7 +218,7 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param user-id query string true "User Id"
+// @Param data body models.SendVerificationMessageReq true "data"
 // @Success 204
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
@@ -235,9 +234,16 @@ func (h *Handler) SendVerificationMessage(c *gin.Context) {
 }
 
 func (h *Handler) SendVerificationMessageShared(c *gin.Context) error {
+	var (
+		data models.SendVerificationMessageReq
+	)
 
-	userId := c.DefaultQuery("user-id", "")
-	if !util.IsValidUUID(userId) {
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		return err
+	}
+
+	if !util.IsValidUUID(data.UserId) {
 		err := errors.New("invalid user id")
 		return err
 	}
@@ -245,7 +251,7 @@ func (h *Handler) SendVerificationMessageShared(c *gin.Context) error {
 	user, err := h.services.UserService().GetUser(
 		c.Request.Context(),
 		&auth_service.GetUserReq{
-			Id: userId,
+			Id: data.UserId,
 		},
 	)
 	if err != nil {
@@ -259,20 +265,16 @@ func (h *Handler) SendVerificationMessageShared(c *gin.Context) error {
 		return err
 	}
 
-	fmt.Println("user", user)
-
 	message := helper.MakeEmailMessage(
 		map[string]string{
 			"first_name": user.GetFirstName(),
 			"verification_link": fmt.Sprintf("%s?email=%s&token=%s",
-				h.cfg.EmailVerificationUrl,
+				data.RedirectUrl,
 				res.GetEmail(),
 				res.GetToken(),
 			),
 		},
 	)
-
-	fmt.Println("message", message)
 
 	err = helper.GoMessageSend(helper.SendMessageByEmail{
 		From: helper.EmailInfo{
@@ -298,21 +300,26 @@ func (h *Handler) SendVerificationMessageShared(c *gin.Context) error {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param email query string true "Email"
-// @Param token query string true "Token"
+// @Param data body models.EmailVerificationReq true "Data"
 // @Success 200  {object} http.Response{data=auth_service.EmailVerificationRes} "Status"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) EmailVerification(c *gin.Context) {
+	var (
+		data models.EmailVerificationReq
+	)
 
-	email := c.DefaultQuery("email", "")
-	token := c.DefaultQuery("token", "")
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
 
 	res, err := h.services.UserService().EmailVerification(
 		c.Request.Context(),
 		&auth_service.EmailVerificationReq{
-			Email: email,
-			Token: token,
+			Email: data.Email,
+			Token: data.Token,
 		},
 	)
 	if err != nil {

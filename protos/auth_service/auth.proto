@@ -19,6 +19,7 @@ message User {
   string degree = 13;
   string address = 14;
   string post_code = 15;
+  string gender = 16;
 }
 
 message Token {
