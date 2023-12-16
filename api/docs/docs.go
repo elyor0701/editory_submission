@@ -907,7 +907,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create Journal",
+                "description": "Create Journal types: ['EDITOR_SPOTLIGHT', 'SPECIAL_ISSUE', 'ABOUT_JOURNAL', 'EDITORIAL_BARD', 'PEER_REVIEW_PROCESS', 'PUBLICATION_ETHICS', 'ABSTRACTING_INDEXING', 'ARTICLE_PROCESSING_CHARGES']",
                 "consumes": [
                     "application/json"
                 ],
@@ -1422,11 +1422,13 @@ const docTemplate = `{
                 "operationId": "send_verification_message",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "User Id",
-                        "name": "user-id",
-                        "in": "query",
-                        "required": true
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_api_models.SendVerificationMessageReq"
+                        }
                     }
                 ],
                 "responses": {
@@ -2372,18 +2374,13 @@ const docTemplate = `{
                 "operationId": "email_verification",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Email",
-                        "name": "email",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Token",
-                        "name": "token",
-                        "in": "query",
-                        "required": true
+                        "description": "Data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_api_models.EmailVerificationReq"
+                        }
                     }
                 ],
                 "responses": {
@@ -2481,9 +2478,6 @@ const docTemplate = `{
                 "emailUsername": {
                     "type": "string"
                 },
-                "emailVerificationUrl": {
-                    "type": "string"
-                },
                 "environment": {
                     "description": "debug, test, release",
                     "type": "string"
@@ -2540,6 +2534,28 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.EmailVerificationReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.SendVerificationMessageReq": {
+            "type": "object",
+            "properties": {
+                "redirect_url": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -2766,6 +2782,9 @@ const docTemplate = `{
                 "first_name": {
                     "type": "string"
                 },
+                "gender": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -2890,10 +2909,19 @@ const docTemplate = `{
         "editory_submission_genproto_content_service.CreateJournalReq": {
             "type": "object",
             "properties": {
+                "acceptance_rate": {
+                    "type": "string"
+                },
+                "acceptance_to_publication": {
+                    "type": "string"
+                },
                 "access": {
                     "type": "boolean"
                 },
                 "author": {
+                    "type": "string"
+                },
+                "citation_indicator": {
                     "type": "string"
                 },
                 "cover_photo": {
@@ -2902,13 +2930,25 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "impact_factor": {
+                    "type": "string"
+                },
                 "isbn": {
                     "type": "string"
+                },
+                "journal_data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_content_service.JournalData"
+                    }
                 },
                 "price": {
                     "type": "integer"
                 },
                 "status": {
+                    "type": "string"
+                },
+                "submission_to_final_decision": {
                     "type": "string"
                 },
                 "title": {
@@ -3048,10 +3088,19 @@ const docTemplate = `{
         "editory_submission_genproto_content_service.Journal": {
             "type": "object",
             "properties": {
+                "acceptance_rate": {
+                    "type": "string"
+                },
+                "acceptance_to_publication": {
+                    "type": "string"
+                },
                 "access": {
                     "type": "boolean"
                 },
                 "author": {
+                    "type": "string"
+                },
+                "citation_indicator": {
                     "type": "string"
                 },
                 "cover_photo": {
@@ -3066,8 +3115,17 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "impact_factor": {
+                    "type": "string"
+                },
                 "isbn": {
                     "type": "string"
+                },
+                "journal_data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_content_service.JournalData"
+                    }
                 },
                 "price": {
                     "type": "integer"
@@ -3075,10 +3133,27 @@ const docTemplate = `{
                 "status": {
                     "type": "string"
                 },
+                "submission_to_final_decision": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_content_service.JournalData": {
+            "type": "object",
+            "properties": {
+                "journal_id": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }

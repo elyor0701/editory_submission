@@ -22,8 +22,6 @@ definitions:
         type: string
       emailUsername:
         type: string
-      emailVerificationUrl:
-        type: string
       environment:
         description: debug, test, release
         type: string
@@ -62,6 +60,20 @@ definitions:
       serviceName:
         type: string
       version:
+        type: string
+    type: object
+  editory_submission_api_models.EmailVerificationReq:
+    properties:
+      email:
+        type: string
+      token:
+        type: string
+    type: object
+  editory_submission_api_models.SendVerificationMessageReq:
+    properties:
+      redirect_url:
+        type: string
+      user_id:
         type: string
     type: object
   editory_submission_genproto_auth_service.EmailVerificationRes:
@@ -208,6 +220,8 @@ definitions:
         type: string
       first_name:
         type: string
+      gender:
+        type: string
       id:
         type: string
       last_name:
@@ -289,19 +303,33 @@ definitions:
     type: object
   editory_submission_genproto_content_service.CreateJournalReq:
     properties:
+      acceptance_rate:
+        type: string
+      acceptance_to_publication:
+        type: string
       access:
         type: boolean
       author:
+        type: string
+      citation_indicator:
         type: string
       cover_photo:
         type: string
       description:
         type: string
+      impact_factor:
+        type: string
       isbn:
         type: string
+      journal_data:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.JournalData'
+        type: array
       price:
         type: integer
       status:
+        type: string
+      submission_to_final_decision:
         type: string
       title:
         type: string
@@ -391,9 +419,15 @@ definitions:
     type: object
   editory_submission_genproto_content_service.Journal:
     properties:
+      acceptance_rate:
+        type: string
+      acceptance_to_publication:
+        type: string
       access:
         type: boolean
       author:
+        type: string
+      citation_indicator:
         type: string
       cover_photo:
         type: string
@@ -403,15 +437,32 @@ definitions:
         type: string
       id:
         type: string
+      impact_factor:
+        type: string
       isbn:
         type: string
+      journal_data:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.JournalData'
+        type: array
       price:
         type: integer
       status:
         type: string
+      submission_to_final_decision:
+        type: string
       title:
         type: string
       updated_at:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.JournalData:
+    properties:
+      journal_id:
+        type: string
+      text:
+        type: string
+      type:
         type: string
     type: object
   editory_submission_genproto_content_service.University:
@@ -1689,7 +1740,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create Journal
+      description: 'Create Journal types: [''EDITOR_SPOTLIGHT'', ''SPECIAL_ISSUE'',
+        ''ABOUT_JOURNAL'', ''EDITORIAL_BARD'', ''PEER_REVIEW_PROCESS'', ''PUBLICATION_ETHICS'',
+        ''ABSTRACTING_INDEXING'', ''ARTICLE_PROCESSING_CHARGES'']'
       operationId: create_journal
       parameters:
       - description: CreateJournalRequestBody
@@ -2019,11 +2072,12 @@ paths:
       description: SendVerificationMessage
       operationId: send_verification_message
       parameters:
-      - description: User Id
-        in: query
-        name: user-id
+      - description: data
+        in: body
+        name: data
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/editory_submission_api_models.SendVerificationMessageReq'
       produces:
       - application/json
       responses:
@@ -2552,16 +2606,12 @@ paths:
       description: Verification
       operationId: email_verification
       parameters:
-      - description: Email
-        in: query
-        name: email
+      - description: Data
+        in: body
+        name: data
         required: true
-        type: string
-      - description: Token
-        in: query
-        name: token
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/editory_submission_api_models.EmailVerificationReq'
       produces:
       - application/json
       responses:

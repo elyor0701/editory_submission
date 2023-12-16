@@ -13,7 +13,7 @@ import (
 // @ID create_journal
 // @Router /journal [POST]
 // @Summary Create Journal
-// @Description Create Journal
+// @Description Create Journal types: ['EDITOR_SPOTLIGHT', 'SPECIAL_ISSUE', 'ABOUT_JOURNAL', 'EDITORIAL_BARD', 'PEER_REVIEW_PROCESS', 'PUBLICATION_ETHICS', 'ABSTRACTING_INDEXING', 'ARTICLE_PROCESSING_CHARGES']
 // @Tags Journal
 // @Accept json
 // @Produce json

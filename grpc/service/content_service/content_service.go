@@ -39,7 +39,11 @@ func (s *contentService) CreateJournal(ctx context.Context, req *pb.CreateJourna
 	}
 
 	for _, val := range req.GetJournalData() {
-		_, err = s.strg.Content().Journal().UpsertJournalData(ctx, val)
+		_, err = s.strg.Content().Journal().UpsertJournalData(ctx, &pb.JournalData{
+			JournalId: res.GetId(),
+			Text:      val.GetText(),
+			Type:      val.GetType(),
+		})
 		if err != nil {
 			s.log.Error("!!!CreateJournalData--->", logger.Error(err))
 			continue
@@ -93,7 +97,11 @@ func (s *contentService) UpdateJournal(ctx context.Context, req *pb.Journal) (re
 	}
 
 	for _, val := range req.GetJournalData() {
-		_, err = s.strg.Content().Journal().UpsertJournalData(ctx, val)
+		_, err = s.strg.Content().Journal().UpsertJournalData(ctx, &pb.JournalData{
+			JournalId: res.GetId(),
+			Text:      val.GetText(),
+			Type:      val.GetType(),
+		})
 		if err != nil {
 			s.log.Error("!!!CreateJournalData--->", logger.Error(err))
 			continue
