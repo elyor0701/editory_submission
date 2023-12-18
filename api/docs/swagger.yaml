@@ -349,6 +349,18 @@ definitions:
       title:
         type: string
     type: object
+  editory_submission_genproto_content_service.CreateSubjectReq:
+    properties:
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.CreateSubjectRes:
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+    type: object
   editory_submission_genproto_content_service.CreateUniversityReq:
     properties:
       logo:
@@ -442,6 +454,22 @@ definitions:
           $ref: '#/definitions/editory_submission_genproto_content_service.Journal'
         type: array
     type: object
+  editory_submission_genproto_content_service.GetSubjectListRes:
+    properties:
+      count:
+        type: integer
+      subjects:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.Subject'
+        type: array
+    type: object
+  editory_submission_genproto_content_service.GetSubjectRes:
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+    type: object
   editory_submission_genproto_content_service.GetUniversityListRes:
     properties:
       count:
@@ -510,11 +538,32 @@ definitions:
       type:
         type: string
     type: object
+  editory_submission_genproto_content_service.Subject:
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+    type: object
   editory_submission_genproto_content_service.University:
     properties:
       id:
         type: string
       logo:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.UpdateSubjectReq:
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.UpdateSubjectRes:
+    properties:
+      id:
         type: string
       title:
         type: string
@@ -1155,7 +1204,7 @@ definitions:
       extKeyUsage:
         description: Sequence of extended key usages.
         items:
-          $ref: '#/definitions/x509.ExtKeyUsage'
+          type: integer
         type: array
       extensions:
         description: |-
@@ -1190,7 +1239,7 @@ definitions:
           type: string
         type: array
       keyUsage:
-        $ref: '#/definitions/x509.KeyUsage'
+        type: integer
       maxPathLen:
         description: |-
           MaxPathLen and MaxPathLenZero indicate the presence and
@@ -1248,7 +1297,7 @@ definitions:
         type: array
       publicKey: {}
       publicKeyAlgorithm:
-        $ref: '#/definitions/x509.PublicKeyAlgorithm'
+        type: integer
       raw:
         description: Complete ASN.1 DER content (certificate, signature algorithm
           and signature).
@@ -1282,7 +1331,7 @@ definitions:
           type: integer
         type: array
       signatureAlgorithm:
-        $ref: '#/definitions/x509.SignatureAlgorithm'
+        type: integer
       subject:
         $ref: '#/definitions/pkix.Name'
       subjectKeyId:
@@ -1318,128 +1367,235 @@ definitions:
       version:
         type: integer
     type: object
-  x509.ExtKeyUsage:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
-    - 6
-    - 7
-    - 8
-    - 9
-    - 10
-    - 11
-    - 12
-    - 13
-    type: integer
-    x-enum-varnames:
-    - ExtKeyUsageAny
-    - ExtKeyUsageServerAuth
-    - ExtKeyUsageClientAuth
-    - ExtKeyUsageCodeSigning
-    - ExtKeyUsageEmailProtection
-    - ExtKeyUsageIPSECEndSystem
-    - ExtKeyUsageIPSECTunnel
-    - ExtKeyUsageIPSECUser
-    - ExtKeyUsageTimeStamping
-    - ExtKeyUsageOCSPSigning
-    - ExtKeyUsageMicrosoftServerGatedCrypto
-    - ExtKeyUsageNetscapeServerGatedCrypto
-    - ExtKeyUsageMicrosoftCommercialCodeSigning
-    - ExtKeyUsageMicrosoftKernelCodeSigning
-  x509.KeyUsage:
-    enum:
-    - 1
-    - 2
-    - 4
-    - 8
-    - 16
-    - 32
-    - 64
-    - 128
-    - 256
-    type: integer
-    x-enum-varnames:
-    - KeyUsageDigitalSignature
-    - KeyUsageContentCommitment
-    - KeyUsageKeyEncipherment
-    - KeyUsageDataEncipherment
-    - KeyUsageKeyAgreement
-    - KeyUsageCertSign
-    - KeyUsageCRLSign
-    - KeyUsageEncipherOnly
-    - KeyUsageDecipherOnly
-  x509.PublicKeyAlgorithm:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    type: integer
-    x-enum-comments:
-      DSA: Unsupported.
-    x-enum-varnames:
-    - UnknownPublicKeyAlgorithm
-    - RSA
-    - DSA
-    - ECDSA
-    - Ed25519
-  x509.SignatureAlgorithm:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
-    - 6
-    - 7
-    - 8
-    - 9
-    - 10
-    - 11
-    - 12
-    - 13
-    - 14
-    - 15
-    - 16
-    type: integer
-    x-enum-comments:
-      DSAWithSHA1: Unsupported.
-      DSAWithSHA256: Unsupported.
-      ECDSAWithSHA1: Only supported for signing, and verification of CRLs, CSRs, and
-        OCSP responses.
-      MD2WithRSA: Unsupported.
-      MD5WithRSA: Only supported for signing, not verification.
-      SHA1WithRSA: Only supported for signing, and verification of CRLs, CSRs, and
-        OCSP responses.
-    x-enum-varnames:
-    - UnknownSignatureAlgorithm
-    - MD2WithRSA
-    - MD5WithRSA
-    - SHA1WithRSA
-    - SHA256WithRSA
-    - SHA384WithRSA
-    - SHA512WithRSA
-    - DSAWithSHA1
-    - DSAWithSHA256
-    - ECDSAWithSHA1
-    - ECDSAWithSHA256
-    - ECDSAWithSHA384
-    - ECDSAWithSHA512
-    - SHA256WithRSAPSS
-    - SHA384WithRSAPSS
-    - SHA512WithRSAPSS
-    - PureEd25519
 info:
   contact: {}
   description: This is a api gateway
   termsOfService: https://udevs.io
 paths:
+  /admin/subject:
+    get:
+      consumes:
+      - application/json
+      description: Get Subject List
+      operationId: get_admin_subject_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetSubjectListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetSubjectListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Subject List
+      tags:
+      - Admin
+    post:
+      consumes:
+      - application/json
+      description: Create Subject
+      operationId: create_subject
+      parameters:
+      - description: CreateSubjectRequestBody
+        in: body
+        name: subject
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.CreateSubjectReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Subject data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.CreateSubjectRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Subject
+      tags:
+      - Admin
+    put:
+      consumes:
+      - application/json
+      description: Update Subject
+      operationId: update_subject
+      parameters:
+      - description: UpdateSubjectRequestBody
+        in: body
+        name: subject
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.UpdateSubjectReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Subject data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.UpdateSubjectRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Subject
+      tags:
+      - Admin
+  /admin/subject/{subject-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Get Subject
+      operationId: delete_subject
+      parameters:
+      - description: subject-id
+        in: path
+        name: subject-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Subject
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get Subject By ID
+      operationId: get_admin_subject_by_id
+      parameters:
+      - description: subject-id
+        in: path
+        name: subject-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: SubjectBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetSubjectRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Subject By ID
+      tags:
+      - Admin
   /admin/university:
     get:
       consumes:
@@ -1719,7 +1875,7 @@ paths:
               type: object
       summary: Get City List
       tags:
-      - Content
+      - General
   /config:
     get:
       consumes:
@@ -1795,7 +1951,7 @@ paths:
               type: object
       summary: Get Country List
       tags:
-      - Content
+      - General
   /has-access:
     post:
       consumes:
@@ -2759,6 +2915,58 @@ paths:
       summary: Send Verification Message
       tags:
       - User
+  /subject:
+    get:
+      consumes:
+      - application/json
+      description: Get Subject List
+      operationId: get_subject_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetSubjectListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetSubjectListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Subject List
+      tags:
+      - General
   /university:
     get:
       consumes:
@@ -2810,7 +3018,7 @@ paths:
               type: object
       summary: Get University List
       tags:
-      - University
+      - General
   /upload:
     post:
       consumes:

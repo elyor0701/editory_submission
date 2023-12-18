@@ -1,0 +1,62 @@
+syntax="proto3";
+
+package content_service;
+option go_package="genproto/content_service";
+
+import "google/protobuf/empty.proto";
+
+service SubjectService {
+  rpc CreateSubject(CreateSubjectReq) returns (CreateSubjectRes) {}
+  rpc GetSubject(GetSubjectReq) returns (GetSubjectRes) {}
+  rpc GetSubjectList(GetSubjectListReq) returns (GetSubjectListRes) {}
+  rpc UpdateSubject(UpdateSubjectReq) returns (UpdateSubjectRes) {}
+  rpc DeleteSubject(DeleteSubjectReq) returns (google.protobuf.Empty) {}
+}
+
+message Subject {
+  string id = 1;
+  string title = 2;
+}
+
+message CreateSubjectReq {
+  string title = 1;
+}
+
+message CreateSubjectRes {
+  string id = 1;
+  string title = 2;
+}
+
+message GetSubjectReq {
+  string id = 1;
+}
+
+message GetSubjectRes {
+  string id = 1;
+  string title = 2;
+}
+
+message GetSubjectListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+}
+
+message GetSubjectListRes {
+  repeated Subject subjects = 1;
+  int32 count = 2;
+}
+
+message UpdateSubjectReq {
+  string id = 1;
+  string title = 2;
+}
+
+message UpdateSubjectRes {
+  string id = 1;
+  string title = 2;
+}
+
+message DeleteSubjectReq {
+  string id = 1;
+}

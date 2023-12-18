@@ -24,6 +24,7 @@ func SetUpServer(cfg config.Config, log logger.LoggerI, strg storage.StorageI, s
 	// content
 	content_service.RegisterContentServiceServer(grpcServer, content.NewContentService(cfg, log, strg, svcs))
 	content_service.RegisterUniversityServiceServer(grpcServer, content.NewUniversityService(cfg, log, strg, svcs))
+	content_service.RegisterSubjectServiceServer(grpcServer, content.NewSubjectService(cfg, log, strg, svcs))
 
 	reflection.Register(grpcServer)
 	return

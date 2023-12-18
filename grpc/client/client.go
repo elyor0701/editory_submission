@@ -13,6 +13,7 @@ type ServiceManagerI interface {
 	SessionService() auth_service.SessionServiceClient
 	ContentService() content_service.ContentServiceClient
 	UniversityService() content_service.UniversityServiceClient
+	SubjectService() content_service.SubjectServiceClient
 }
 
 type grpcClients struct {
@@ -23,6 +24,7 @@ type grpcClients struct {
 	// content
 	contentService    content_service.ContentServiceClient
 	universityService content_service.UniversityServiceClient
+	subjectService    content_service.SubjectServiceClient
 }
 
 func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
@@ -40,6 +42,7 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 		sessionService:    auth_service.NewSessionServiceClient(connAuthService),
 		contentService:    content_service.NewContentServiceClient(connAuthService),
 		universityService: content_service.NewUniversityServiceClient(connAuthService),
+		subjectService:    content_service.NewSubjectServiceClient(connAuthService),
 	}, nil
 }
 
@@ -57,4 +60,8 @@ func (g *grpcClients) ContentService() content_service.ContentServiceClient {
 
 func (g *grpcClients) UniversityService() content_service.UniversityServiceClient {
 	return g.universityService
+}
+
+func (g *grpcClients) SubjectService() content_service.SubjectServiceClient {
+	return g.subjectService
 }

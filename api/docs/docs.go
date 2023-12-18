@@ -16,6 +16,405 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/subject": {
+            "get": {
+                "description": "Get Subject List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get Subject List",
+                "operationId": "get_admin_subject_list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetSubjectListResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_content_service.GetSubjectListRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update Subject",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update Subject",
+                "operationId": "update_subject",
+                "parameters": [
+                    {
+                        "description": "UpdateSubjectRequestBody",
+                        "name": "subject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_genproto_content_service.UpdateSubjectReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Subject data",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_content_service.UpdateSubjectRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create Subject",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Create Subject",
+                "operationId": "create_subject",
+                "parameters": [
+                    {
+                        "description": "CreateSubjectRequestBody",
+                        "name": "subject",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_genproto_content_service.CreateSubjectReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Subject data",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_content_service.CreateSubjectRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/subject/{subject-id}": {
+            "get": {
+                "description": "Get Subject By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get Subject By ID",
+                "operationId": "get_admin_subject_by_id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "subject-id",
+                        "name": "subject-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SubjectBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_content_service.GetSubjectRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Get Subject",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete Subject",
+                "operationId": "delete_subject",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "subject-id",
+                        "name": "subject-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/admin/university": {
             "get": {
                 "description": "Get University List",
@@ -425,7 +824,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Content"
+                    "General"
                 ],
                 "summary": "Get City List",
                 "operationId": "get_city_list",
@@ -562,7 +961,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Content"
+                    "General"
                 ],
                 "summary": "Get Country List",
                 "operationId": "get_country_list",
@@ -2335,6 +2734,98 @@ const docTemplate = `{
                 }
             }
         },
+        "/subject": {
+            "get": {
+                "description": "Get Subject List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get Subject List",
+                "operationId": "get_subject_list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetSubjectListResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_content_service.GetSubjectListRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/university": {
             "get": {
                 "description": "Get University List",
@@ -2345,7 +2836,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "University"
+                    "General"
                 ],
                 "summary": "Get University List",
                 "operationId": "get_university_list",
@@ -3533,6 +4024,25 @@ const docTemplate = `{
                 }
             }
         },
+        "editory_submission_genproto_content_service.CreateSubjectReq": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_content_service.CreateSubjectRes": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "editory_submission_genproto_content_service.CreateUniversityReq": {
             "type": "object",
             "properties": {
@@ -3677,6 +4187,31 @@ const docTemplate = `{
                 }
             }
         },
+        "editory_submission_genproto_content_service.GetSubjectListRes": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "subjects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_content_service.Subject"
+                    }
+                }
+            }
+        },
+        "editory_submission_genproto_content_service.GetSubjectRes": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "editory_submission_genproto_content_service.GetUniversityListRes": {
             "type": "object",
             "properties": {
@@ -3781,6 +4316,17 @@ const docTemplate = `{
                 }
             }
         },
+        "editory_submission_genproto_content_service.Subject": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "editory_submission_genproto_content_service.University": {
             "type": "object",
             "properties": {
@@ -3788,6 +4334,28 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "logo": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_content_service.UpdateSubjectReq": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_content_service.UpdateSubjectRes": {
+            "type": "object",
+            "properties": {
+                "id": {
                     "type": "string"
                 },
                 "title": {
@@ -4366,7 +4934,7 @@ const docTemplate = `{
                     "description": "Sequence of extended key usages.",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/x509.ExtKeyUsage"
+                        "type": "integer"
                     }
                 },
                 "extensions": {
@@ -4405,7 +4973,7 @@ const docTemplate = `{
                     }
                 },
                 "keyUsage": {
-                    "$ref": "#/definitions/x509.KeyUsage"
+                    "type": "integer"
                 },
                 "maxPathLen": {
                     "description": "MaxPathLen and MaxPathLenZero indicate the presence and\nvalue of the BasicConstraints' \"pathLenConstraint\".\n\nWhen parsing a certificate, a positive non-zero MaxPathLen\nmeans that the field was specified, -1 means it was unset,\nand MaxPathLenZero being true mean that the field was\nexplicitly set to zero. The case of MaxPathLen==0 with MaxPathLenZero==false\nshould be treated equivalent to -1 (unset).\n\nWhen generating a certificate, an unset pathLenConstraint\ncan be requested with either MaxPathLen == -1 or using the\nzero value for both MaxPathLen and MaxPathLenZero.",
@@ -4465,7 +5033,7 @@ const docTemplate = `{
                 },
                 "publicKey": {},
                 "publicKeyAlgorithm": {
-                    "$ref": "#/definitions/x509.PublicKeyAlgorithm"
+                    "type": "integer"
                 },
                 "raw": {
                     "description": "Complete ASN.1 DER content (certificate, signature algorithm and signature).",
@@ -4512,7 +5080,7 @@ const docTemplate = `{
                     }
                 },
                 "signatureAlgorithm": {
-                    "$ref": "#/definitions/x509.SignatureAlgorithm"
+                    "type": "integer"
                 },
                 "subject": {
                     "$ref": "#/definitions/pkix.Name"
@@ -4553,135 +5121,6 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
-        },
-        "x509.ExtKeyUsage": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                12,
-                13
-            ],
-            "x-enum-varnames": [
-                "ExtKeyUsageAny",
-                "ExtKeyUsageServerAuth",
-                "ExtKeyUsageClientAuth",
-                "ExtKeyUsageCodeSigning",
-                "ExtKeyUsageEmailProtection",
-                "ExtKeyUsageIPSECEndSystem",
-                "ExtKeyUsageIPSECTunnel",
-                "ExtKeyUsageIPSECUser",
-                "ExtKeyUsageTimeStamping",
-                "ExtKeyUsageOCSPSigning",
-                "ExtKeyUsageMicrosoftServerGatedCrypto",
-                "ExtKeyUsageNetscapeServerGatedCrypto",
-                "ExtKeyUsageMicrosoftCommercialCodeSigning",
-                "ExtKeyUsageMicrosoftKernelCodeSigning"
-            ]
-        },
-        "x509.KeyUsage": {
-            "type": "integer",
-            "enum": [
-                1,
-                2,
-                4,
-                8,
-                16,
-                32,
-                64,
-                128,
-                256
-            ],
-            "x-enum-varnames": [
-                "KeyUsageDigitalSignature",
-                "KeyUsageContentCommitment",
-                "KeyUsageKeyEncipherment",
-                "KeyUsageDataEncipherment",
-                "KeyUsageKeyAgreement",
-                "KeyUsageCertSign",
-                "KeyUsageCRLSign",
-                "KeyUsageEncipherOnly",
-                "KeyUsageDecipherOnly"
-            ]
-        },
-        "x509.PublicKeyAlgorithm": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2,
-                3,
-                4
-            ],
-            "x-enum-comments": {
-                "DSA": "Unsupported."
-            },
-            "x-enum-varnames": [
-                "UnknownPublicKeyAlgorithm",
-                "RSA",
-                "DSA",
-                "ECDSA",
-                "Ed25519"
-            ]
-        },
-        "x509.SignatureAlgorithm": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                12,
-                13,
-                14,
-                15,
-                16
-            ],
-            "x-enum-comments": {
-                "DSAWithSHA1": "Unsupported.",
-                "DSAWithSHA256": "Unsupported.",
-                "ECDSAWithSHA1": "Only supported for signing, and verification of CRLs, CSRs, and OCSP responses.",
-                "MD2WithRSA": "Unsupported.",
-                "MD5WithRSA": "Only supported for signing, not verification.",
-                "SHA1WithRSA": "Only supported for signing, and verification of CRLs, CSRs, and OCSP responses."
-            },
-            "x-enum-varnames": [
-                "UnknownSignatureAlgorithm",
-                "MD2WithRSA",
-                "MD5WithRSA",
-                "SHA1WithRSA",
-                "SHA256WithRSA",
-                "SHA384WithRSA",
-                "SHA512WithRSA",
-                "DSAWithSHA1",
-                "DSAWithSHA256",
-                "ECDSAWithSHA1",
-                "ECDSAWithSHA256",
-                "ECDSAWithSHA384",
-                "ECDSAWithSHA512",
-                "SHA256WithRSAPSS",
-                "SHA384WithRSAPSS",
-                "SHA512WithRSAPSS",
-                "PureEd25519"
-            ]
         }
     }
 }`

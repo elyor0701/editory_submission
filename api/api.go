@@ -30,9 +30,15 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		r.GET("/country", h.GetCountryList)
 		r.GET("/university", h.GetUniversityList)
 		r.GET("/city", h.GetCityList)
+		r.GET("/subject", h.GetSubjectList)
 		r.GET("/ping", h.Ping)
 		r.GET("/config", h.GetConfig)
 		r.POST("/upload", h.Upload)
+
+		r.POST("/login", h.Login)
+		r.DELETE("/logout", h.Logout)
+		r.PUT("/refresh", h.RefreshToken)
+		r.POST("/has-access", h.HasAccess)
 	}
 
 	// auth
@@ -45,11 +51,6 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	//r.POST("/user/send-message", h.SendMessageToUserEmail)
 	r.POST("/send-verification-message", h.SendVerificationMessage)
 	r.PUT("/verification", h.EmailVerification)
-
-	r.POST("/login", h.Login)
-	r.DELETE("/logout", h.Logout)
-	r.PUT("/refresh", h.RefreshToken)
-	r.POST("/has-access", h.HasAccess)
 
 	{
 		// journal
@@ -95,6 +96,18 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		admin.GET("/university/:university-id", h.GetAdminUniversityByID)
 		admin.PUT("/university", h.UpdateAdminUniversity)
 		admin.DELETE("/university/:university-id", h.DeleteAdminUniversity)
+
+		admin.POST("/subject", h.CreateAdminSubject)
+		admin.GET("/subject", h.GetAdminSubjectList)
+		admin.GET("/subject/:subject-id", h.GetAdminSubjectByID)
+		admin.PUT("/subject", h.UpdateAdminSubject)
+		admin.DELETE("/subject/:subject-id", h.DeleteAdminSubject)
+
+		admin.POST("/user")
+		admin.PUT("/user")
+		admin.GET("/user")
+		admin.GET("/user/:user-id")
+		admin.DELETE("/user/:user-id")
 	}
 
 	// swagger

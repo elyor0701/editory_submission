@@ -24,6 +24,7 @@ type ContentRepoI interface {
 	Edition() EditionRepoI
 	CountryAndCity() CountryAndCityRepoI
 	University() UniversityRepoI
+	Subject() SubjectRepoI
 }
 
 type UserRepoI interface {
@@ -87,4 +88,12 @@ type UniversityRepoI interface {
 	GetList(ctx context.Context, in *cs_pb.GetUniversityListReq) (*cs_pb.GetUniversityListRes, error)
 	Update(ctx context.Context, in *cs_pb.UpdateUniversityReq) (*cs_pb.UpdateUniversityRes, error)
 	Delete(ctx context.Context, in *cs_pb.DeleteUniversityReq) (rowsAffected int64, err error)
+}
+
+type SubjectRepoI interface {
+	Create(ctx context.Context, in *cs_pb.CreateSubjectReq) (*cs_pb.CreateSubjectRes, error)
+	Get(ctx context.Context, in *cs_pb.GetSubjectReq) (*cs_pb.GetSubjectRes, error)
+	GetList(ctx context.Context, in *cs_pb.GetSubjectListReq) (*cs_pb.GetSubjectListRes, error)
+	Update(ctx context.Context, in *cs_pb.UpdateSubjectReq) (*cs_pb.UpdateSubjectRes, error)
+	Delete(ctx context.Context, in *cs_pb.DeleteSubjectReq) (rowsAffected int64, err error)
 }
