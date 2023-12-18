@@ -285,7 +285,7 @@ func (s *JournalRepo) Update(ctx context.Context, req *pb.Journal) (res *pb.Jour
 	return res, nil
 }
 func (s *JournalRepo) Delete(ctx context.Context, req *pb.PrimaryKey) (rowsAffected int64, err error) {
-	query := `DELETE FROM "journal" WHERE id = $1`
+	query := `DELETE CASCADE FROM "journal" WHERE id = $1`
 
 	result, err := s.db.Exec(ctx, query, req.GetId())
 	if err != nil {

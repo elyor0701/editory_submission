@@ -3,42 +3,40 @@ package handlers
 import (
 	"editory_submission/api/http"
 	"editory_submission/genproto/content_service"
+	"editory_submission/pkg/util"
 	"errors"
-
-	"github.com/saidamir98/udevs_pkg/util"
-
 	"github.com/gin-gonic/gin"
 )
 
-// CreateArticle godoc
-// @ID create_article
-// @Router /journal/{journal-id}/article [POST]
-// @Summary Create Article
-// @Description Create Article
-// @Tags Article
+// CreateEdition godoc
+// @ID create_edition
+// @Router /journal/{journal-id}/edition [POST]
+// @Summary Create Edition
+// @Description Create Edition
+// @Tags Edition
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "Journal Id"
-// @Param article body content_service.CreateArticleReq true "CreateArticleRequestBody"
-// @Success 201 {object} http.Response{data=content_service.Article} "Article data"
+// @Param edition body content_service.CreateEditionReq true "CreateEditionRequestBody"
+// @Success 201 {object} http.Response{data=content_service.Edition} "Edition data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) CreateArticle(c *gin.Context) {
-	var article content_service.CreateArticleReq
+func (h *Handler) CreateEdition(c *gin.Context) {
+	var edition content_service.CreateEditionReq
 
 	journalId := c.Param("journal-id")
 
-	err := c.ShouldBindJSON(&article)
+	err := c.ShouldBindJSON(&edition)
 	if err != nil {
 		h.handleResponse(c, http.BadRequest, err.Error())
 		return
 	}
 
-	article.JournalId = journalId
+	edition.JournalId = journalId
 
-	resp, err := h.services.ContentService().CreateArticle(
+	resp, err := h.services.ContentService().CreateEdition(
 		c.Request.Context(),
-		&article,
+		&edition,
 	)
 
 	if err != nil {
@@ -49,22 +47,22 @@ func (h *Handler) CreateArticle(c *gin.Context) {
 	h.handleResponse(c, http.Created, resp)
 }
 
-// GetArticleList godoc
-// @ID get_article_list
-// @Router /journal/{journal-id}/article [GET]
-// @Summary Get Article List
-// @Description  Get Article List
-// @Tags Article
+// GetEditionList godoc
+// @ID get_edition_list
+// @Router /journal/{journal-id}/edition [GET]
+// @Summary Get Edition List
+// @Description  Get Edition List
+// @Tags Edition
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "Journal Id"
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
 // @Param search query string false "search"
-// @Success 200 {object} http.Response{data=content_service.GetArticleListRes} "GetArticleListResponseBody"
+// @Success 200 {object} http.Response{data=content_service.GetEditionListRes} "GetEditionListResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetArticleList(c *gin.Context) {
+func (h *Handler) GetEditionList(c *gin.Context) {
 
 	offset, err := h.getOffsetParam(c)
 	if err != nil {
@@ -85,9 +83,9 @@ func (h *Handler) GetArticleList(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.services.ContentService().GetArticleList(
+	resp, err := h.services.ContentService().GetEditionList(
 		c.Request.Context(),
-		&content_service.GetArticleListReq{
+		&content_service.GetEditionListReq{
 			Limit:     int32(limit),
 			Offset:    int32(offset),
 			Search:    c.DefaultQuery("search", ""),
@@ -103,31 +101,31 @@ func (h *Handler) GetArticleList(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// GetArticleByID godoc
-// @ID get_article_by_id
-// @Router /journal/{journal-id}/article/{article-id} [GET]
-// @Summary Get Article By ID
-// @Description Get Article By ID
-// @Tags Article
+// GetEditionByID godoc
+// @ID get_edition_by_id
+// @Router /journal/{journal-id}/edition/{edition-id} [GET]
+// @Summary Get Edition By ID
+// @Description Get Edition By ID
+// @Tags Edition
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "Journal Id"
-// @Param article-id path string true "article-id"
-// @Success 200 {object} http.Response{data=content_service.Article} "ArticleBody"
+// @Param edition-id path string true "edition-id"
+// @Success 200 {object} http.Response{data=content_service.Edition} "EditionBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetArticleByID(c *gin.Context) {
-	articleID := c.Param("article-id")
+func (h *Handler) GetEditionByID(c *gin.Context) {
+	editionID := c.Param("edition-id")
 
-	if !util.IsValidUUID(articleID) {
-		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
+	if !util.IsValidUUID(editionID) {
+		h.handleResponse(c, http.InvalidArgument, "edition id is an invalid uuid")
 		return
 	}
 
-	resp, err := h.services.ContentService().GetArticle(
+	resp, err := h.services.ContentService().GetEdition(
 		c.Request.Context(),
 		&content_service.PrimaryKey{
-			Id: articleID,
+			Id: editionID,
 		},
 	)
 
@@ -139,35 +137,34 @@ func (h *Handler) GetArticleByID(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// UpdateArticle godoc
-// @ID update_article
-// @Router /journal/{journal-id}/article [PUT]
-// @Summary Update Article
-// @Description Update Article
-// @Tags Article
+// UpdateEdition godoc
+// @ID update_edition
+// @Router /journal/{journal-id}/edition [PUT]
+// @Summary Update Edition
+// @Description Update Edition
+// @Tags Edition
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "Journal Id"
-// @Param article body content_service.Article true "UpdateArticleRequestBody"
-// @Success 200 {object} http.Response{data=content_service.Article} "Article data"
+// @Param edition body content_service.Edition true "UpdateEditionRequestBody"
+// @Success 200 {object} http.Response{data=content_service.Edition} "Edition data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) UpdateArticle(c *gin.Context) {
-	var article content_service.Article
+func (h *Handler) UpdateEdition(c *gin.Context) {
+	var edition content_service.Edition
 
 	journalId := c.Param("journal-id")
 
-	err := c.ShouldBindJSON(&article)
+	err := c.ShouldBindJSON(&edition)
 	if err != nil {
 		h.handleResponse(c, http.BadRequest, err.Error())
 		return
 	}
+	edition.JournalId = journalId
 
-	article.JournalId = journalId
-
-	resp, err := h.services.ContentService().UpdateArticle(
+	resp, err := h.services.ContentService().UpdateEdition(
 		c.Request.Context(),
-		&article,
+		&edition,
 	)
 
 	if err != nil {
@@ -178,31 +175,31 @@ func (h *Handler) UpdateArticle(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// DeleteArticle godoc
-// @ID delete_article
-// @Router /journal/{journal-id}/article/{article-id} [DELETE]
-// @Summary Delete Article
-// @Description Get Article
-// @Tags Article
+// DeleteEdition godoc
+// @ID delete_edition
+// @Router /journal/{journal-id}/edition/{edition-id} [DELETE]
+// @Summary Delete Edition
+// @Description Get Edition
+// @Tags Edition
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "Journal Id"
-// @Param article-id path string true "article-id"
+// @Param edition-id path string true "edition-id"
 // @Success 204
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) DeleteArticle(c *gin.Context) {
-	articleID := c.Param("article-id")
+func (h *Handler) DeleteEdition(c *gin.Context) {
+	editionID := c.Param("edition-id")
 
-	if !util.IsValidUUID(articleID) {
-		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
+	if !util.IsValidUUID(editionID) {
+		h.handleResponse(c, http.InvalidArgument, "edition id is an invalid uuid")
 		return
 	}
 
-	_, err := h.services.ContentService().DeleteArticle(
+	_, err := h.services.ContentService().DeleteEdition(
 		c.Request.Context(),
 		&content_service.PrimaryKey{
-			Id: articleID,
+			Id: editionID,
 		},
 	)
 	if err != nil {

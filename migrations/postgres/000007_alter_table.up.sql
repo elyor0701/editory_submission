@@ -1,0 +1,1 @@
+ALTER TABLE edition ADD CONSTRAINT edition_unique_edition_journal_id UNIQUE ("edition", "journal_id");

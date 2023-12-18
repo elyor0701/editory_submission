@@ -97,3 +97,48 @@ func (h *Handler) GetCityList(c *gin.Context) {
 
 	h.handleResponse(c, http.OK, resp)
 }
+
+// GetUniversityList godoc
+// @ID get_university_list
+// @Router /university [GET]
+// @Summary Get University List
+// @Description  Get University List
+// @Tags University
+// @Accept json
+// @Produce json
+// @Param offset query integer false "offset"
+// @Param limit query integer false "limit"
+// @Param search query string false "search"
+// @Success 200 {object} http.Response{data=content_service.GetUniversityListRes} "GetUniversityListResponseBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetUniversityList(c *gin.Context) {
+
+	offset, err := h.getOffsetParam(c)
+	if err != nil {
+		h.handleResponse(c, http.InvalidArgument, err.Error())
+		return
+	}
+
+	limit, err := h.getLimitParam(c)
+	if err != nil {
+		h.handleResponse(c, http.InvalidArgument, err.Error())
+		return
+	}
+
+	resp, err := h.services.UniversityService().GetUniversityList(
+		c.Request.Context(),
+		&content_service.GetUniversityListReq{
+			Limit:  int32(limit),
+			Offset: int32(offset),
+			Search: c.DefaultQuery("search", ""),
+		},
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
+}

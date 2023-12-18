@@ -9,9 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CreateUniversity godoc
+// CreateAdminUniversity godoc
 // @ID create_university
-// @Router /university [POST]
+// @Router /admin/university [POST]
 // @Summary Create University
 // @Description Create University
 // @Tags University
@@ -21,7 +21,7 @@ import (
 // @Success 201 {object} http.Response{data=content_service.CreateUniversityRes} "University data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) CreateUniversity(c *gin.Context) {
+func (h *Handler) CreateAdminUniversity(c *gin.Context) {
 	var university content_service.CreateUniversityReq
 
 	err := c.ShouldBindJSON(&university)
@@ -43,9 +43,9 @@ func (h *Handler) CreateUniversity(c *gin.Context) {
 	h.handleResponse(c, http.Created, resp)
 }
 
-// GetUniversityList godoc
-// @ID get_university_list
-// @Router /university [GET]
+// GetAdminUniversityList godoc
+// @ID get_admin_university_list
+// @Router /admin/university [GET]
 // @Summary Get University List
 // @Description  Get University List
 // @Tags University
@@ -57,7 +57,7 @@ func (h *Handler) CreateUniversity(c *gin.Context) {
 // @Success 200 {object} http.Response{data=content_service.GetUniversityListRes} "GetUniversityListResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetUniversityList(c *gin.Context) {
+func (h *Handler) GetAdminUniversityList(c *gin.Context) {
 
 	offset, err := h.getOffsetParam(c)
 	if err != nil {
@@ -88,9 +88,9 @@ func (h *Handler) GetUniversityList(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// GetUniversityByID godoc
-// @ID get_university_by_id
-// @Router /university/{university-id} [GET]
+// GetAdminUniversityByID godoc
+// @ID get_admin_university_by_id
+// @Router /admin/university/{university-id} [GET]
 // @Summary Get University By ID
 // @Description Get University By ID
 // @Tags University
@@ -100,7 +100,7 @@ func (h *Handler) GetUniversityList(c *gin.Context) {
 // @Success 200 {object} http.Response{data=content_service.GetUniversityRes} "UniversityBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetUniversityByID(c *gin.Context) {
+func (h *Handler) GetAdminUniversityByID(c *gin.Context) {
 	universityID := c.Param("university-id")
 
 	if !util.IsValidUUID(universityID) {
@@ -123,9 +123,9 @@ func (h *Handler) GetUniversityByID(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// UpdateUniversity godoc
+// UpdateAdminUniversity godoc
 // @ID update_university
-// @Router /university [PUT]
+// @Router /admin/university [PUT]
 // @Summary Update University
 // @Description Update University
 // @Tags University
@@ -135,7 +135,7 @@ func (h *Handler) GetUniversityByID(c *gin.Context) {
 // @Success 200 {object} http.Response{data=content_service.UpdateUniversityRes} "University data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) UpdateUniversity(c *gin.Context) {
+func (h *Handler) UpdateAdminUniversity(c *gin.Context) {
 	var university content_service.UpdateUniversityReq
 
 	err := c.ShouldBindJSON(&university)
@@ -157,9 +157,9 @@ func (h *Handler) UpdateUniversity(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// DeleteUniversity godoc
+// DeleteAdminUniversity godoc
 // @ID delete_university
-// @Router /university/{university-id} [DELETE]
+// @Router /admin/university/{university-id} [DELETE]
 // @Summary Delete University
 // @Description Get University
 // @Tags University
@@ -169,7 +169,7 @@ func (h *Handler) UpdateUniversity(c *gin.Context) {
 // @Success 204
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) DeleteUniversity(c *gin.Context) {
+func (h *Handler) DeleteAdminUniversity(c *gin.Context) {
 	universityID := c.Param("university-id")
 
 	if !util.IsValidUUID(universityID) {

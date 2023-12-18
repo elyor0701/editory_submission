@@ -20,6 +20,13 @@ service ContentService {
   rpc UpdateArticle(Article) returns (Article) {}
   rpc DeleteArticle(PrimaryKey) returns (google.protobuf.Empty) {}
 
+  // Edition
+  rpc CreateEdition(CreateEditionReq) returns (Edition) {}
+  rpc GetEdition(PrimaryKey) returns (Edition) {}
+  rpc GetEditionList(GetEditionListReq) returns (GetEditionListRes) {}
+  rpc UpdateEdition(Edition) returns (Edition) {}
+  rpc DeleteEdition(PrimaryKey) returns (google.protobuf.Empty) {}
+
   // File
   //  rpc CreateFile(CreateFileReq) returns (PrimaryKey) {}
   //  rpc GetFile(PrimaryKey) returns (Article) {}
@@ -187,3 +194,30 @@ message GetArticleListRes {
 //  string draft_id = 4;
 //  string article_id = 5;
 //}
+
+message Edition {
+  string id = 1;
+  string journal_id = 2;
+  int32 edition = 3;
+  string file = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message CreateEditionReq {
+  string journal_id = 1;
+  int32 edition = 2;
+  string file = 3;
+}
+
+message GetEditionListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string journal_id = 4;
+}
+
+message GetEditionListRes {
+  repeated Edition editions = 1;
+  int32 count = 2;
+}

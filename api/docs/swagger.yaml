@@ -301,6 +301,15 @@ definitions:
       type:
         type: string
     type: object
+  editory_submission_genproto_content_service.CreateEditionReq:
+    properties:
+      edition:
+        type: integer
+      file:
+        type: string
+      journal_id:
+        type: string
+    type: object
   editory_submission_genproto_content_service.CreateJournalReq:
     properties:
       acceptance_rate:
@@ -350,6 +359,21 @@ definitions:
       title:
         type: string
     type: object
+  editory_submission_genproto_content_service.Edition:
+    properties:
+      created_at:
+        type: string
+      edition:
+        type: integer
+      file:
+        type: string
+      id:
+        type: string
+      journal_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
   editory_submission_genproto_content_service.File:
     properties:
       article_id:
@@ -388,6 +412,15 @@ definitions:
       countries:
         items:
           $ref: '#/definitions/editory_submission_genproto_content_service.Country'
+        type: array
+    type: object
+  editory_submission_genproto_content_service.GetEditionListRes:
+    properties:
+      count:
+        type: integer
+      editions:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.Edition'
         type: array
     type: object
   editory_submission_genproto_content_service.GetJournalListRes:
@@ -1278,12 +1311,12 @@ info:
   description: This is a api gateway
   termsOfService: https://udevs.io
 paths:
-  /article:
+  /admin/university:
     get:
       consumes:
       - application/json
-      description: Get Article List
-      operationId: get_article_list
+      description: Get University List
+      operationId: get_admin_university_list
       parameters:
       - description: offset
         in: query
@@ -1297,22 +1330,17 @@ paths:
         in: query
         name: search
         type: string
-      - description: journal_id
-        in: query
-        name: journal_id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: GetArticleListResponseBody
+          description: GetUniversityListResponseBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_content_service.GetArticleListRes'
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetUniversityListRes'
               type: object
         "400":
           description: Invalid Argument
@@ -1332,32 +1360,32 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Get Article List
+      summary: Get University List
       tags:
-      - Article
+      - University
     post:
       consumes:
       - application/json
-      description: Create Article
-      operationId: create_article
+      description: Create University
+      operationId: create_university
       parameters:
-      - description: CreateArticleRequestBody
+      - description: CreateUniversityRequestBody
         in: body
-        name: article
+        name: university
         required: true
         schema:
-          $ref: '#/definitions/editory_submission_genproto_content_service.CreateArticleReq'
+          $ref: '#/definitions/editory_submission_genproto_content_service.CreateUniversityReq'
       produces:
       - application/json
       responses:
         "201":
-          description: Article data
+          description: University data
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+                  $ref: '#/definitions/editory_submission_genproto_content_service.CreateUniversityRes'
               type: object
         "400":
           description: Bad Request
@@ -1377,32 +1405,32 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Create Article
+      summary: Create University
       tags:
-      - Article
+      - University
     put:
       consumes:
       - application/json
-      description: Update Article
-      operationId: update_article
+      description: Update University
+      operationId: update_university
       parameters:
-      - description: UpdateArticleRequestBody
+      - description: UpdateUniversityRequestBody
         in: body
-        name: article
+        name: university
         required: true
         schema:
-          $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+          $ref: '#/definitions/editory_submission_genproto_content_service.UpdateUniversityReq'
       produces:
       - application/json
       responses:
         "200":
-          description: Article data
+          description: University data
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+                  $ref: '#/definitions/editory_submission_genproto_content_service.UpdateUniversityRes'
               type: object
         "400":
           description: Bad Request
@@ -1422,19 +1450,19 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Update Article
+      summary: Update University
       tags:
-      - Article
-  /article/{article-id}:
+      - University
+  /admin/university/{university-id}:
     delete:
       consumes:
       - application/json
-      description: Get Article
-      operationId: delete_article
+      description: Get University
+      operationId: delete_university
       parameters:
-      - description: article-id
+      - description: university-id
         in: path
-        name: article-id
+        name: university-id
         required: true
         type: string
       produces:
@@ -1460,31 +1488,31 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Delete Article
+      summary: Delete University
       tags:
-      - Article
+      - University
     get:
       consumes:
       - application/json
-      description: Get Article By ID
-      operationId: get_article_by_id
+      description: Get University By ID
+      operationId: get_admin_university_by_id
       parameters:
-      - description: article-id
+      - description: university-id
         in: path
-        name: article-id
+        name: university-id
         required: true
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: ArticleBody
+          description: UniversityBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetUniversityRes'
               type: object
         "400":
           description: Invalid Argument
@@ -1504,9 +1532,9 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Get Article By ID
+      summary: Get University By ID
       tags:
-      - Article
+      - University
   /city:
     get:
       consumes:
@@ -1911,6 +1939,504 @@ paths:
       summary: Get Journal By ID
       tags:
       - Journal
+  /journal/{journal-id}/article:
+    get:
+      consumes:
+      - application/json
+      description: Get Article List
+      operationId: get_article_list
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetArticleListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetArticleListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Article List
+      tags:
+      - Article
+    post:
+      consumes:
+      - application/json
+      description: Create Article
+      operationId: create_article
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: CreateArticleRequestBody
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.CreateArticleReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Article data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Article
+      tags:
+      - Article
+    put:
+      consumes:
+      - application/json
+      description: Update Article
+      operationId: update_article
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: UpdateArticleRequestBody
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Article data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Article
+      tags:
+      - Article
+  /journal/{journal-id}/article/{article-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Get Article
+      operationId: delete_article
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: article-id
+        in: path
+        name: article-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Article
+      tags:
+      - Article
+    get:
+      consumes:
+      - application/json
+      description: Get Article By ID
+      operationId: get_article_by_id
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: article-id
+        in: path
+        name: article-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ArticleBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Article By ID
+      tags:
+      - Article
+  /journal/{journal-id}/edition:
+    get:
+      consumes:
+      - application/json
+      description: Get Edition List
+      operationId: get_edition_list
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetEditionListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetEditionListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Edition List
+      tags:
+      - Edition
+    post:
+      consumes:
+      - application/json
+      description: Create Edition
+      operationId: create_edition
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: CreateEditionRequestBody
+        in: body
+        name: edition
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.CreateEditionReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Edition data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Edition'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Edition
+      tags:
+      - Edition
+    put:
+      consumes:
+      - application/json
+      description: Update Edition
+      operationId: update_edition
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: UpdateEditionRequestBody
+        in: body
+        name: edition
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.Edition'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Edition data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Edition'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Edition
+      tags:
+      - Edition
+  /journal/{journal-id}/edition/{edition-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Get Edition
+      operationId: delete_edition
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: edition-id
+        in: path
+        name: edition-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Edition
+      tags:
+      - Edition
+    get:
+      consumes:
+      - application/json
+      description: Get Edition By ID
+      operationId: get_edition_by_id
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: edition-id
+        in: path
+        name: edition-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: EditionBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.Edition'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Edition By ID
+      tags:
+      - Edition
   /login:
     post:
       consumes:
@@ -2154,178 +2680,6 @@ paths:
                   type: string
               type: object
       summary: Get University List
-      tags:
-      - University
-    post:
-      consumes:
-      - application/json
-      description: Create University
-      operationId: create_university
-      parameters:
-      - description: CreateUniversityRequestBody
-        in: body
-        name: university
-        required: true
-        schema:
-          $ref: '#/definitions/editory_submission_genproto_content_service.CreateUniversityReq'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: University data
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/editory_submission_genproto_content_service.CreateUniversityRes'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Create University
-      tags:
-      - University
-    put:
-      consumes:
-      - application/json
-      description: Update University
-      operationId: update_university
-      parameters:
-      - description: UpdateUniversityRequestBody
-        in: body
-        name: university
-        required: true
-        schema:
-          $ref: '#/definitions/editory_submission_genproto_content_service.UpdateUniversityReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: University data
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/editory_submission_genproto_content_service.UpdateUniversityRes'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Update University
-      tags:
-      - University
-  /university/{university-id}:
-    delete:
-      consumes:
-      - application/json
-      description: Get University
-      operationId: delete_university
-      parameters:
-      - description: university-id
-        in: path
-        name: university-id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Invalid Argument
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Delete University
-      tags:
-      - University
-    get:
-      consumes:
-      - application/json
-      description: Get University By ID
-      operationId: get_university_by_id
-      parameters:
-      - description: university-id
-        in: path
-        name: university-id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: UniversityBody
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/editory_submission_genproto_content_service.GetUniversityRes'
-              type: object
-        "400":
-          description: Invalid Argument
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Get University By ID
       tags:
       - University
   /upload:

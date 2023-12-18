@@ -10,6 +10,7 @@ type contentRepo struct {
 	db             *pgxpool.Pool
 	journal        storage.JournalRepoI
 	article        storage.ArticleRepoI
+	edition        storage.EditionRepoI
 	countryAndCity storage.CountryAndCityRepoI
 	university     storage.UniversityRepoI
 }
@@ -50,4 +51,12 @@ func (s *contentRepo) University() storage.UniversityRepoI {
 	}
 
 	return s.university
+}
+
+func (s *contentRepo) Edition() storage.EditionRepoI {
+	if s.edition == nil {
+		s.edition = NewEditionRepo(s.db)
+	}
+
+	return s.edition
 }

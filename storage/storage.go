@@ -21,6 +21,7 @@ type AuthRepoI interface {
 type ContentRepoI interface {
 	Journal() JournalRepoI
 	Article() ArticleRepoI
+	Edition() EditionRepoI
 	CountryAndCity() CountryAndCityRepoI
 	University() UniversityRepoI
 }
@@ -64,6 +65,14 @@ type ArticleRepoI interface {
 	Get(ctx context.Context, in *cs_pb.PrimaryKey) (*cs_pb.Article, error)
 	GetList(ctx context.Context, in *cs_pb.GetArticleListReq) (*cs_pb.GetArticleListRes, error)
 	Update(ctx context.Context, in *cs_pb.Article) (*cs_pb.Article, error)
+	Delete(ctx context.Context, in *cs_pb.PrimaryKey) (rowsAffected int64, err error)
+}
+
+type EditionRepoI interface {
+	Create(ctx context.Context, in *cs_pb.CreateEditionReq) (*cs_pb.Edition, error)
+	Get(ctx context.Context, in *cs_pb.PrimaryKey) (*cs_pb.Edition, error)
+	GetList(ctx context.Context, in *cs_pb.GetEditionListReq) (*cs_pb.GetEditionListRes, error)
+	Update(ctx context.Context, in *cs_pb.Edition) (*cs_pb.Edition, error)
 	Delete(ctx context.Context, in *cs_pb.PrimaryKey) (rowsAffected int64, err error)
 }
 

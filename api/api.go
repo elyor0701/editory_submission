@@ -25,9 +25,15 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 
 	r.Use(customCORSMiddleware())
 
-	r.GET("/ping", h.Ping)
-	r.GET("/config", h.GetConfig)
-	r.POST("/upload", h.Upload)
+	{
+		// general
+		r.GET("/country", h.GetCountryList)
+		r.GET("/university", h.GetUniversityList)
+		r.GET("/city", h.GetCityList)
+		r.GET("/ping", h.Ping)
+		r.GET("/config", h.GetConfig)
+		r.POST("/upload", h.Upload)
+	}
 
 	// auth
 	r.POST("/user", h.CreateUser)
@@ -45,28 +51,51 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	r.PUT("/refresh", h.RefreshToken)
 	r.POST("/has-access", h.HasAccess)
 
-	// content
-	r.POST("/journal", h.CreateJournal)
-	r.GET("/journal", h.GetJournalList)
-	r.GET("/journal/:journal-id", h.GetJournalByID)
-	r.PUT("/journal", h.UpdateJournal)
-	r.DELETE("/journal/:journal-id", h.DeleteJournal)
+	{
+		// journal
+		journal := r.Group("/journal")
+		journal.POST("", h.CreateJournal)
+		journal.GET("", h.GetJournalList)
+		journal.GET("/:journal-id", h.GetJournalByID)
+		journal.PUT("", h.UpdateJournal)
+		journal.DELETE("/:journal-id", h.DeleteJournal)
 
-	r.POST("/article", h.CreateArticle)
-	r.GET("/article", h.GetArticleList)
-	r.GET("/article/:article-id", h.GetArticleByID)
-	r.PUT("/article", h.UpdateArticle)
-	r.DELETE("/article/:article-id", h.DeleteArticle)
+		journal.POST("/:journal-id/article", h.CreateArticle)
+		journal.GET("/:journal-id/article", h.GetArticleList)
+		journal.GET("/:journal-id/article/:article-id", h.GetArticleByID)
+		journal.PUT("/:journal-id/article", h.UpdateArticle)
+		journal.DELETE("/:journal-id/article/:article-id", h.DeleteArticle)
 
-	// university
-	r.POST("/university", h.CreateUniversity)
-	r.GET("/university", h.GetUniversityList)
-	r.GET("/university/:university-id", h.GetUniversityByID)
-	r.PUT("/university", h.UpdateUniversity)
-	r.DELETE("/university/:university-id", h.DeleteUniversity)
+		journal.POST("/:journal-id/edition", h.CreateEdition)
+		journal.GET("/:journal-id/edition", h.GetEditionList)
+		journal.GET("/:journal-id/edition/:edition-id", h.GetEditionByID)
+		journal.PUT("/:journal-id/edition", h.UpdateEdition)
+		journal.DELETE("/:journal-id/edition/:edition-id", h.DeleteEdition)
 
-	r.GET("/country", h.GetCountryList)
-	r.GET("/city", h.GetCityList)
+		journal.GET("/user")  //@TODO
+		journal.POST("/user") //@TODO
+	}
+	{
+		// admin
+		admin := r.Group("/admin")
+		admin.POST("/journal")
+		admin.GET("/journal")
+		admin.GET("/journal/:journal-id")
+		admin.PUT("/journal")
+		admin.DELETE("/journal/:journal-id")
+
+		admin.POST("/article")
+		admin.GET("/article")
+		admin.GET("/article/:article-id")
+		admin.PUT("/article")
+		admin.DELETE("/article/:article-id")
+
+		admin.POST("/university", h.CreateAdminUniversity)
+		admin.GET("/university", h.GetAdminUniversityList)
+		admin.GET("/university/:university-id", h.GetAdminUniversityByID)
+		admin.PUT("/university", h.UpdateAdminUniversity)
+		admin.DELETE("/university/:university-id", h.DeleteAdminUniversity)
+	}
 
 	// swagger
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

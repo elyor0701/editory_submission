@@ -218,3 +218,69 @@ func (s *contentService) GetCityList(ctx context.Context, req *pb.GetCityListReq
 
 	return res, nil
 }
+
+func (s *contentService) CreateEdition(ctx context.Context, req *pb.CreateEditionReq) (res *pb.Edition, err error) {
+	s.log.Info("---CreateEdition--->", logger.Any("req", req))
+
+	res, err = s.strg.Content().Edition().Create(ctx, req)
+	if err != nil {
+		s.log.Error("!!!CreateEdition--->", logger.Error(err))
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	return res, nil
+}
+
+func (s *contentService) GetEdition(ctx context.Context, req *pb.PrimaryKey) (res *pb.Edition, err error) {
+	s.log.Info("---GetEdition--->", logger.Any("req", req))
+
+	res, err = s.strg.Content().Edition().Get(ctx, req)
+	if err != nil {
+		s.log.Error("!!!GetEdition--->", logger.Error(err))
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	return res, nil
+}
+
+func (s *contentService) GetEditionList(ctx context.Context, req *pb.GetEditionListReq) (res *pb.GetEditionListRes, err error) {
+	s.log.Info("---GetEditionList--->", logger.Any("req", req))
+
+	res, err = s.strg.Content().Edition().GetList(ctx, req)
+	if err != nil {
+		s.log.Error("!!!GetEditionList--->", logger.Error(err))
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return res, nil
+}
+
+func (s *contentService) UpdateEdition(ctx context.Context, req *pb.Edition) (res *pb.Edition, err error) {
+	s.log.Info("---UpdateEdition--->", logger.Any("req", req))
+
+	res, err = s.strg.Content().Edition().Update(ctx, req)
+	if err != nil {
+		s.log.Error("!!!UpdateEdition--->", logger.Error(err))
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	return res, nil
+}
+
+func (s *contentService) DeleteEdition(ctx context.Context, req *pb.PrimaryKey) (res *emptypb.Empty, err error) {
+	s.log.Info("---DeleteEdition--->", logger.Any("req", req))
+
+	res = &emptypb.Empty{}
+
+	rowsAffected, err := s.strg.Content().Edition().Delete(ctx, req)
+	if err != nil {
+		s.log.Error("!!!DeleteEdition--->", logger.Error(err))
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if rowsAffected <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "no rows were affected")
+	}
+
+	return res, nil
+}
