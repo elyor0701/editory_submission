@@ -4,6 +4,7 @@ type EmailVerification struct {
 	Email     string
 	Token     string
 	Sent      bool
+	UserId    string
 	ExpiresAt string
 	CreatedAt string
 }
@@ -12,12 +13,14 @@ type CreateEmailVerificationReq struct {
 	Email     string
 	Token     string
 	ExpiresAt string
+	UserId    string
 }
 
 type CreateEmailVerificationRes struct {
 	Email     string
 	Token     string
 	ExpiresAt string
+	UserId    string
 }
 
 type UpdateEmailVerificationReq struct {

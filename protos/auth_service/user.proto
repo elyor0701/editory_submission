@@ -26,10 +26,12 @@ message EmailVerificationReq {
 
 message EmailVerificationRes {
   bool status = 1;
+  string user_id = 2;
 }
 
 message GenerateEmailVerificationTokenReq {
   string email = 1;
+  string user_id = 2;
 }
 
 message GenerateEmailVerificationTokenRes {

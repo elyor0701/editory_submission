@@ -26,12 +26,16 @@ func (s *EditionRepo) Create(ctx context.Context, req *pb.CreateEditionReq) (res
 		id,                 
     	journal_id,           
     	edition,         
-    	file        
+    	file,
+        title,
+        description             
 	) VALUES (
 		$1,
 		$2,
 		$3,
 		$4
+		$5
+		$6
 	)`
 
 	id, err := uuid.NewRandom()
@@ -44,16 +48,20 @@ func (s *EditionRepo) Create(ctx context.Context, req *pb.CreateEditionReq) (res
 		req.GetJournalId(),
 		req.GetEdition(),
 		req.GetFile(),
+		req.GetTitle(),
+		req.GetDescription(),
 	)
 	if err != nil {
 		return nil, err
 	}
 
 	res = &pb.Edition{
-		Id:        id.String(),
-		JournalId: req.GetJournalId(),
-		Edition:   req.GetEdition(),
-		File:      req.GetFile(),
+		Id:          id.String(),
+		JournalId:   req.GetJournalId(),
+		Edition:     req.GetEdition(),
+		File:        req.GetFile(),
+		Title:       req.GetTitle(),
+		Description: req.GetDescription(),
 	}
 
 	return res, nil
@@ -67,6 +75,8 @@ func (s *EditionRepo) Get(ctx context.Context, req *pb.PrimaryKey) (res *pb.Edit
     	journal_id,           
     	edition,         
     	coalesce(file, ''),
+    	coalesce(title, ''),
+    	coalesce(description, ''),
     	to_char(created_at, ` + config.DatabaseQueryTimeLayout + `) as created_at
     	to_char(updated_at, ` + config.DatabaseQueryTimeLayout + `) as updated_at
 	FROM
@@ -82,6 +92,8 @@ func (s *EditionRepo) Get(ctx context.Context, req *pb.PrimaryKey) (res *pb.Edit
 		&res.JournalId,
 		&res.Edition,
 		&res.File,
+		&res.Title,
+		&res.Description,
 		&res.CreatedAt,
 		&res.UpdatedAt,
 	)
@@ -175,14 +187,18 @@ func (s *EditionRepo) Update(ctx context.Context, req *pb.Edition) (res *pb.Edit
 	query := `UPDATE "edition" SET                        
     	edition = $1,         
     	file = $2,                                      
+    	title = $3,                                      
+    	description = $4,                                      
     	updated_at = CURRENT_TIMESTAMP
 	WHERE
-		id = $3`
+		id = $5`
 
 	_, err = s.db.Exec(ctx,
 		query,
 		req.GetEdition(),
 		req.GetFile(),
+		req.GetTitle(),
+		req.GetDescription(),
 		req.GetId(),
 	)
 	if err != nil {
@@ -190,11 +206,13 @@ func (s *EditionRepo) Update(ctx context.Context, req *pb.Edition) (res *pb.Edit
 	}
 
 	res = &pb.Edition{
-		Id:        req.GetId(),
-		JournalId: req.GetJournalId(),
-		Edition:   req.GetEdition(),
-		File:      req.GetFile(),
-		CreatedAt: req.GetCreatedAt(),
+		Id:          req.GetId(),
+		JournalId:   req.GetJournalId(),
+		Edition:     req.GetEdition(),
+		File:        req.GetFile(),
+		CreatedAt:   req.GetCreatedAt(),
+		Title:       req.GetTitle(),
+		Description: req.GetDescription(),
 	}
 
 	return res, err

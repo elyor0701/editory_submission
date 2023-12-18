@@ -150,6 +150,7 @@ func (s *userService) GenerateEmailVerificationToken(ctx context.Context, req *p
 		Email:     req.GetEmail(),
 		Token:     token,
 		ExpiresAt: expiresAt,
+		UserId:    req.GetUserId(),
 	})
 	if err != nil {
 		s.log.Error("!!!GenerateEmailVerificationToken--->", logger.Error(err))
@@ -175,11 +176,13 @@ func (s *userService) EmailVerification(ctx context.Context, req *pb.EmailVerifi
 	}
 
 	found := false
+	userId := ""
 
 	for _, v := range tokens.Tokens {
 		expiresAt, _ := time.Parse(time.RFC3339, v.ExpiresAt)
 		if v.Token == req.GetToken() && expiresAt.After(time.Now()) {
 			found = true
+			userId = v.UserId
 			break
 		}
 	}
@@ -208,5 +211,6 @@ func (s *userService) EmailVerification(ctx context.Context, req *pb.EmailVerifi
 
 	return &pb.EmailVerificationRes{
 		Status: true,
+		UserId: userId,
 	}, err
 }

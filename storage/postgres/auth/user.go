@@ -8,6 +8,7 @@ import (
 	"editory_submission/pkg/util"
 	"editory_submission/storage"
 	"editory_submission/storage/postgres/models"
+	"fmt"
 	"github.com/google/uuid"
 	"time"
 
@@ -107,7 +108,7 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 
 func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, err error) {
 	res = &pb.User{}
-
+	fmt.Println("here")
 	query := `SELECT
 		id,                 
     	coalesce(username, ''),           
@@ -123,7 +124,7 @@ func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, e
     	coalesce(degree, ''),             
     	coalesce(address, ''),            
     	coalesce(post_code, ''), 
-    	coalesce(gender, '') 
+    	coalesce(gender::VARCHAR, '') 
 	FROM
 		"user"
 	WHERE
@@ -150,9 +151,12 @@ func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, e
 		&res.Gender,
 	)
 
+	fmt.Println("here", err)
+
 	if err != nil {
 		return res, err
 	}
+	fmt.Println("here")
 
 	return res, nil
 }
@@ -171,7 +175,7 @@ func (s *UserRepo) GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb
     	email,      
     	coalesce(country_id::VARCHAR, ''),         
     	coalesce(city_id::VARCHAR, ''),
-    	coalesce(gender, '')
+    	coalesce(gender::VARCHAR, '')
 	FROM
 		"user"`
 	filter := " WHERE 1=1"
@@ -354,23 +358,27 @@ func (s *UserRepo) CreateEmailVerification(ctx context.Context, req *models.Crea
 	query := `INSERT INTO "email_verification" (
 		email,
         token,
-        expires_at
+        expires_at,
+        user_id
 	) VALUES (
 		$1,
 		$2,
-		$3
+		$3,
+		$4
 	)`
 
 	_, err = s.db.Exec(ctx, query,
 		req.Email,
 		req.Token,
 		req.ExpiresAt,
+		req.UserId,
 	)
 
 	res = &models.CreateEmailVerificationRes{
 		Email:     req.Email,
 		Token:     req.Token,
 		ExpiresAt: req.ExpiresAt,
+		UserId:    req.UserId,
 	}
 
 	return res, err
@@ -382,6 +390,7 @@ func (s *UserRepo) GetEmailVerificationList(ctx context.Context, req *models.Get
 		email,
 		token,
 		sent,
+		user_id,
 		COALESCE(TO_CHAR(expires_at, ` + config.DatabaseQueryTimeLayout + `)::TEXT, '') AS expires_at,
 		COALESCE(TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `)::TEXT, '') AS created_at
 	FROM
@@ -402,6 +411,7 @@ func (s *UserRepo) GetEmailVerificationList(ctx context.Context, req *models.Get
 			&obj.Email,
 			&obj.Token,
 			&obj.Sent,
+			&obj.UserId,
 			&obj.ExpiresAt,
 			&obj.CreatedAt,
 		)

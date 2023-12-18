@@ -303,27 +303,33 @@ func (s *JournalRepo) UpsertJournalData(ctx context.Context, in *pb.JournalData)
 	query := `INSERT INTO journal_data(
                          journal_id, 
                          text, 
-                         type
+                         type,
+                         short_desc
             	) VALUES (
             	          $1,
             	          $2,
-            	          $3
+            	          $3,
+            	          $4
             	) ON CONFLICT ON CONSTRAINT unique_journal_id_type DO
             	UPDATE SET
-            	        	text = $2
+            	        	text = $2,
+            	        	short_desc = $4
 				RETURNING 
 							journal_id,
 							text,
-							type`
+							type,
+							short_desc`
 
 	err := s.db.QueryRow(ctx, query,
 		in.GetJournalId(),
 		in.GetText(),
 		in.GetType(),
+		in.GetShortText(),
 	).Scan(
 		&res.JournalId,
 		&res.Text,
 		&res.Type,
+		&res.ShortText,
 	)
 
 	if err != nil {
@@ -339,7 +345,8 @@ func (s *JournalRepo) GetJournalData(ctx context.Context, in *pb.PrimaryKey) ([]
 	query := `select
 					journal_id,
 					text,
-					type
+					type,
+					short_desc
 				from journal_data
 				where journal_id = $1`
 
@@ -357,6 +364,7 @@ func (s *JournalRepo) GetJournalData(ctx context.Context, in *pb.PrimaryKey) ([]
 			&obj.JournalId,
 			&obj.Text,
 			&obj.Type,
+			&obj.ShortText,
 		)
 		if err != nil {
 			continue

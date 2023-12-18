@@ -259,7 +259,8 @@ func (h *Handler) SendVerificationMessageShared(c *gin.Context) error {
 	}
 
 	res, err := h.services.UserService().GenerateEmailVerificationToken(c, &auth_service.GenerateEmailVerificationTokenReq{
-		Email: user.GetEmail(),
+		Email:  user.GetEmail(),
+		UserId: user.GetId(),
 	})
 	if err != nil {
 		return err
