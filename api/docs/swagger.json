@@ -1700,6 +1700,170 @@
                 }
             }
         },
+        "/admin/user": {
+            "put": {
+                "description": "Update User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update User",
+                "operationId": "update_admin_user",
+                "parameters": [
+                    {
+                        "description": "UpdateUserRequestBody",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_api_models.UpdateAdminUserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User data",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_api_models.UpdateAdminUserRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/user/{user-id}": {
+            "get": {
+                "description": "Get User By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get User By ID",
+                "operationId": "get_admin_user_by_id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user-id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "UserBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_api_models.GetAdminUserRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/city": {
             "get": {
                 "description": "Get City List",
@@ -3381,9 +3545,9 @@
                 }
             }
         },
-        "/send-verification-message": {
+        "/register/details": {
             "post": {
-                "description": "SendVerificationMessage",
+                "description": "Update User",
                 "consumes": [
                     "application/json"
                 ],
@@ -3391,9 +3555,175 @@
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Auth"
                 ],
-                "summary": "Send Verification Message",
+                "summary": "Update User",
+                "operationId": "register_details",
+                "parameters": [
+                    {
+                        "description": "Register User Details",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_api_models.RegisterDetailReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User data",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_api_models.RegisterDetailRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/register/email": {
+            "post": {
+                "description": "Create User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Create User",
+                "operationId": "registration_email",
+                "parameters": [
+                    {
+                        "description": "Registration body",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_api_models.RegistrationEmailReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Email",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_api_models.RegistrationEmailRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/register/resend": {
+            "post": {
+                "description": "ReSendVerificationMessage",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Resend Verification Message",
                 "operationId": "send_verification_message",
                 "parameters": [
                     {
@@ -3409,6 +3739,89 @@
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/register/verify": {
+            "post": {
+                "description": "Verification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verification",
+                "operationId": "email_verification",
+                "parameters": [
+                    {
+                        "description": "Data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_api_models.EmailVerificationReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_api_models.EmailVerificationRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -4117,89 +4530,6 @@
                     }
                 }
             }
-        },
-        "/verification": {
-            "put": {
-                "description": "Verification",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Verification",
-                "operationId": "email_verification",
-                "parameters": [
-                    {
-                        "description": "Data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/editory_submission_api_models.EmailVerificationReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Status",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_auth_service.EmailVerificationRes"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "Server Error",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -4352,6 +4682,159 @@
                 }
             }
         },
+        "editory_submission_api_models.EmailVerificationRes": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "boolean"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.GetAdminUserRes": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.RegisterDetailReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city_id": {
+                    "type": "string"
+                },
+                "country_id": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "extra_phone": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_reviewer": {
+                    "type": "boolean"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "post_code": {
+                    "type": "string"
+                },
+                "prof_sphere": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.RegisterDetailRes": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city_id": {
+                    "type": "string"
+                },
+                "country_id": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "extra_phone": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_reviewer": {
+                    "type": "boolean"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "post_code": {
+                    "type": "string"
+                },
+                "prof_sphere": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.RegistrationEmailReq": {
+            "type": "object",
+            "properties": {
+                "confirm_password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "redirect_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.RegistrationEmailRes": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "message_status": {
+                    "type": "boolean"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "editory_submission_api_models.Role": {
             "type": "object",
             "properties": {
@@ -4380,13 +4863,48 @@
                 }
             }
         },
-        "editory_submission_genproto_auth_service.EmailVerificationRes": {
+        "editory_submission_api_models.UpdateAdminUserReq": {
             "type": "object",
             "properties": {
-                "status": {
-                    "type": "boolean"
+                "confirm_password": {
+                    "type": "string"
                 },
-                "user_id": {
+                "current_password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "new_password": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.UpdateAdminUserRes": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
@@ -4610,6 +5128,9 @@
                 },
                 "id": {
                     "type": "string"
+                },
+                "is_completed": {
+                    "type": "boolean"
                 },
                 "last_name": {
                     "type": "string"
@@ -5727,7 +6248,7 @@
                     "description": "Sequence of extended key usages.",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/x509.ExtKeyUsage"
+                        "type": "integer"
                     }
                 },
                 "extensions": {
@@ -5766,7 +6287,7 @@
                     }
                 },
                 "keyUsage": {
-                    "$ref": "#/definitions/x509.KeyUsage"
+                    "type": "integer"
                 },
                 "maxPathLen": {
                     "description": "MaxPathLen and MaxPathLenZero indicate the presence and\nvalue of the BasicConstraints' \"pathLenConstraint\".\n\nWhen parsing a certificate, a positive non-zero MaxPathLen\nmeans that the field was specified, -1 means it was unset,\nand MaxPathLenZero being true mean that the field was\nexplicitly set to zero. The case of MaxPathLen==0 with MaxPathLenZero==false\nshould be treated equivalent to -1 (unset).\n\nWhen generating a certificate, an unset pathLenConstraint\ncan be requested with either MaxPathLen == -1 or using the\nzero value for both MaxPathLen and MaxPathLenZero.",
@@ -5826,7 +6347,7 @@
                 },
                 "publicKey": {},
                 "publicKeyAlgorithm": {
-                    "$ref": "#/definitions/x509.PublicKeyAlgorithm"
+                    "type": "integer"
                 },
                 "raw": {
                     "description": "Complete ASN.1 DER content (certificate, signature algorithm and signature).",
@@ -5873,7 +6394,7 @@
                     }
                 },
                 "signatureAlgorithm": {
-                    "$ref": "#/definitions/x509.SignatureAlgorithm"
+                    "type": "integer"
                 },
                 "subject": {
                     "$ref": "#/definitions/pkix.Name"
@@ -5914,135 +6435,6 @@
                     "type": "integer"
                 }
             }
-        },
-        "x509.ExtKeyUsage": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                12,
-                13
-            ],
-            "x-enum-varnames": [
-                "ExtKeyUsageAny",
-                "ExtKeyUsageServerAuth",
-                "ExtKeyUsageClientAuth",
-                "ExtKeyUsageCodeSigning",
-                "ExtKeyUsageEmailProtection",
-                "ExtKeyUsageIPSECEndSystem",
-                "ExtKeyUsageIPSECTunnel",
-                "ExtKeyUsageIPSECUser",
-                "ExtKeyUsageTimeStamping",
-                "ExtKeyUsageOCSPSigning",
-                "ExtKeyUsageMicrosoftServerGatedCrypto",
-                "ExtKeyUsageNetscapeServerGatedCrypto",
-                "ExtKeyUsageMicrosoftCommercialCodeSigning",
-                "ExtKeyUsageMicrosoftKernelCodeSigning"
-            ]
-        },
-        "x509.KeyUsage": {
-            "type": "integer",
-            "enum": [
-                1,
-                2,
-                4,
-                8,
-                16,
-                32,
-                64,
-                128,
-                256
-            ],
-            "x-enum-varnames": [
-                "KeyUsageDigitalSignature",
-                "KeyUsageContentCommitment",
-                "KeyUsageKeyEncipherment",
-                "KeyUsageDataEncipherment",
-                "KeyUsageKeyAgreement",
-                "KeyUsageCertSign",
-                "KeyUsageCRLSign",
-                "KeyUsageEncipherOnly",
-                "KeyUsageDecipherOnly"
-            ]
-        },
-        "x509.PublicKeyAlgorithm": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2,
-                3,
-                4
-            ],
-            "x-enum-comments": {
-                "DSA": "Unsupported."
-            },
-            "x-enum-varnames": [
-                "UnknownPublicKeyAlgorithm",
-                "RSA",
-                "DSA",
-                "ECDSA",
-                "Ed25519"
-            ]
-        },
-        "x509.SignatureAlgorithm": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                12,
-                13,
-                14,
-                15,
-                16
-            ],
-            "x-enum-comments": {
-                "DSAWithSHA1": "Unsupported.",
-                "DSAWithSHA256": "Unsupported.",
-                "ECDSAWithSHA1": "Only supported for signing, and verification of CRLs, CSRs, and OCSP responses.",
-                "MD2WithRSA": "Unsupported.",
-                "MD5WithRSA": "Only supported for signing, not verification.",
-                "SHA1WithRSA": "Only supported for signing, and verification of CRLs, CSRs, and OCSP responses."
-            },
-            "x-enum-varnames": [
-                "UnknownSignatureAlgorithm",
-                "MD2WithRSA",
-                "MD5WithRSA",
-                "SHA1WithRSA",
-                "SHA256WithRSA",
-                "SHA384WithRSA",
-                "SHA512WithRSA",
-                "DSAWithSHA1",
-                "DSAWithSHA256",
-                "ECDSAWithSHA1",
-                "ECDSAWithSHA256",
-                "ECDSAWithSHA384",
-                "ECDSAWithSHA512",
-                "SHA256WithRSAPSS",
-                "SHA384WithRSAPSS",
-                "SHA512WithRSAPSS",
-                "PureEd25519"
-            ]
         }
     }
 }

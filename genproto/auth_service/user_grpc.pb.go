@@ -30,7 +30,6 @@ type UserServiceClient interface {
 	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 	DeleteUser(ctx context.Context, in *DeleteUserReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetUserListByRole(ctx context.Context, in *GetUserListByRoleReq, opts ...grpc.CallOption) (*GetUserListByRoleRes, error)
-	// rpc GetUserListByJournal(GetUserListByJournalReq) returns (GetUserListRes) {}
 	// rpc ResetPassword(ResetPasswordRequest) returns (User) {}
 	// rpc SendMessageToEmail(SendMessageToEmailRequest) returns (google.protobuf.Empty) {}
 	GenerateEmailVerificationToken(ctx context.Context, in *GenerateEmailVerificationTokenReq, opts ...grpc.CallOption) (*GenerateEmailVerificationTokenRes, error)
@@ -128,7 +127,6 @@ type UserServiceServer interface {
 	UpdateUser(context.Context, *User) (*User, error)
 	DeleteUser(context.Context, *DeleteUserReq) (*emptypb.Empty, error)
 	GetUserListByRole(context.Context, *GetUserListByRoleReq) (*GetUserListByRoleRes, error)
-	// rpc GetUserListByJournal(GetUserListByJournalReq) returns (GetUserListRes) {}
 	// rpc ResetPassword(ResetPasswordRequest) returns (User) {}
 	// rpc SendMessageToEmail(SendMessageToEmailRequest) returns (google.protobuf.Empty) {}
 	GenerateEmailVerificationToken(context.Context, *GenerateEmailVerificationTokenReq) (*GenerateEmailVerificationTokenRes, error)

@@ -14,7 +14,6 @@ service UserService {
   rpc UpdateUser(User) returns (User) {}
   rpc DeleteUser(DeleteUserReq) returns (google.protobuf.Empty) {}
   rpc GetUserListByRole(GetUserListByRoleReq) returns (GetUserListByRoleRes) {}
-//  rpc GetUserListByJournal(GetUserListByJournalReq) returns (GetUserListRes) {}
 //  rpc ResetPassword(ResetPasswordRequest) returns (User) {}
 //  rpc SendMessageToEmail(SendMessageToEmailRequest) returns (google.protobuf.Empty) {}
   rpc GenerateEmailVerificationToken(GenerateEmailVerificationTokenReq) returns (GenerateEmailVerificationTokenRes) {}

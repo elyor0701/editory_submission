@@ -97,6 +97,106 @@ definitions:
       token:
         type: string
     type: object
+  editory_submission_api_models.EmailVerificationRes:
+    properties:
+      status:
+        type: boolean
+      user_id:
+        type: string
+    type: object
+  editory_submission_api_models.GetAdminUserRes:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      last_name:
+        type: string
+    type: object
+  editory_submission_api_models.RegisterDetailReq:
+    properties:
+      address:
+        type: string
+      city_id:
+        type: string
+      country_id:
+        type: string
+      degree:
+        type: string
+      extra_phone:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      is_reviewer:
+        type: boolean
+      last_name:
+        type: string
+      phone:
+        type: string
+      post_code:
+        type: string
+      prof_sphere:
+        type: string
+      username:
+        type: string
+    type: object
+  editory_submission_api_models.RegisterDetailRes:
+    properties:
+      address:
+        type: string
+      city_id:
+        type: string
+      country_id:
+        type: string
+      degree:
+        type: string
+      extra_phone:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      is_reviewer:
+        type: boolean
+      last_name:
+        type: string
+      phone:
+        type: string
+      post_code:
+        type: string
+      prof_sphere:
+        type: string
+      username:
+        type: string
+    type: object
+  editory_submission_api_models.RegistrationEmailReq:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      redirect_url:
+        type: string
+    type: object
+  editory_submission_api_models.RegistrationEmailRes:
+    properties:
+      email:
+        type: string
+      message_status:
+        type: boolean
+      user_id:
+        type: string
+    type: object
   editory_submission_api_models.Role:
     properties:
       id:
@@ -115,11 +215,34 @@ definitions:
       user_id:
         type: string
     type: object
-  editory_submission_genproto_auth_service.EmailVerificationRes:
+  editory_submission_api_models.UpdateAdminUserReq:
     properties:
-      status:
-        type: boolean
-      user_id:
+      confirm_password:
+        type: string
+      current_password:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      last_name:
+        type: string
+      new_password:
+        type: string
+    type: object
+  editory_submission_api_models.UpdateAdminUserRes:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      last_name:
+        type: string
+      password:
         type: string
     type: object
   editory_submission_genproto_auth_service.GetUserListRes:
@@ -265,6 +388,8 @@ definitions:
         type: string
       id:
         type: string
+      is_completed:
+        type: boolean
       last_name:
         type: string
       password:
@@ -1255,7 +1380,7 @@ definitions:
       extKeyUsage:
         description: Sequence of extended key usages.
         items:
-          $ref: '#/definitions/x509.ExtKeyUsage'
+          type: integer
         type: array
       extensions:
         description: |-
@@ -1290,7 +1415,7 @@ definitions:
           type: string
         type: array
       keyUsage:
-        $ref: '#/definitions/x509.KeyUsage'
+        type: integer
       maxPathLen:
         description: |-
           MaxPathLen and MaxPathLenZero indicate the presence and
@@ -1348,7 +1473,7 @@ definitions:
         type: array
       publicKey: {}
       publicKeyAlgorithm:
-        $ref: '#/definitions/x509.PublicKeyAlgorithm'
+        type: integer
       raw:
         description: Complete ASN.1 DER content (certificate, signature algorithm
           and signature).
@@ -1382,7 +1507,7 @@ definitions:
           type: integer
         type: array
       signatureAlgorithm:
-        $ref: '#/definitions/x509.SignatureAlgorithm'
+        type: integer
       subject:
         $ref: '#/definitions/pkix.Name'
       subjectKeyId:
@@ -1418,123 +1543,6 @@ definitions:
       version:
         type: integer
     type: object
-  x509.ExtKeyUsage:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
-    - 6
-    - 7
-    - 8
-    - 9
-    - 10
-    - 11
-    - 12
-    - 13
-    type: integer
-    x-enum-varnames:
-    - ExtKeyUsageAny
-    - ExtKeyUsageServerAuth
-    - ExtKeyUsageClientAuth
-    - ExtKeyUsageCodeSigning
-    - ExtKeyUsageEmailProtection
-    - ExtKeyUsageIPSECEndSystem
-    - ExtKeyUsageIPSECTunnel
-    - ExtKeyUsageIPSECUser
-    - ExtKeyUsageTimeStamping
-    - ExtKeyUsageOCSPSigning
-    - ExtKeyUsageMicrosoftServerGatedCrypto
-    - ExtKeyUsageNetscapeServerGatedCrypto
-    - ExtKeyUsageMicrosoftCommercialCodeSigning
-    - ExtKeyUsageMicrosoftKernelCodeSigning
-  x509.KeyUsage:
-    enum:
-    - 1
-    - 2
-    - 4
-    - 8
-    - 16
-    - 32
-    - 64
-    - 128
-    - 256
-    type: integer
-    x-enum-varnames:
-    - KeyUsageDigitalSignature
-    - KeyUsageContentCommitment
-    - KeyUsageKeyEncipherment
-    - KeyUsageDataEncipherment
-    - KeyUsageKeyAgreement
-    - KeyUsageCertSign
-    - KeyUsageCRLSign
-    - KeyUsageEncipherOnly
-    - KeyUsageDecipherOnly
-  x509.PublicKeyAlgorithm:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    type: integer
-    x-enum-comments:
-      DSA: Unsupported.
-    x-enum-varnames:
-    - UnknownPublicKeyAlgorithm
-    - RSA
-    - DSA
-    - ECDSA
-    - Ed25519
-  x509.SignatureAlgorithm:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
-    - 6
-    - 7
-    - 8
-    - 9
-    - 10
-    - 11
-    - 12
-    - 13
-    - 14
-    - 15
-    - 16
-    type: integer
-    x-enum-comments:
-      DSAWithSHA1: Unsupported.
-      DSAWithSHA256: Unsupported.
-      ECDSAWithSHA1: Only supported for signing, and verification of CRLs, CSRs, and
-        OCSP responses.
-      MD2WithRSA: Unsupported.
-      MD5WithRSA: Only supported for signing, not verification.
-      SHA1WithRSA: Only supported for signing, and verification of CRLs, CSRs, and
-        OCSP responses.
-    x-enum-varnames:
-    - UnknownSignatureAlgorithm
-    - MD2WithRSA
-    - MD5WithRSA
-    - SHA1WithRSA
-    - SHA256WithRSA
-    - SHA384WithRSA
-    - SHA512WithRSA
-    - DSAWithSHA1
-    - DSAWithSHA256
-    - ECDSAWithSHA1
-    - ECDSAWithSHA256
-    - ECDSAWithSHA384
-    - ECDSAWithSHA512
-    - SHA256WithRSAPSS
-    - SHA384WithRSAPSS
-    - SHA512WithRSAPSS
-    - PureEd25519
 info:
   contact: {}
   description: This is a api gateway
@@ -2492,6 +2500,97 @@ paths:
                   type: string
               type: object
       summary: Get University By ID
+      tags:
+      - Admin
+  /admin/user:
+    put:
+      consumes:
+      - application/json
+      description: Update User
+      operationId: update_admin_user
+      parameters:
+      - description: UpdateUserRequestBody
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_api_models.UpdateAdminUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_api_models.UpdateAdminUserRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update User
+      tags:
+      - Admin
+  /admin/user/{user-id}:
+    get:
+      consumes:
+      - application/json
+      description: Get User By ID
+      operationId: get_admin_user_by_id
+      parameters:
+      - description: user-id
+        in: path
+        name: user-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: UserBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_api_models.GetAdminUserRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get User By ID
       tags:
       - Admin
   /city:
@@ -3452,11 +3551,103 @@ paths:
       summary: Refresh Token
       tags:
       - Session
-  /send-verification-message:
+  /register/details:
     post:
       consumes:
       - application/json
-      description: SendVerificationMessage
+      description: Update User
+      operationId: register_details
+      parameters:
+      - description: Register User Details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_api_models.RegisterDetailReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_api_models.RegisterDetailRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update User
+      tags:
+      - Auth
+  /register/email:
+    post:
+      consumes:
+      - application/json
+      description: Create User
+      operationId: registration_email
+      parameters:
+      - description: Registration body
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_api_models.RegistrationEmailReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Email
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_api_models.RegistrationEmailRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create User
+      tags:
+      - Auth
+  /register/resend:
+    post:
+      consumes:
+      - application/json
+      description: ReSendVerificationMessage
       operationId: send_verification_message
       parameters:
       - description: data
@@ -3488,9 +3679,55 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Send Verification Message
+      summary: Resend Verification Message
       tags:
-      - User
+      - Auth
+  /register/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verification
+      operationId: email_verification
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_api_models.EmailVerificationReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Status
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_api_models.EmailVerificationRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Verification
+      tags:
+      - Auth
   /subject:
     get:
       consumes:
@@ -3864,52 +4101,6 @@ paths:
                   type: string
               type: object
       summary: Get User By ID
-      tags:
-      - User
-  /verification:
-    put:
-      consumes:
-      - application/json
-      description: Verification
-      operationId: email_verification
-      parameters:
-      - description: Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/editory_submission_api_models.EmailVerificationReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Status
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/editory_submission_genproto_auth_service.EmailVerificationRes'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Verification
       tags:
       - User
 swagger: "2.0"

@@ -45,7 +45,8 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
     	degree,             
     	address,            
     	post_code,
-        gender
+        gender,
+        is_completed
 	) VALUES (
 		$1,
 		$2,
@@ -61,7 +62,8 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 		$12,
 		$13,
 		$14,
-		$15
+		$15,
+		$16
 	)`
 
 	id, err := uuid.NewRandom()
@@ -72,9 +74,9 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 	_, err = s.db.Exec(ctx, query,
 		id.String(),
 		util.NewNullString(req.GetUsername()),
-		req.GetFirstName(),
-		req.GetLastName(),
-		req.GetPhone(),
+		util.NewNullString(req.GetFirstName()),
+		util.NewNullString(req.GetLastName()),
+		util.NewNullString(req.GetPhone()),
 		util.NewNullString(req.GetExtraPhone()),
 		req.GetEmail(),
 		req.GetPassword(),
@@ -85,6 +87,7 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 		util.NewNullString(req.GetAddress()),
 		util.NewNullString(req.GetPostCode()),
 		util.NewNullString(req.GetGender()),
+		req.GetIsCompleted(),
 	)
 
 	res = &pb.User{
@@ -115,9 +118,9 @@ func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, e
 	query := `SELECT
 		id,                 
     	coalesce(username, ''),           
-    	first_name,         
-    	last_name,        
-    	phone,              
+    	coalesce(first_name, ''),         
+    	coalesce(last_name, ''),        
+    	coalesce(phone, ''),              
     	coalesce(extra_phone, ''),        
     	email,      
     	email_verification,

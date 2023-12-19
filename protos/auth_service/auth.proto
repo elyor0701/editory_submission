@@ -21,6 +21,7 @@ message User {
   string post_code = 15;
   string gender = 16;
   repeated Role role = 17;
+  bool is_completed = 18;
 }
 
 message Token {

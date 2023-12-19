@@ -35,9 +35,10 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		r.GET("/config", h.GetConfig)
 		r.POST("/upload", h.Upload)
 
-		r.POST("/register/email")   // @TODO with author
-		r.POST("/register/verify")  // @TODO with author
-		r.POST("/register/details") // @TODO with author
+		r.POST("/register/email", h.RegistrationEmail)
+		r.POST("/register/resend", h.ResendVerificationMessage)
+		r.POST("/register/verify", h.EmailVerification)
+		r.POST("/register/details", h.RegisterDetail)
 		r.POST("/login", h.Login)
 		r.DELETE("/logout", h.Logout)
 		r.PUT("/refresh", h.RefreshToken)
@@ -52,8 +53,8 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	r.DELETE("/user/:user-id", h.DeleteUser)
 	//r.PUT("/user/reset-password", h.ResetPassword)
 	//r.POST("/user/send-message", h.SendMessageToUserEmail)
-	r.POST("/send-verification-message", h.SendVerificationMessage)
-	r.PUT("/verification", h.EmailVerification)
+	//r.POST("/send-verification-message", h.SendVerificationMessage)
+	//r.PUT("/verification", h.EmailVerification)
 
 	{
 		// journal
