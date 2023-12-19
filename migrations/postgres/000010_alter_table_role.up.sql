@@ -1,0 +1,1 @@
+ALTER TABLE "role" ADD CONSTRAINT role_user_journal_role UNIQUE (user_id, journal_id, role_type);

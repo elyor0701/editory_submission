@@ -13,10 +13,32 @@ service UserService {
   rpc GetUserList(GetUserListReq) returns (GetUserListRes) {}
   rpc UpdateUser(User) returns (User) {}
   rpc DeleteUser(DeleteUserReq) returns (google.protobuf.Empty) {}
+  rpc GetUserListByRole(GetUserListByRoleReq) returns (GetUserListByRoleRes) {}
+//  rpc GetUserListByJournal(GetUserListByJournalReq) returns (GetUserListRes) {}
 //  rpc ResetPassword(ResetPasswordRequest) returns (User) {}
 //  rpc SendMessageToEmail(SendMessageToEmailRequest) returns (google.protobuf.Empty) {}
   rpc GenerateEmailVerificationToken(GenerateEmailVerificationTokenReq) returns (GenerateEmailVerificationTokenRes) {}
   rpc EmailVerification(EmailVerificationReq) returns (EmailVerificationRes) {}
+}
+
+message GetUserListByRoleReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string journal_id = 4;
+  string role_type = 5;
+}
+
+message GetUserListByRoleRes {
+    repeated User users = 1;
+    int32 count = 2;
+}
+
+message GetUserListByJournalReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string journal_id = 4;
 }
 
 message EmailVerificationReq {

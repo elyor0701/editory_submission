@@ -14,7 +14,7 @@ import (
 // @Router /admin/university [POST]
 // @Summary Create University
 // @Description Create University
-// @Tags University
+// @Tags Admin
 // @Accept json
 // @Produce json
 // @Param university body content_service.CreateUniversityReq true "CreateUniversityRequestBody"
@@ -48,7 +48,7 @@ func (h *Handler) CreateAdminUniversity(c *gin.Context) {
 // @Router /admin/university [GET]
 // @Summary Get University List
 // @Description  Get University List
-// @Tags University
+// @Tags Admin
 // @Accept json
 // @Produce json
 // @Param offset query integer false "offset"
@@ -93,7 +93,7 @@ func (h *Handler) GetAdminUniversityList(c *gin.Context) {
 // @Router /admin/university/{university-id} [GET]
 // @Summary Get University By ID
 // @Description Get University By ID
-// @Tags University
+// @Tags Admin
 // @Accept json
 // @Produce json
 // @Param university-id path string true "university-id"
@@ -128,7 +128,7 @@ func (h *Handler) GetAdminUniversityByID(c *gin.Context) {
 // @Router /admin/university [PUT]
 // @Summary Update University
 // @Description Update University
-// @Tags University
+// @Tags Admin
 // @Accept json
 // @Produce json
 // @Param university body content_service.UpdateUniversityReq true "UpdateUniversityRequestBody"
@@ -162,7 +162,7 @@ func (h *Handler) UpdateAdminUniversity(c *gin.Context) {
 // @Router /admin/university/{university-id} [DELETE]
 // @Summary Delete University
 // @Description Get University
-// @Tags University
+// @Tags Admin
 // @Accept json
 // @Produce json
 // @Param university-id path string true "university-id"

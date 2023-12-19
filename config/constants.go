@@ -10,3 +10,11 @@ const (
 	AccessTokenExpiresInTime  time.Duration = 1 * 24 * 60 * time.Minute
 	RefreshTokenExpiresInTime time.Duration = 30 * 24 * 60 * time.Minute
 )
+
+const (
+	EDITOR      = `EDITOR`
+	SUPERADMIN  = `SUPERADMIN`
+	PROOFREADER = `PROOFREADER`
+	REVIEWER    = `REVIEWER`
+	AUTHOR      = `AUTHOR`
+)

@@ -1,0 +1,1 @@
+ALTER TABLE "journal_subject" ADD CONSTRAINT journal_subject_unique_journal_subject UNIQUE ("journal_id", subject_id);

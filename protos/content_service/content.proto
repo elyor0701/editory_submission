@@ -4,6 +4,7 @@ package content_service;
 option go_package="genproto/content_service";
 
 import "google/protobuf/empty.proto";
+import "subject.proto";
 
 service ContentService {
   // Journal
@@ -124,6 +125,7 @@ message Journal {
   string acceptance_to_publication = 15;
   string citation_indicator = 16;
   string impact_factor = 17;
+  repeated Subject subjects = 18;
 }
 
 message JournalData {
@@ -160,6 +162,7 @@ message CreateJournalReq {
   string acceptance_to_publication = 13;
   string citation_indicator = 14;
   string impact_factor = 15;
+  repeated Subject subjects = 16;
 }
 
 message CreateArticleReq {

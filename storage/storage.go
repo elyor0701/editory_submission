@@ -16,6 +16,7 @@ type StorageI interface {
 type AuthRepoI interface {
 	User() UserRepoI
 	Session() SessionRepoI
+	Role() RoleRepoI
 }
 
 type ContentRepoI interface {
@@ -31,6 +32,7 @@ type UserRepoI interface {
 	Create(ctx context.Context, req *pb.User) (res *pb.User, err error)
 	Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, err error)
 	GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb.GetUserListRes, err error)
+	GetListWithRole(ctx context.Context, req *pb.GetUserListByRoleReq) (res *pb.GetUserListByRoleRes, err error) // @TODO check performance
 	Update(ctx context.Context, req *pb.User) (rowsAffected int64, err error)
 	Delete(ctx context.Context, req *pb.DeleteUserReq) (rowsAffected int64, err error)
 	GetByEmail(ctx context.Context, req *pb.GetUserReq) (res *pb.User, err error)
@@ -59,6 +61,9 @@ type JournalRepoI interface {
 	Delete(ctx context.Context, in *cs_pb.PrimaryKey) (rowsAffected int64, err error)
 	UpsertJournalData(ctx context.Context, in *cs_pb.JournalData) (*cs_pb.JournalData, error)
 	GetJournalData(ctx context.Context, in *cs_pb.PrimaryKey) ([]*cs_pb.JournalData, error)
+	UpsertSubject(ctx context.Context, in *models.UpsertJournalSubjectReq) (*models.UpsertJournalSubjectRes, error)
+	GetSubject(ctx context.Context, in *cs_pb.PrimaryKey) ([]*cs_pb.Subject, error)
+	DeleteSubject(ctx context.Context, in *cs_pb.PrimaryKey) (rowsAffected int64, err error)
 }
 
 type ArticleRepoI interface {
@@ -96,4 +101,12 @@ type SubjectRepoI interface {
 	GetList(ctx context.Context, in *cs_pb.GetSubjectListReq) (*cs_pb.GetSubjectListRes, error)
 	Update(ctx context.Context, in *cs_pb.UpdateSubjectReq) (*cs_pb.UpdateSubjectRes, error)
 	Delete(ctx context.Context, in *cs_pb.DeleteSubjectReq) (rowsAffected int64, err error)
+}
+
+type RoleRepoI interface {
+	Create(ctx context.Context, req *pb.Role) (res *pb.Role, err error)
+	Get(ctx context.Context, req *pb.GetRoleReq) (res *pb.Role, err error)
+	GetList(ctx context.Context, req *pb.GetRoleListReq) (res *pb.GetRoleListRes, err error)
+	Update(ctx context.Context, req *pb.Role) (rowsAffected int64, err error)
+	Delete(ctx context.Context, req *pb.DeleteRoleReq) (rowsAffected int64, err error)
 }

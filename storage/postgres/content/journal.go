@@ -6,6 +6,7 @@ import (
 	pb "editory_submission/genproto/content_service"
 	"editory_submission/pkg/helper"
 	"editory_submission/storage"
+	"editory_submission/storage/postgres/models"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -374,4 +375,90 @@ func (s *JournalRepo) GetJournalData(ctx context.Context, in *pb.PrimaryKey) ([]
 	}
 
 	return res, nil
+}
+
+func (s *JournalRepo) UpsertSubject(ctx context.Context, in *models.UpsertJournalSubjectReq) (*models.UpsertJournalSubjectRes, error) {
+	res := &models.UpsertJournalSubjectRes{}
+
+	query := `INSERT INTO journal_subject(
+                        id,
+                        journal_id, 
+						subject_id
+            	) VALUES (
+            	          $1,
+            	          $2,
+            	          $3
+            	) ON CONFLICT ON CONSTRAINT journal_subject_unique_journal_subject DO NOTHING 
+				RETURNING 
+				    		id,
+							journal_id,
+							subject_id`
+
+	id, err := uuid.NewRandom()
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.db.QueryRow(ctx, query,
+		id.String(),
+		in.JournalId,
+		in.SubjectId,
+	).Scan(
+		&res.Id,
+		&res.JournalId,
+		&res.SubjectId,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (s *JournalRepo) GetSubject(ctx context.Context, in *pb.PrimaryKey) ([]*pb.Subject, error) {
+	res := make([]*pb.Subject, 0, 10)
+
+	query := `select
+					subject_id,
+					title
+				from journal_subject
+				inner join subject as s on subject_id = s.id
+				where journal_id = $1`
+
+	rows, err := s.db.Query(ctx, query, in.GetId())
+	if err != nil {
+
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		obj := &pb.Subject{}
+
+		err = rows.Scan(
+			&obj.Id,
+			&obj.Title,
+		)
+		if err != nil {
+			continue
+		}
+
+		res = append(res, obj)
+	}
+
+	return res, nil
+}
+
+func (s *JournalRepo) DeleteSubject(ctx context.Context, in *pb.PrimaryKey) (rowsAffected int64, err error) {
+	query := `DELETE CASCADE FROM "journal_subject" WHERE journal_id = $1`
+
+	result, err := s.db.Exec(ctx, query, in.GetId())
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected = result.RowsAffected()
+
+	return rowsAffected, err
 }

@@ -7,6 +7,7 @@ import (
 	"editory_submission/grpc/client"
 	"editory_submission/pkg/logger"
 	"editory_submission/storage"
+	"editory_submission/storage/postgres/models"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -50,6 +51,17 @@ func (s *contentService) CreateJournal(ctx context.Context, req *pb.CreateJourna
 		}
 	}
 
+	for _, val := range req.GetSubjects() {
+		_, err = s.strg.Content().Journal().UpsertSubject(ctx, &models.UpsertJournalSubjectReq{
+			JournalId: res.GetId(),
+			SubjectId: val.GetId(),
+		})
+		if err != nil {
+			s.log.Error("!!!CreateSubject--->", logger.Error(err))
+			continue
+		}
+	}
+
 	return res, nil
 }
 
@@ -71,6 +83,16 @@ func (s *contentService) GetJournal(ctx context.Context, req *pb.PrimaryKey) (re
 	}
 
 	res.JournalData = journalData
+
+	subjects, err := s.strg.Content().Journal().GetSubject(ctx, &pb.PrimaryKey{
+		Id: req.GetId(),
+	})
+	if err != nil {
+		s.log.Error("!!!GetJournalSubject--->", logger.Error(err))
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	res.Subjects = subjects
 
 	return res, nil
 }
@@ -104,6 +126,24 @@ func (s *contentService) UpdateJournal(ctx context.Context, req *pb.Journal) (re
 		})
 		if err != nil {
 			s.log.Error("!!!CreateJournalData--->", logger.Error(err))
+			continue
+		}
+	}
+
+	_, err = s.strg.Content().Journal().DeleteSubject(ctx, &pb.PrimaryKey{
+		Id: res.GetId(),
+	})
+	if err != nil {
+		s.log.Error("!!!DeleteSubject--->", logger.Error(err))
+	}
+
+	for _, val := range req.GetSubjects() {
+		_, err = s.strg.Content().Journal().UpsertSubject(ctx, &models.UpsertJournalSubjectReq{
+			JournalId: res.GetId(),
+			SubjectId: val.GetId(),
+		})
+		if err != nil {
+			s.log.Error("!!!CreateSubject--->", logger.Error(err))
 			continue
 		}
 	}

@@ -10,6 +10,7 @@ type authRepo struct {
 	db      *pgxpool.Pool
 	user    storage.UserRepoI
 	session storage.SessionRepoI
+	role    storage.RoleRepoI
 }
 
 func NewAuthRepo(db *pgxpool.Pool) storage.AuthRepoI {
@@ -32,4 +33,12 @@ func (s *authRepo) Session() storage.SessionRepoI {
 	}
 
 	return s.session
+}
+
+func (s *authRepo) Role() storage.RoleRepoI {
+	if s.role == nil {
+		s.role = NewRoleRepo(s.db)
+	}
+
+	return s.role
 }

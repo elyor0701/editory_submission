@@ -35,6 +35,7 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		r.GET("/config", h.GetConfig)
 		r.POST("/upload", h.Upload)
 
+		r.POST("/register") // @TODO with author
 		r.POST("/login", h.Login)
 		r.DELETE("/logout", h.Logout)
 		r.PUT("/refresh", h.RefreshToken)
@@ -55,8 +56,6 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	{
 		// journal
 		journal := r.Group("/journal")
-		journal.POST("", h.CreateJournal)
-		journal.GET("", h.GetJournalList)
 		journal.GET("/:journal-id", h.GetJournalByID)
 		journal.PUT("", h.UpdateJournal)
 		journal.DELETE("/:journal-id", h.DeleteJournal)
@@ -73,23 +72,24 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		journal.PUT("/:journal-id/edition", h.UpdateEdition)
 		journal.DELETE("/:journal-id/edition/:edition-id", h.DeleteEdition)
 
-		journal.GET("/user")  //@TODO
-		journal.POST("/user") //@TODO
+		journal.GET("/user")           //@TODO
+		journal.POST("/user")          //@TODO
+		journal.POST("/user/:user-id") //@TODO
+		journal.PUT("/user")           //@TODO
+
+		journal.GET("/author")
 	}
 	{
 		// admin
 		admin := r.Group("/admin")
-		admin.POST("/journal")
-		admin.GET("/journal")
-		admin.GET("/journal/:journal-id")
-		admin.PUT("/journal")
-		admin.DELETE("/journal/:journal-id")
+		admin.POST("/journal", h.CreateAdminJournal)
+		admin.GET("/journal", h.GetAdminJournalList)
+		admin.GET("/journal/:journal-id", h.GetAdminJournalByID)
+		admin.PUT("/journal", h.UpdateAdminJournal)
+		admin.DELETE("/journal/:journal-id", h.DeleteAdminJournal)
 
-		admin.POST("/article")
 		admin.GET("/article")
 		admin.GET("/article/:article-id")
-		admin.PUT("/article")
-		admin.DELETE("/article/:article-id")
 
 		admin.POST("/university", h.CreateAdminUniversity)
 		admin.GET("/university", h.GetAdminUniversityList)
@@ -102,6 +102,26 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		admin.GET("/subject/:subject-id", h.GetAdminSubjectByID)
 		admin.PUT("/subject", h.UpdateAdminSubject)
 		admin.DELETE("/subject/:subject-id", h.DeleteAdminSubject)
+
+		admin.POST("/editor", h.CreateEditor)
+		admin.PUT("/editor", h.UpdateEditor)
+		admin.GET("/editor", h.GetEditorList)
+		admin.GET("/editor/:editor-id", h.GetEditorByID)
+		admin.DELETE("/editor/:editor-id", h.DeleteEditor)
+
+		admin.GET("/author", h.GetAdminAuthorList)
+
+		admin.POST("/keyword")
+		admin.GET("/keyword")
+		admin.GET("/keyword/:keyword-id")
+		admin.PUT("/keyword")
+		admin.DELETE("/keyword/:keyword-id")
+
+		admin.POST("/email-template")
+		admin.GET("/email-template")
+		admin.GET("/email-template/:email-template-id")
+		admin.PUT("/email-template")
+		admin.DELETE("/email-template/:email-template-id")
 
 		admin.POST("/user")
 		admin.PUT("/user")

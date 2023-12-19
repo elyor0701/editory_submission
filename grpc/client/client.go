@@ -11,6 +11,7 @@ import (
 type ServiceManagerI interface {
 	UserService() auth_service.UserServiceClient
 	SessionService() auth_service.SessionServiceClient
+	RoleService() auth_service.RoleServiceClient
 	ContentService() content_service.ContentServiceClient
 	UniversityService() content_service.UniversityServiceClient
 	SubjectService() content_service.SubjectServiceClient
@@ -20,6 +21,7 @@ type grpcClients struct {
 	// auth
 	userService    auth_service.UserServiceClient
 	sessionService auth_service.SessionServiceClient
+	roleService    auth_service.RoleServiceClient
 
 	// content
 	contentService    content_service.ContentServiceClient
@@ -40,6 +42,7 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 	return &grpcClients{
 		userService:       auth_service.NewUserServiceClient(connAuthService),
 		sessionService:    auth_service.NewSessionServiceClient(connAuthService),
+		roleService:       auth_service.NewRoleServiceClient(connAuthService),
 		contentService:    content_service.NewContentServiceClient(connAuthService),
 		universityService: content_service.NewUniversityServiceClient(connAuthService),
 		subjectService:    content_service.NewSubjectServiceClient(connAuthService),
@@ -64,4 +67,8 @@ func (g *grpcClients) UniversityService() content_service.UniversityServiceClien
 
 func (g *grpcClients) SubjectService() content_service.SubjectServiceClient {
 	return g.subjectService
+}
+
+func (g *grpcClients) RoleService() auth_service.RoleServiceClient {
+	return g.roleService
 }

@@ -70,7 +70,32 @@ func (s *userService) CreateUser(ctx context.Context, req *pb.User) (res *pb.Use
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	// TODO add author role for every user
+	author := false
+
+	for _, v := range req.GetRole() {
+		if v.GetRoleType() == "AUTHOR" {
+			author = true
+		}
+		_, err = s.strg.Auth().Role().Create(ctx, &pb.Role{
+			UserId:    res.GetId(),
+			RoleType:  v.GetRoleType(),
+			JournalId: v.GetJournalId(),
+		})
+		if err != nil {
+			s.log.Error("!!!CreateRole--->", logger.Error(err))
+			continue
+		}
+	}
+
+	if !author {
+		_, err = s.strg.Auth().Role().Create(ctx, &pb.Role{
+			UserId:   res.GetId(),
+			RoleType: "AUTHOR",
+		})
+		if err != nil {
+			s.log.Error("!!!CreateRole--->", logger.Error(err))
+		}
+	}
 
 	return res, nil
 }
@@ -84,6 +109,17 @@ func (s *userService) GetUser(ctx context.Context, req *pb.GetUserReq) (res *pb.
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
+	role, err := s.strg.Auth().Role().GetList(ctx, &pb.GetRoleListReq{
+		UserId: req.GetId(),
+		Limit:  100,
+	})
+	if err != nil {
+		s.log.Error("!!!GetRole--->", logger.Error(err))
+		return nil, status.Error(codes.NotFound, err.Error())
+	}
+
+	res.Role = role.GetRoles()
+
 	return res, nil
 }
 
@@ -93,6 +129,18 @@ func (s *userService) GetUserList(ctx context.Context, req *pb.GetUserListReq) (
 	res, err = s.strg.Auth().User().GetList(ctx, req)
 	if err != nil {
 		s.log.Error("!!!GetUserList--->", logger.Error(err))
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return res, nil
+}
+
+func (s *userService) GetUserListByRole(ctx context.Context, req *pb.GetUserListByRoleReq) (res *pb.GetUserListByRoleRes, err error) {
+	s.log.Info("---GetUserListByRole--->", logger.Any("req", req))
+
+	res, err = s.strg.Auth().User().GetListWithRole(ctx, req)
+	if err != nil {
+		s.log.Error("!!!GetUserListByRole--->", logger.Error(err))
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 

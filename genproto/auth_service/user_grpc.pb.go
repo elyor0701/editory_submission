@@ -29,6 +29,8 @@ type UserServiceClient interface {
 	GetUserList(ctx context.Context, in *GetUserListReq, opts ...grpc.CallOption) (*GetUserListRes, error)
 	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 	DeleteUser(ctx context.Context, in *DeleteUserReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetUserListByRole(ctx context.Context, in *GetUserListByRoleReq, opts ...grpc.CallOption) (*GetUserListByRoleRes, error)
+	// rpc GetUserListByJournal(GetUserListByJournalReq) returns (GetUserListRes) {}
 	// rpc ResetPassword(ResetPasswordRequest) returns (User) {}
 	// rpc SendMessageToEmail(SendMessageToEmailRequest) returns (google.protobuf.Empty) {}
 	GenerateEmailVerificationToken(ctx context.Context, in *GenerateEmailVerificationTokenReq, opts ...grpc.CallOption) (*GenerateEmailVerificationTokenRes, error)
@@ -88,6 +90,15 @@ func (c *userServiceClient) DeleteUser(ctx context.Context, in *DeleteUserReq, o
 	return out, nil
 }
 
+func (c *userServiceClient) GetUserListByRole(ctx context.Context, in *GetUserListByRoleReq, opts ...grpc.CallOption) (*GetUserListByRoleRes, error) {
+	out := new(GetUserListByRoleRes)
+	err := c.cc.Invoke(ctx, "/auth_service.UserService/GetUserListByRole", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) GenerateEmailVerificationToken(ctx context.Context, in *GenerateEmailVerificationTokenReq, opts ...grpc.CallOption) (*GenerateEmailVerificationTokenRes, error) {
 	out := new(GenerateEmailVerificationTokenRes)
 	err := c.cc.Invoke(ctx, "/auth_service.UserService/GenerateEmailVerificationToken", in, out, opts...)
@@ -116,6 +127,8 @@ type UserServiceServer interface {
 	GetUserList(context.Context, *GetUserListReq) (*GetUserListRes, error)
 	UpdateUser(context.Context, *User) (*User, error)
 	DeleteUser(context.Context, *DeleteUserReq) (*emptypb.Empty, error)
+	GetUserListByRole(context.Context, *GetUserListByRoleReq) (*GetUserListByRoleRes, error)
+	// rpc GetUserListByJournal(GetUserListByJournalReq) returns (GetUserListRes) {}
 	// rpc ResetPassword(ResetPasswordRequest) returns (User) {}
 	// rpc SendMessageToEmail(SendMessageToEmailRequest) returns (google.protobuf.Empty) {}
 	GenerateEmailVerificationToken(context.Context, *GenerateEmailVerificationTokenReq) (*GenerateEmailVerificationTokenRes, error)
@@ -141,6 +154,9 @@ func (UnimplementedUserServiceServer) UpdateUser(context.Context, *User) (*User,
 }
 func (UnimplementedUserServiceServer) DeleteUser(context.Context, *DeleteUserReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserListByRole(context.Context, *GetUserListByRoleReq) (*GetUserListByRoleRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserListByRole not implemented")
 }
 func (UnimplementedUserServiceServer) GenerateEmailVerificationToken(context.Context, *GenerateEmailVerificationTokenReq) (*GenerateEmailVerificationTokenRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateEmailVerificationToken not implemented")
@@ -251,6 +267,24 @@ func _UserService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUserListByRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserListByRoleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserListByRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth_service.UserService/GetUserListByRole",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserListByRole(ctx, req.(*GetUserListByRoleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_GenerateEmailVerificationToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GenerateEmailVerificationTokenReq)
 	if err := dec(in); err != nil {
@@ -313,6 +347,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUser",
 			Handler:    _UserService_DeleteUser_Handler,
+		},
+		{
+			MethodName: "GetUserListByRole",
+			Handler:    _UserService_GetUserListByRole_Handler,
 		},
 		{
 			MethodName: "GenerateEmailVerificationToken",

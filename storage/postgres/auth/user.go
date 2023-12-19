@@ -2,12 +2,14 @@ package auth
 
 import (
 	"context"
+	"database/sql"
 	"editory_submission/config"
 	pb "editory_submission/genproto/auth_service"
 	"editory_submission/pkg/helper"
 	"editory_submission/pkg/util"
 	"editory_submission/storage"
 	"editory_submission/storage/postgres/models"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"time"
@@ -108,7 +110,7 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 
 func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, err error) {
 	res = &pb.User{}
-	fmt.Println("here")
+
 	query := `SELECT
 		id,                 
     	coalesce(username, ''),           
@@ -151,12 +153,9 @@ func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, e
 		&res.Gender,
 	)
 
-	fmt.Println("here", err)
-
 	if err != nil {
 		return res, err
 	}
-	fmt.Println("here")
 
 	return res, nil
 }
@@ -178,6 +177,7 @@ func (s *UserRepo) GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb
     	coalesce(gender::VARCHAR, '')
 	FROM
 		"user"`
+
 	filter := " WHERE 1=1"
 
 	offset := " OFFSET 0"
@@ -217,8 +217,10 @@ func (s *UserRepo) GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb
 
 	q, arr = helper.ReplaceQueryParams(q, params)
 	rows, err := s.db.Query(ctx, q, arr...)
-	if err != nil {
-		return res, err
+	if errors.Is(err, sql.ErrNoRows) {
+		return res, nil
+	} else if err != nil {
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -245,6 +247,147 @@ func (s *UserRepo) GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb
 
 	return res, nil
 }
+
+func (s *UserRepo) GetListWithRole(ctx context.Context, req *pb.GetUserListByRoleReq) (res *pb.GetUserListByRoleRes, err error) {
+	res = &pb.GetUserListByRoleRes{}
+
+	m := make(map[string]*pb.User)
+
+	params := make(map[string]interface{})
+	var arr []interface{}
+
+	count := `SELECT
+		count(*)
+	FROM
+		"user" u
+	INNER JOIN role r on u.id = r.user_id`
+
+	with := `SELECT
+		u.id
+	FROM
+		"user" u
+	INNER JOIN role r on u.id = r.user_id`
+
+	query := `SELECT
+		u.id,
+		coalesce(username, '') as username,
+		first_name,
+		last_name,
+		phone,
+		email,
+		coalesce(country_id::VARCHAR, '') as country_id,
+		coalesce(city_id::VARCHAR, '') as city_id,
+		coalesce(gender::VARCHAR, '') as gender,
+		r.id as role_id,
+		r.role_type,
+		coalesce(journal_id::VARCHAR, '') as journal_id
+	FROM
+		"user" u
+	INNER JOIN "role" r ON u.id = r.user_id
+	WHERE u.id in (
+	    SELECT
+	        id
+	    from "user_filtered_list"
+	)`
+
+	filter := " WHERE 1=1"
+
+	groupBy := ` GROUP BY u.id`
+
+	offset := " OFFSET 0"
+
+	limit := " LIMIT 10"
+
+	if len(req.Search) > 0 {
+		params["search"] = req.Search
+		filter += ` AND ((username ILIKE '%' || :search || '%')
+					OR (first_name ILIKE '%' || :search || '%')
+					OR (last_name ILIKE '%' || :search || '%')
+					OR (email ILIKE '%' || :search || '%'))`
+	}
+
+	if req.Offset > 0 {
+		params["offset"] = req.Offset
+		offset = " OFFSET :offset"
+	}
+
+	if req.Limit > 0 {
+		params["limit"] = req.Limit
+		limit = " LIMIT :limit"
+	}
+
+	if req.GetRoleType() != "" {
+		params["role_type"] = req.GetRoleType()
+		filter += " AND role_type = :role_type"
+	}
+
+	if util.IsValidUUID(req.GetJournalId()) {
+		params["journal_id"] = req.GetJournalId()
+		filter += " AND journal_id = :journal_id"
+	}
+
+	cQ := count + filter + groupBy
+
+	cQ, arr = helper.ReplaceQueryParams(cQ, params)
+
+	err = s.db.QueryRow(ctx, cQ, arr...).Scan(
+		&res.Count,
+	)
+	if err != nil {
+		return res, err
+	}
+
+	uQ := fmt.Sprintf("WITH user_filtered_list AS (%s%s%s%s%s) %s", with, filter, groupBy, offset, limit, query)
+
+	uQ, arr = helper.ReplaceQueryParams(uQ, params)
+
+	rows, err := s.db.Query(ctx, uQ, arr...)
+	if errors.Is(err, sql.ErrNoRows) {
+		return res, nil
+	} else if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		user := &pb.User{}
+		role := &pb.Role{}
+
+		err = rows.Scan(
+			&user.Id,
+			&user.Username,
+			&user.FirstName,
+			&user.LastName,
+			&user.Phone,
+			&user.Email,
+			&user.CountryId,
+			&user.CityId,
+			&user.Gender,
+			&role.Id,
+			&role.RoleType,
+			&role.JournalId,
+		)
+		if err != nil {
+			return res, err
+		}
+
+		if _, ok := m[user.GetId()]; ok {
+			val := m[user.GetId()]
+			val.Role = append(val.Role, role)
+			m[user.GetId()] = val
+		} else {
+			user.Role = append(user.Role, role)
+			m[user.GetId()] = user
+		}
+	}
+
+	for _, v := range m {
+		res.Users = append(res.Users, v)
+	}
+
+	return res, nil
+}
+
 func (s *UserRepo) Update(ctx context.Context, req *pb.User) (rowsAffected int64, err error) {
 	query := `UPDATE "user" SET                
     	username = :username,           
@@ -290,7 +433,7 @@ func (s *UserRepo) Update(ctx context.Context, req *pb.User) (rowsAffected int64
 	return rowsAffected, err
 }
 func (s *UserRepo) Delete(ctx context.Context, req *pb.DeleteUserReq) (rowsAffected int64, err error) {
-	query := `DELETE FROM "user" WHERE id = $1`
+	query := `DELETE CASCADE FROM "user" WHERE id = $1`
 
 	result, err := s.db.Exec(ctx, query, req.GetId())
 	if err != nil {

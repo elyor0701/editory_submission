@@ -20,6 +20,7 @@ message User {
   string address = 14;
   string post_code = 15;
   string gender = 16;
+  repeated Role role = 17;
 }
 
 message Token {

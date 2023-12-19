@@ -5,7 +5,6 @@ option go_package="genproto/auth_service";
 
 import "auth.proto";
 import "google/protobuf/empty.proto";
-import "google/protobuf/struct.proto";
 
 service SessionService {
   rpc Login(LoginReq) returns (LoginRes) {}
