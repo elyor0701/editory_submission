@@ -302,7 +302,7 @@ func (h *Handler) SendVerificationMessageShared(c *gin.Context) error {
 // @Accept json
 // @Produce json
 // @Param data body models.EmailVerificationReq true "Data"
-// @Success 200  {object} http.Response{data=auth_service.EmailVerificationRes} "Status"
+// @Success 200  {object} http.Response{data=models.EmailVerificationRes} "Status"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) EmailVerification(c *gin.Context) {
@@ -316,7 +316,7 @@ func (h *Handler) EmailVerification(c *gin.Context) {
 		return
 	}
 
-	res, err := h.services.UserService().EmailVerification(
+	resp, err := h.services.UserService().EmailVerification(
 		c.Request.Context(),
 		&auth_service.EmailVerificationReq{
 			Email: data.Email,
@@ -326,6 +326,100 @@ func (h *Handler) EmailVerification(c *gin.Context) {
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
+	}
+
+	res := models.EmailVerificationRes{
+		Status: resp.GetStatus(),
+		UserId: resp.GetUserId(),
+	}
+
+	h.handleResponse(c, http.OK, res)
+}
+
+// GetAdminUserByID godoc
+// @ID get_admin_user_by_id
+// @Router /admin/user/{user-id} [GET]
+// @Summary Get User By ID
+// @Description Get User By ID
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param user-id path string true "user-id"
+// @Success 200 {object} http.Response{data=models.GetAdminUserRes} "UserBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetAdminUserByID(c *gin.Context) {
+	userID := c.Param("user-id")
+
+	if !util.IsValidUUID(userID) {
+		h.handleResponse(c, http.InvalidArgument, "user id is an invalid uuid")
+		return
+	}
+
+	resp, err := h.services.UserService().GetUser(
+		c.Request.Context(),
+		&auth_service.GetUserReq{
+			Id: userID,
+		},
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	user := models.GetAdminUserRes{
+		Gender:    resp.GetGender(),
+		FirstName: resp.GetFirstName(),
+		LastName:  resp.GetLastName(),
+		Email:     resp.GetEmail(),
+	}
+
+	h.handleResponse(c, http.OK, user)
+}
+
+// UpdateAdminUser godoc
+// @ID update_admin_user
+// @Router /admin/user [PUT]
+// @Summary Update User
+// @Description Update User
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param user body models.UpdateAdminUserReq true "UpdateUserRequestBody"
+// @Success 200 {object} http.Response{data=models.UpdateAdminUserRes} "User data"
+// @Response 400 {object} http.Response{data=string} "Bad Request"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) UpdateAdminUser(c *gin.Context) {
+	var user models.UpdateAdminUserReq
+
+	err := c.ShouldBindJSON(&user)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	resp, err := h.services.UserService().UpdateUser(
+		c.Request.Context(),
+		&auth_service.User{
+			Gender:    user.Gender,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+			Email:     user.LastName,
+		},
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	res := models.UpdateAdminUserRes{
+		Gender:    resp.GetGender(),
+		FirstName: resp.GetFirstName(),
+		LastName:  resp.GetLastName(),
+		Email:     resp.GetEmail(),
+		Password:  resp.GetPassword(),
 	}
 
 	h.handleResponse(c, http.OK, res)

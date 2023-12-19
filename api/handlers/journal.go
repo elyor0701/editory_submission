@@ -170,6 +170,8 @@ func (h *Handler) UpdateJournal(c *gin.Context) {
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) DeleteJournal(c *gin.Context) {
+	h.handleResponse(c, http.NoContent, "")
+	return
 	journalID := c.Param("journal-id")
 
 	if !util.IsValidUUID(journalID) {

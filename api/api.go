@@ -35,7 +35,9 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		r.GET("/config", h.GetConfig)
 		r.POST("/upload", h.Upload)
 
-		r.POST("/register") // @TODO with author
+		r.POST("/register/email")   // @TODO with author
+		r.POST("/register/verify")  // @TODO with author
+		r.POST("/register/details") // @TODO with author
 		r.POST("/login", h.Login)
 		r.DELETE("/logout", h.Logout)
 		r.PUT("/refresh", h.RefreshToken)
@@ -58,7 +60,7 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		journal := r.Group("/journal")
 		journal.GET("/:journal-id", h.GetJournalByID)
 		journal.PUT("", h.UpdateJournal)
-		journal.DELETE("/:journal-id", h.DeleteJournal)
+		journal.DELETE("/:journal-id", h.DeleteJournal) // @TODO
 
 		journal.POST("/:journal-id/article", h.CreateArticle)
 		journal.GET("/:journal-id/article", h.GetArticleList)
@@ -123,11 +125,8 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		admin.PUT("/email-template")
 		admin.DELETE("/email-template/:email-template-id")
 
-		admin.POST("/user")
-		admin.PUT("/user")
-		admin.GET("/user")
-		admin.GET("/user/:user-id")
-		admin.DELETE("/user/:user-id")
+		admin.PUT("/user", h.GetAdminUserByID)
+		admin.GET("/user/:user-id", h.UpdateAdminUser)
 	}
 
 	// swagger

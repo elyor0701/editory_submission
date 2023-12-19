@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -389,38 +390,79 @@ func (s *UserRepo) GetListWithRole(ctx context.Context, req *pb.GetUserListByRol
 }
 
 func (s *UserRepo) Update(ctx context.Context, req *pb.User) (rowsAffected int64, err error) {
-	query := `UPDATE "user" SET                
-    	username = :username,           
-    	first_name = :first_name,         
-    	last_name = :last_name,        
-    	phone = :phone,              
-    	extra_phone = :extra_phone,                              
-    	country_id = :country_id,         
-    	city_id = :city_id,            
-    	prof_sphere = :prof_sphere,        
-    	degree = :degree,             
-    	address = :address,            
-    	post_code = :post_code,
-    	gender = :gender
-	WHERE
-		id = :id OR email = :email`
+	fieldVal := make([]string, 0)
+	params := make(map[string]interface{})
+	querySet := `UPDATE "user" SET`
 
-	params := map[string]interface{}{
-		"username":    req.GetUsername(),
-		"first_name":  req.GetFirstName(),
-		"last_name":   req.GetLastName(),
-		"phone":       req.GetPhone(),
-		"extra_phone": util.NewNullString(req.GetExtraPhone()),
-		"country_id":  util.NewNullString(req.GetCountryId()),
-		"city_id":     util.NewNullString(req.GetCityId()),
-		"prof_sphere": req.GetProfSphere(),
-		"degree":      req.GetDegree(),
-		"address":     req.GetAddress(),
-		"post_code":   req.GetPostCode(),
-		"id":          req.GetId(),
-		"email":       req.GetEmail(),
-		"gender":      util.NewNullString(req.GetGender()),
+	filter := ` WHERE id = :id OR email = :email`
+	params["id"] = req.GetId()
+	params["email"] = req.GetEmail()
+
+	if req.GetUsername() != "" {
+		fieldVal = append(fieldVal, ` username = :username`)
+		params["username"] = req.GetUsername()
 	}
+
+	if req.GetFirstName() != "" {
+		fieldVal = append(fieldVal, ` first_name = :first_name`)
+		params["first_name"] = req.GetFirstName()
+	}
+
+	if req.GetLastName() != "" {
+		fieldVal = append(fieldVal, ` last_name = :last_name`)
+		params["last_name"] = req.GetLastName()
+	}
+
+	if req.GetPhone() != "" {
+		fieldVal = append(fieldVal, ` phone = :phone`)
+		params["phone"] = req.GetPhone()
+	}
+
+	if req.GetExtraPhone() != "" {
+		fieldVal = append(fieldVal, ` extra_phone = :extra_phone`)
+		params["extra_phone"] = req.GetExtraPhone()
+	}
+
+	if util.IsValidUUID(req.GetCountryId()) {
+		fieldVal = append(fieldVal, ` country_id = :country_id`)
+		params["country_id"] = req.GetCountryId()
+	}
+
+	if util.IsValidUUID(req.GetCityId()) {
+		fieldVal = append(fieldVal, ` city_id = :city_id`)
+		params["city_id"] = req.GetCityId()
+	}
+
+	if req.GetProfSphere() != "" {
+		fieldVal = append(fieldVal, ` prof_sphere = :prof_sphere`)
+		params["prof_sphere"] = req.GetProfSphere()
+	}
+
+	if req.GetDegree() != "" {
+		fieldVal = append(fieldVal, ` degree = :degree`)
+		params["degree"] = req.GetDegree()
+	}
+
+	if req.GetAddress() != "" {
+		fieldVal = append(fieldVal, ` address = :address`)
+		params["address"] = req.GetAddress()
+	}
+
+	if req.GetPostCode() != "" {
+		fieldVal = append(fieldVal, ` post_code = :post_code`)
+		params["post_code"] = req.GetPostCode()
+	}
+
+	if req.GetPhone() != "" {
+		fieldVal = append(fieldVal, ` gender = :gender`)
+		params["gender"] = req.GetGender()
+	}
+
+	querySet += strings.Join(fieldVal, ",")
+
+	query := querySet + filter
+
+	fmt.Println(query)
 
 	q, arr := helper.ReplaceQueryParams(query, params)
 	result, err := s.db.Exec(ctx, q, arr...)
