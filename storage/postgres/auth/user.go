@@ -478,7 +478,7 @@ func (s *UserRepo) Update(ctx context.Context, req *pb.User) (rowsAffected int64
 	return rowsAffected, err
 }
 func (s *UserRepo) Delete(ctx context.Context, req *pb.DeleteUserReq) (rowsAffected int64, err error) {
-	query := `DELETE CASCADE FROM "user" WHERE id = $1`
+	query := `DELETE FROM "user" WHERE id = $1`
 
 	result, err := s.db.Exec(ctx, query, req.GetId())
 	if err != nil {

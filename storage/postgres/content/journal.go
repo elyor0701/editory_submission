@@ -451,7 +451,7 @@ func (s *JournalRepo) GetSubject(ctx context.Context, in *pb.PrimaryKey) ([]*pb.
 }
 
 func (s *JournalRepo) DeleteSubject(ctx context.Context, in *pb.PrimaryKey) (rowsAffected int64, err error) {
-	query := `DELETE CASCADE FROM "journal_subject" WHERE journal_id = $1`
+	query := `DELETE FROM "journal_subject" WHERE journal_id = $1`
 
 	result, err := s.db.Exec(ctx, query, in.GetId())
 	if err != nil {

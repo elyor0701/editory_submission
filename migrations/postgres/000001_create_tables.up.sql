@@ -17,7 +17,6 @@ DROP TABLE IF EXISTS "country";
 DROP TABLE IF EXISTS "city";
 DROP TABLE IF EXISTS "university";
 DROP TABLE IF EXISTS "user";
-DROP TABLE IF EXISTS "keyword";
 DROP TABLE IF EXISTS "education";
 DROP TABLE IF EXISTS "session";
 DROP TABLE IF EXISTS "role";
@@ -36,6 +35,27 @@ CREATE TYPE "role_type" AS ENUM (
     'AUTHOR'
     );
 
+CREATE TYPE "journal_status" AS ENUM (
+    'ACTIVE',
+    'INACTIVE'
+    );
+
+CREATE TYPE "gender" AS ENUM (
+    'MALE',
+    'FEMALE'
+    );
+
+CREATE TYPE "journal_data_type" AS ENUM (
+    'EDITOR_SPOTLIGHT',
+    'SPECIAL_ISSUE',
+    'ABOUT_JOURNAL',
+    'EDITORIAL_BARD',
+    'PEER_REVIEW_PROCESS',
+    'PUBLICATION_ETHICS',
+    'ABSTRACTING_INDEXING',
+    'ARTICLE_PROCESSING_CHARGES'
+    );
+
 CREATE TABLE "journal" (
                            "id" uuid PRIMARY KEY,
                            "cover_photo" varchar(255),
@@ -45,14 +65,29 @@ CREATE TABLE "journal" (
                            "price" int,
                            "isbn" varchar(255) not null unique,
                            "author" varchar(255),
+                            "status" journal_status default 'ACTIVE' not null,
+                           "acceptance_rate" varchar,
+                            "submission_to_final_decision" varchar,
+                           "acceptance_to_publication" varchar,
+                           "citation_indicator" varchar,
+                           "impact_factor" varchar,
+                           "short_description" varchar,
                            "created_at" timestamp default CURRENT_TIMESTAMP,
                            "updated_at" timestamp default CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "journal_data" (
+                                journal_id UUID NOT NULL,
+                                short_desc varchar,
+                                text TEXT,
+                                type "journal_data_type" NOT NULL,
+                                UNIQUE ("journal_id", "type")
 );
 
 CREATE TABLE "article" (
                            "id" uuid PRIMARY KEY,
                            "journal_id" uuid not null,
-                           "article_type" varchar(255),
+                           "type" varchar(255),
                            "title" varchar(255),
                            "author_id" uuid,
                            "description" text,
@@ -60,10 +95,21 @@ CREATE TABLE "article" (
                            "updated_at" timestamp default CURRENT_TIMESTAMP
 );
 
+CREATE TABLE "edition" (
+                           id UUID PRIMARY KEY,
+                           edition INT NOT NULL,
+                           file VARCHAR,
+                           journal_id UUID NOT NULL,
+                            title varchar(255),
+                            description varchar,
+                           created_at TIMESTAMP DEFAULT current_timestamp,
+                           updated_at TIMESTAMP DEFAULT current_timestamp
+);
+
 CREATE TABLE "file" (
                         "id" uuid PRIMARY KEY,
                         "url" varchar not null,
-                        "file_type" file_type,
+                        "type" file_type,
                         "draft_id" uuid,
                         "article_id" uuid
 );
@@ -87,13 +133,17 @@ CREATE TABLE "journal_subject" (
 
 CREATE TABLE "country" (
                            "id" uuid PRIMARY KEY,
-                           "title" varchar(255)
+                           "title" varchar(255),
+                            "title_ru" varchar,
+                            "title_uz" varchar
 );
 
 CREATE TABLE "city" (
                         "id" uuid PRIMARY KEY,
                         "title" varchar(255),
-                        "country_id" uuid
+                        "country_id" uuid,
+                        "title_ru" varchar,
+                        "title_uz" varchar
 );
 
 CREATE TABLE "university" (
@@ -118,14 +168,10 @@ CREATE TABLE "user" (
                         "degree" varchar(255),
                         "address" varchar(255),
                         "post_code" varchar(255),
+                        "gender" gender,
+                        "is_completed" boolean,
                         "created_at" timestamp default CURRENT_TIMESTAMP,
                         "updated_at" timestamp default CURRENT_TIMESTAMP
-);
-
-CREATE TABLE "keyword" (
-                           "id" uuid PRIMARY KEY,
-                           "word" varchar(255),
-                           "user_id" uuid
 );
 
 CREATE TABLE "education" (
@@ -155,36 +201,48 @@ CREATE TABLE "role" (
                         "journal_id" uuid
 );
 
-ALTER TABLE "article" ADD FOREIGN KEY ("journal_id") REFERENCES "journal" ("id");
+create table email_verification (
+                        email varchar(255) not null,
+                        token varchar not null,
+                        sent bool default false,
+                        expires_at timestamp default CURRENT_TIMESTAMP + INTERVAL '1 day',
+                        created_at timestamp default CURRENT_TIMESTAMP,
+                        "user_id" UUID not null,
+                        UNIQUE(email, token)
+);
 
-ALTER TABLE "article" ADD FOREIGN KEY ("author_id") REFERENCES "user" ("id");
+ALTER TABLE "article" ADD FOREIGN KEY ("journal_id") REFERENCES "journal" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "file" ADD FOREIGN KEY ("article_id") REFERENCES "article" ("id");
+ALTER TABLE "article" ADD FOREIGN KEY ("author_id") REFERENCES "user" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "coauthor" ADD FOREIGN KEY ("article_id") REFERENCES "article" ("id");
+ALTER TABLE "file" ADD FOREIGN KEY ("article_id") REFERENCES "article" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "coauthor" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "coauthor" ADD FOREIGN KEY ("article_id") REFERENCES "article" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "journal_subject" ADD FOREIGN KEY ("journal_id") REFERENCES "journal" ("id");
+ALTER TABLE "coauthor" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "journal_subject" ADD FOREIGN KEY ("subject_id") REFERENCES "subject" ("id");
+ALTER TABLE "journal_subject" ADD FOREIGN KEY ("journal_id") REFERENCES "journal" ("id") ON DELETE CASCADE ;
 
-ALTER TABLE "city" ADD FOREIGN KEY ("country_id") REFERENCES "country" ("id");
+ALTER TABLE "journal_subject" ADD FOREIGN KEY ("subject_id") REFERENCES "subject" ("id") ON DELETE CASCADE ;
 
-ALTER TABLE "user" ADD FOREIGN KEY ("country_id") REFERENCES "country" ("id");
+ALTER TABLE "city" ADD FOREIGN KEY ("country_id") REFERENCES "country" ("id") ON DELETE SET NULL ;
 
-ALTER TABLE "user" ADD FOREIGN KEY ("city_id") REFERENCES "city" ("id");
+ALTER TABLE "user" ADD FOREIGN KEY ("country_id") REFERENCES "country" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "keyword" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "user" ADD FOREIGN KEY ("city_id") REFERENCES "city" ("id") ON DELETE SET NULL;
 
-ALTER TABLE "education" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "education" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id") ON DELETE CASCADE ;
 
-ALTER TABLE "education" ADD FOREIGN KEY ("university_id") REFERENCES "university" ("id");
+ALTER TABLE "education" ADD FOREIGN KEY ("university_id") REFERENCES "university" ("id") ON DELETE CASCADE ;
 
-ALTER TABLE "session" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "session" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id") ON DELETE CASCADE ;
 
-ALTER TABLE "session" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id");
+ALTER TABLE "session" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id") ON DELETE CASCADE ;
 
-ALTER TABLE "role" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id");
+ALTER TABLE "role" ADD FOREIGN KEY ("user_id") REFERENCES "user" ("id") ON DELETE CASCADE ;
 
-ALTER TABLE "role" ADD FOREIGN KEY ("journal_id") REFERENCES "journal" ("id");
+ALTER TABLE "role" ADD FOREIGN KEY ("journal_id") REFERENCES "journal" ("id") ON DELETE CASCADE ;
+
+ALTER TABLE "journal_data" ADD FOREIGN KEY ("journal_id") REFERENCES "journal" ("id") on delete cascade ;
+
+ALTER TABLE edition ADD FOREIGN KEY ("journal_id") REFERENCES journal("id") on delete set null ;
