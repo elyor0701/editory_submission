@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"database/sql"
 	"editory_submission/config"
 	pb "editory_submission/genproto/auth_service"
 	"editory_submission/pkg/helper"
@@ -12,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v4"
 	"strings"
 	"time"
 
@@ -221,7 +221,7 @@ func (s *UserRepo) GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb
 
 	q, arr = helper.ReplaceQueryParams(q, params)
 	rows, err := s.db.Query(ctx, q, arr...)
-	if errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, pgx.ErrNoRows) {
 		return res, nil
 	} else if err != nil {
 		return nil, err
@@ -337,7 +337,7 @@ func (s *UserRepo) GetListWithRole(ctx context.Context, req *pb.GetUserListByRol
 	err = s.db.QueryRow(ctx, cQ, arr...).Scan(
 		&res.Count,
 	)
-	if errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, pgx.ErrNoRows) {
 		return res, nil
 	} else if err != nil {
 		return nil, err
@@ -348,7 +348,7 @@ func (s *UserRepo) GetListWithRole(ctx context.Context, req *pb.GetUserListByRol
 	uQ, arr = helper.ReplaceQueryParams(uQ, params)
 
 	rows, err := s.db.Query(ctx, uQ, arr...)
-	if errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, pgx.ErrNoRows) {
 		return res, nil
 	} else if err != nil {
 		return nil, err

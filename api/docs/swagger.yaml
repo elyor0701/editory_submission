@@ -115,6 +115,13 @@ definitions:
       last_name:
         type: string
     type: object
+  editory_submission_api_models.LoginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   editory_submission_api_models.RegisterDetailReq:
     properties:
       address:
@@ -282,17 +289,14 @@ definitions:
       user_id:
         type: string
     type: object
-  editory_submission_genproto_auth_service.LoginReq:
-    properties:
-      email:
-        type: string
-      password:
-        type: string
-    type: object
   editory_submission_genproto_auth_service.LoginRes:
     properties:
-      role:
-        $ref: '#/definitions/editory_submission_genproto_auth_service.Role'
+      role_id:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_auth_service.Role'
+        type: array
       sessions:
         items:
           $ref: '#/definitions/editory_submission_genproto_auth_service.Session'
@@ -3404,12 +3408,17 @@ paths:
       description: Login
       operationId: login
       parameters:
+      - description: X-Role [USER, ADMIN]
+        in: header
+        name: X-Role
+        required: true
+        type: string
       - description: LoginRequestBody
         in: body
         name: login
         required: true
         schema:
-          $ref: '#/definitions/editory_submission_genproto_auth_service.LoginReq'
+          $ref: '#/definitions/editory_submission_api_models.LoginReq'
       produces:
       - application/json
       responses:

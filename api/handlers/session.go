@@ -6,6 +6,8 @@ import (
 	"editory_submission/genproto/auth_service"
 
 	"github.com/gin-gonic/gin"
+
+	"editory_submission/api/models"
 )
 
 // Login godoc
@@ -16,21 +18,28 @@ import (
 // @Tags Session
 // @Accept json
 // @Produce json
-// @Param login body auth_service.LoginReq true "LoginRequestBody"
+// @Param X-Role header string true "X-Role [USER, ADMIN]"
+// @Param login body models.LoginReq true "LoginRequestBody"
 // @Success 201 {object} http.Response{data=auth_service.LoginRes} "User data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) Login(c *gin.Context) {
-	var login auth_service.LoginReq
+	var login models.LoginReq
 	err := c.ShouldBindJSON(&login)
 	if err != nil {
 		h.handleResponse(c, http.BadRequest, err.Error())
 		return
 	}
 
+	loginPb := auth_service.LoginReq{
+		Email:    login.Email,
+		Password: login.Password,
+		XRole:    c.GetHeader("X-Role"),
+	}
+
 	resp, err := h.services.SessionService().Login(
 		c.Request.Context(),
-		&login,
+		&loginPb,
 	)
 
 	if err != nil {

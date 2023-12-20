@@ -3298,12 +3298,19 @@ const docTemplate = `{
                 "operationId": "login",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "X-Role [USER, ADMIN]",
+                        "name": "X-Role",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "LoginRequestBody",
                         "name": "login",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/editory_submission_genproto_auth_service.LoginReq"
+                            "$ref": "#/definitions/editory_submission_api_models.LoginReq"
                         }
                     }
                 ],
@@ -4720,6 +4727,17 @@ const docTemplate = `{
                 }
             }
         },
+        "editory_submission_api_models.LoginReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "editory_submission_api_models.RegisterDetailReq": {
             "type": "object",
             "properties": {
@@ -4976,22 +4994,17 @@ const docTemplate = `{
                 }
             }
         },
-        "editory_submission_genproto_auth_service.LoginReq": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                }
-            }
-        },
         "editory_submission_genproto_auth_service.LoginRes": {
             "type": "object",
             "properties": {
-                "role": {
-                    "$ref": "#/definitions/editory_submission_genproto_auth_service.Role"
+                "role_id": {
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_auth_service.Role"
+                    }
                 },
                 "sessions": {
                     "type": "array",

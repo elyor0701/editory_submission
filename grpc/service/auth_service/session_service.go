@@ -10,6 +10,7 @@ import (
 	"editory_submission/pkg/util"
 	"editory_submission/storage"
 	"errors"
+	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -78,13 +79,38 @@ func (s *sessionService) Login(ctx context.Context, req *pb.LoginReq) (*pb.Login
 	res.UserFound = true
 	res.User = user
 
-	//role, err := s.strg.Role().GetByPK(ctx, &pb.RolePrimaryKey{Id: user.RoleId})
-	//if err != nil {
-	//	s.log.Error("!!!Login--->", logger.Error(err))
-	//	return nil, status.Error(codes.InvalidArgument, err.Error())
-	//}
-	//
-	//res.Role = role
+	roleTypes := make([]string, 0)
+
+	if req.GetXRole() == config.ADMIN {
+		roleTypes = []string{config.SUPERADMIN, config.EDITOR}
+	} else if req.GetXRole() == config.USER {
+		roleTypes = []string{config.AUTHOR}
+	} else {
+		err := errors.New("not valid user type")
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	roles, err := s.strg.Auth().Role().GetList(
+		ctx,
+		&pb.GetRoleListReq{ // @TODO limit offset
+			UserId:    user.GetId(),
+			RoleTypes: roleTypes,
+		},
+	)
+	if err != nil {
+		s.log.Error("!!!Login--->", logger.Error(err))
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	res.Roles = roles.GetRoles()
+
+	if len(roles.GetRoles()) == 0 {
+		err := errors.New("permission denied")
+		s.log.Error("!!!Login--->", logger.Error(err))
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	} else if len(roles.GetRoles()) == 1 {
+		res.RoleId = roles.GetRoles()[0].GetId()
+	}
 
 	s.log.Info("Login--->STRG: DeleteExpiredUserSessions", logger.Any("user_id", user.Id))
 	rowsAffected, err := s.strg.Auth().Session().DeleteExpiredUserSessions(ctx, user.Id)
@@ -103,8 +129,8 @@ func (s *sessionService) Login(ctx context.Context, req *pb.LoginReq) (*pb.Login
 	res.Sessions = userSessionList.Sessions
 
 	sessionPKey, err := s.strg.Auth().Session().Create(ctx, &pb.CreateSessionReq{
-		UserId: user.Id,
-		//RoleId:           user.Role,
+		UserId:    user.Id,
+		RoleId:    res.GetRoleId(),
 		Ip:        "0.0.0.0",
 		Data:      "additional json data",
 		ExpiresAt: time.Now().Add(config.RefreshTokenExpiresInTime).Format(config.DatabaseTimeLayout),
@@ -151,6 +177,7 @@ func (s *sessionService) Login(ctx context.Context, req *pb.LoginReq) (*pb.Login
 }
 
 func (s *sessionService) Logout(ctx context.Context, req *pb.LogoutReq) (*emptypb.Empty, error) {
+	s.log.Info("---Logout--->", logger.Any("req", req))
 	tokenInfo, err := security.ParseClaims(req.AccessToken, s.cfg.SecretKey)
 	if err != nil {
 		s.log.Error("!!!Logout--->", logger.Error(err))
@@ -196,7 +223,7 @@ func (s *sessionService) RefreshToken(ctx context.Context, req *pb.RefreshTokenR
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	if req.RoleId != "" {
+	if util.IsValidUUID(req.GetRoleId()) {
 		session.RoleId = req.RoleId
 	}
 
@@ -213,16 +240,10 @@ func (s *sessionService) RefreshToken(ctx context.Context, req *pb.RefreshTokenR
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	user, err := s.strg.Auth().User().Get(ctx, &pb.GetUserReq{
+	_, err = s.strg.Auth().User().Get(ctx, &pb.GetUserReq{
 		Id: session.UserId,
 	})
 	if err != nil {
-		s.log.Error("!!!RefreshToken--->", logger.Error(err))
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	if !user.GetEmailVerification() {
-		err := errors.New("email is not activated yet")
 		s.log.Error("!!!RefreshToken--->", logger.Error(err))
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
@@ -256,7 +277,6 @@ func (s *sessionService) RefreshToken(ctx context.Context, req *pb.RefreshTokenR
 }
 
 func (s *sessionService) HasAccess(ctx context.Context, req *pb.HasAccessReq) (*pb.HasAccessRes, error) {
-
 	tokenInfo, err := security.ParseClaims(req.AccessToken, s.cfg.SecretKey)
 	if err != nil {
 		s.log.Error("!!!HasAccess--->", logger.Error(err))
@@ -273,6 +293,13 @@ func (s *sessionService) HasAccess(ctx context.Context, req *pb.HasAccessReq) (*
 		Id: tokenInfo.ID,
 	})
 	if err != nil {
+		s.log.Error("!!!HasAccess--->", logger.Error(err))
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+	fmt.Println(session)
+
+	if !util.IsValidUUID(session.GetRoleId()) {
+		err := errors.New("not valid session role")
 		s.log.Error("!!!HasAccess--->", logger.Error(err))
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}

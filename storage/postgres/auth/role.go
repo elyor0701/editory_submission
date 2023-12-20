@@ -121,9 +121,9 @@ func (s *RoleRepo) GetList(ctx context.Context, req *pb.GetRoleListReq) (res *pb
 		filter += ` AND journal_id = :journal_id`
 	}
 
-	if req.GetRoleType() != "" {
-		params["role_type"] = req.GetRoleType()
-		filter += ` AND role_type = :role_type`
+	if len(req.GetRoleTypes()) != 0 {
+		params["role_types"] = req.GetRoleTypes()
+		filter += ` AND role_type = ANY(:role_types)`
 	}
 
 	if req.Offset > 0 {

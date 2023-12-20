@@ -12,9 +12,16 @@ const (
 )
 
 const (
+	// user types
 	EDITOR      = `EDITOR`
 	SUPERADMIN  = `SUPERADMIN`
 	PROOFREADER = `PROOFREADER`
 	REVIEWER    = `REVIEWER`
 	AUTHOR      = `AUTHOR`
+)
+
+const (
+	// platfrom types
+	ADMIN = `ADMIN`
+	USER  = `USER`
 )

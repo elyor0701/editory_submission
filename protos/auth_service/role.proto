@@ -24,7 +24,7 @@ message GetRoleListReq {
   int32 offset = 2;
   string search = 3;
   string user_id = 4;
-  string role_type = 5;
+  repeated string role_types = 5;
   string journal_id = 6;
 }
 
