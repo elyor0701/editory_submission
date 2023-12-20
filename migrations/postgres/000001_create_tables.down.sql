@@ -23,7 +23,7 @@ DROP TYPE IF EXISTS "status_editor";
 DROP TYPE IF EXISTS "status_reviewer";
 DROP TYPE IF EXISTS "step";
 DROP TYPE IF EXISTS "file_type";
-DROP TYPE IF EXISTS "role";
+DROP TYPE IF EXISTS "role_type";
 DROP TYPE IF EXISTS "journal_status";
 DROP TYPE IF EXISTS "journal_data_type";
 DROP TYPE IF EXISTS "gender";
