@@ -337,8 +337,10 @@ func (s *UserRepo) GetListWithRole(ctx context.Context, req *pb.GetUserListByRol
 	err = s.db.QueryRow(ctx, cQ, arr...).Scan(
 		&res.Count,
 	)
-	if err != nil {
-		return res, err
+	if errors.Is(err, sql.ErrNoRows) {
+		return res, nil
+	} else if err != nil {
+		return nil, err
 	}
 
 	uQ := fmt.Sprintf("WITH user_filtered_list AS (%s%s%s%s%s) %s", with, filter, groupBy, offset, limit, query)
