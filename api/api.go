@@ -31,6 +31,7 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		r.GET("/university", h.GetUniversityList)
 		r.GET("/city", h.GetCityList)
 		r.GET("/subject", h.GetSubjectList)
+		r.GET("/keyword", h.GetKeywordList)
 		r.GET("/ping", h.Ping)
 		r.GET("/config", h.GetConfig)
 		r.POST("/upload", h.Upload)
@@ -121,17 +122,17 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		admin.POST("/author", h.CreateAdminAuthor)
 		admin.PUT("/author", h.UpdateAdminAuthor)
 
-		admin.POST("/keyword")
-		admin.GET("/keyword")
-		admin.GET("/keyword/:keyword-id")
-		admin.PUT("/keyword")
-		admin.DELETE("/keyword/:keyword-id")
+		admin.POST("/keyword", h.CreateAdminKeyword)
+		admin.GET("/keyword", h.GetAdminKeywordList)
+		admin.GET("/keyword/:keyword-id", h.GetAdminKeywordByID)
+		admin.PUT("/keyword", h.UpdateAdminKeyword)
+		admin.DELETE("/keyword/:keyword-id", h.DeleteAdminKeyword)
 
-		admin.POST("/email/template")
-		admin.GET("/email/template")
-		admin.GET("/email/template/:template-id")
-		admin.PUT("/email/template")
-		admin.DELETE("/email/template/:template-id")
+		admin.POST("/email/template", h.CreateAdminEmailTmp)
+		admin.GET("/email/template", h.GetAdminEmailTmpList)
+		admin.GET("/email/template/:template-id", h.GetAdminEmailTmpByID)
+		admin.PUT("/email/template", h.UpdateAdminEmailTmp)
+		admin.DELETE("/email/template/:template-id", h.DeleteAdminEmailTmp)
 	}
 
 	// swagger

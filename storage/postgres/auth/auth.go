@@ -11,6 +11,7 @@ type authRepo struct {
 	user    storage.UserRepoI
 	session storage.SessionRepoI
 	role    storage.RoleRepoI
+	keyword storage.KeywordRepoI
 }
 
 func NewAuthRepo(db *pgxpool.Pool) storage.AuthRepoI {
@@ -41,4 +42,12 @@ func (s *authRepo) Role() storage.RoleRepoI {
 	}
 
 	return s.role
+}
+
+func (s *authRepo) Keyword() storage.KeywordRepoI {
+	if s.keyword == nil {
+		s.keyword = NewKeywordRepo(s.db)
+	}
+
+	return s.keyword
 }

@@ -1,0 +1,62 @@
+syntax="proto3";
+
+package auth_service;
+option go_package="genproto/auth_service";
+
+import "google/protobuf/empty.proto";
+
+service KeywordService {
+  rpc CreateKeyword(CreateKeywordReq) returns (CreateKeywordRes) {}
+  rpc GetKeyword(GetKeywordReq) returns (GetKeywordRes) {}
+  rpc GetKeywordList(GetKeywordListReq) returns (GetKeywordListRes) {}
+  rpc UpdateKeyword(UpdateKeywordReq) returns (UpdateKeywordRes) {}
+  rpc DeleteKeyword(DeleteKeywordReq) returns (google.protobuf.Empty) {}
+}
+
+message Keyword {
+  string id = 1;
+  string title = 2;
+}
+
+message CreateKeywordReq {
+  string title = 1;
+}
+
+message CreateKeywordRes {
+  string id = 1;
+  string title = 2;
+}
+
+message GetKeywordReq {
+  string id = 1;
+}
+
+message GetKeywordRes {
+  string id = 1;
+  string title = 2;
+}
+
+message GetKeywordListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+}
+
+message GetKeywordListRes {
+  repeated Keyword keywords = 1;
+  int32 count = 2;
+}
+
+message UpdateKeywordReq {
+  string id = 1;
+  string title = 2;
+}
+
+message UpdateKeywordRes {
+  string id = 1;
+  string title = 2;
+}
+
+message DeleteKeywordReq {
+  string id = 1;
+}

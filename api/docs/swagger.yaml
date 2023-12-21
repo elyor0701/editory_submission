@@ -304,6 +304,34 @@ definitions:
       password:
         type: string
     type: object
+  editory_submission_genproto_auth_service.CreateKeywordReq:
+    properties:
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.CreateKeywordRes:
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.GetKeywordListRes:
+    properties:
+      count:
+        type: integer
+      keywords:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_auth_service.Keyword'
+        type: array
+    type: object
+  editory_submission_genproto_auth_service.GetKeywordRes:
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+    type: object
   editory_submission_genproto_auth_service.GetUserListRes:
     properties:
       count:
@@ -339,6 +367,13 @@ definitions:
       updated_at:
         type: string
       user_id:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.Keyword:
+    properties:
+      id:
+        type: string
+      title:
         type: string
     type: object
   editory_submission_genproto_auth_service.LoginRes:
@@ -420,6 +455,20 @@ definitions:
       refresh_token:
         type: string
       updated_at:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.UpdateKeywordReq:
+    properties:
+      id:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_auth_service.UpdateKeywordRes:
+    properties:
+      id:
+        type: string
+      title:
         type: string
     type: object
   editory_submission_genproto_auth_service.User:
@@ -816,6 +865,103 @@ definitions:
       logo:
         type: string
       title:
+        type: string
+    type: object
+  editory_submission_genproto_notification_service.CreateEmailTmpReq:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  editory_submission_genproto_notification_service.CreateEmailTmpRes:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  editory_submission_genproto_notification_service.EmailTmp:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  editory_submission_genproto_notification_service.GetEmailTmpListRes:
+    properties:
+      count:
+        type: integer
+      email_tmps:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_notification_service.EmailTmp'
+        type: array
+    type: object
+  editory_submission_genproto_notification_service.GetEmailTmpRes:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  editory_submission_genproto_notification_service.UpdateEmailTmpReq:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  editory_submission_genproto_notification_service.UpdateEmailTmpRes:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+      type:
         type: string
     type: object
   http.Header:
@@ -2237,6 +2383,230 @@ paths:
       summary: Get Editor By ID
       tags:
       - Admin
+  /admin/email/template:
+    get:
+      consumes:
+      - application/json
+      description: Get EmailTmp List
+      operationId: get_admin_email_template_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetEmailTmpListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_notification_service.GetEmailTmpListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get EmailTmp List
+      tags:
+      - Admin
+    post:
+      consumes:
+      - application/json
+      description: Create EmailTmp
+      operationId: create_email_template
+      parameters:
+      - description: CreateEmailTmpRequestBody
+        in: body
+        name: email_template
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_notification_service.CreateEmailTmpReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: EmailTmp data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_notification_service.CreateEmailTmpRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create EmailTmp
+      tags:
+      - Admin
+    put:
+      consumes:
+      - application/json
+      description: Update EmailTmp
+      operationId: update_email_template
+      parameters:
+      - description: UpdateEmailTmpRequestBody
+        in: body
+        name: email_template
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_notification_service.UpdateEmailTmpReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: EmailTmp data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_notification_service.UpdateEmailTmpRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update EmailTmp
+      tags:
+      - Admin
+  /admin/email/template/{template-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Get EmailTmp
+      operationId: delete_email_template
+      parameters:
+      - description: template-id
+        in: path
+        name: template-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete EmailTmp
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get EmailTmp By ID
+      operationId: get_admin_email_template_by_id
+      parameters:
+      - description: template-id
+        in: path
+        name: template-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: EmailTmpBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_notification_service.GetEmailTmpRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get EmailTmp By ID
+      tags:
+      - Admin
   /admin/journal:
     get:
       consumes:
@@ -2477,6 +2847,230 @@ paths:
                   type: string
               type: object
       summary: Get Journal By ID
+      tags:
+      - Admin
+  /admin/keyword:
+    get:
+      consumes:
+      - application/json
+      description: Get Keyword List
+      operationId: get_admin_keyword_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetKeywordListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_auth_service.GetKeywordListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Keyword List
+      tags:
+      - Admin
+    post:
+      consumes:
+      - application/json
+      description: Create Keyword
+      operationId: create_keyword
+      parameters:
+      - description: CreateKeywordRequestBody
+        in: body
+        name: keyword
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_auth_service.CreateKeywordReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Keyword data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_auth_service.CreateKeywordRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Keyword
+      tags:
+      - Admin
+    put:
+      consumes:
+      - application/json
+      description: Update Keyword
+      operationId: update_keyword
+      parameters:
+      - description: UpdateKeywordRequestBody
+        in: body
+        name: keyword
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_auth_service.UpdateKeywordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Keyword data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_auth_service.UpdateKeywordRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Keyword
+      tags:
+      - Admin
+  /admin/keyword/{keyword-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Get Keyword
+      operationId: delete_keyword
+      parameters:
+      - description: keyword-id
+        in: path
+        name: keyword-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Keyword
+      tags:
+      - Admin
+    get:
+      consumes:
+      - application/json
+      description: Get Keyword By ID
+      operationId: get_admin_keyword_by_id
+      parameters:
+      - description: keyword-id
+        in: path
+        name: keyword-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: KeywordBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_auth_service.GetKeywordRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Keyword By ID
       tags:
       - Admin
   /admin/subject:
@@ -3980,6 +4574,58 @@ paths:
       summary: Get User By ID
       tags:
       - Journal
+  /keyword:
+    get:
+      consumes:
+      - application/json
+      description: Get Keyword List
+      operationId: get_keyword_list
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetSubjectListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_auth_service.GetKeywordListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Keyword List
+      tags:
+      - General
   /login:
     post:
       consumes:

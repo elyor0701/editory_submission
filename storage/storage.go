@@ -4,6 +4,7 @@ import (
 	"context"
 	pb "editory_submission/genproto/auth_service"
 	cs_pb "editory_submission/genproto/content_service"
+	"editory_submission/genproto/notification_service"
 	"editory_submission/storage/postgres/models"
 )
 
@@ -11,12 +12,14 @@ type StorageI interface {
 	CloseDB()
 	Auth() AuthRepoI
 	Content() ContentRepoI
+	Notification() NotificationRepoI
 }
 
 type AuthRepoI interface {
 	User() UserRepoI
 	Session() SessionRepoI
 	Role() RoleRepoI
+	Keyword() KeywordRepoI
 }
 
 type ContentRepoI interface {
@@ -26,6 +29,11 @@ type ContentRepoI interface {
 	CountryAndCity() CountryAndCityRepoI
 	University() UniversityRepoI
 	Subject() SubjectRepoI
+}
+
+type NotificationRepoI interface {
+	Notification() NotifyRepoI
+	EmailTemplate() EmailTemplateRepoI
 }
 
 type UserRepoI interface {
@@ -109,4 +117,28 @@ type RoleRepoI interface {
 	GetList(ctx context.Context, req *pb.GetRoleListReq) (res *pb.GetRoleListRes, err error)
 	Update(ctx context.Context, req *pb.Role) (rowsAffected int64, err error)
 	Delete(ctx context.Context, req *pb.DeleteRoleReq) (rowsAffected int64, err error)
+}
+
+type NotifyRepoI interface {
+	Create(ctx context.Context, in *notification_service.CreateNotificationReq) (*notification_service.CreateNotificationRes, error)
+	Get(ctx context.Context, in *notification_service.GetNotificationReq) (*notification_service.GetNotificationRes, error)
+	GetList(ctx context.Context, in *notification_service.GetNotificationListReq) (*notification_service.GetNotificationListRes, error)
+	Update(ctx context.Context, in *notification_service.UpdateNotificationReq) (*notification_service.UpdateNotificationRes, error)
+	Delete(ctx context.Context, in *notification_service.DeleteNotificationReq) (rowsAffected int64, err error)
+}
+
+type EmailTemplateRepoI interface {
+	Create(ctx context.Context, in *notification_service.CreateEmailTmpReq) (*notification_service.CreateEmailTmpRes, error)
+	Get(ctx context.Context, in *notification_service.GetEmailTmpReq) (*notification_service.GetEmailTmpRes, error)
+	GetList(ctx context.Context, in *notification_service.GetEmailTmpListReq) (*notification_service.GetEmailTmpListRes, error)
+	Update(ctx context.Context, in *notification_service.UpdateEmailTmpReq) (*notification_service.UpdateEmailTmpRes, error)
+	Delete(ctx context.Context, in *notification_service.DeleteEmailTmpReq) (rowsAffected int64, err error)
+}
+
+type KeywordRepoI interface {
+	Create(ctx context.Context, in *pb.CreateKeywordReq) (*pb.CreateKeywordRes, error)
+	Get(ctx context.Context, in *pb.GetKeywordReq) (*pb.GetKeywordRes, error)
+	GetList(ctx context.Context, in *pb.GetKeywordListReq) (*pb.GetKeywordListRes, error)
+	Update(ctx context.Context, in *pb.UpdateKeywordReq) (*pb.UpdateKeywordRes, error)
+	Delete(ctx context.Context, in *pb.DeleteKeywordReq) (rowsAffected int64, err error)
 }

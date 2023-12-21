@@ -4,6 +4,7 @@ import (
 	"editory_submission/config"
 	"editory_submission/genproto/auth_service"
 	"editory_submission/genproto/content_service"
+	"editory_submission/genproto/notification_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -12,9 +13,12 @@ type ServiceManagerI interface {
 	UserService() auth_service.UserServiceClient
 	SessionService() auth_service.SessionServiceClient
 	RoleService() auth_service.RoleServiceClient
+	KeywordService() auth_service.KeywordServiceClient
 	ContentService() content_service.ContentServiceClient
 	UniversityService() content_service.UniversityServiceClient
 	SubjectService() content_service.SubjectServiceClient
+	NotificationService() notification_service.NotificationServiceClient
+	EmailTmpService() notification_service.EmailTmpServiceClient
 }
 
 type grpcClients struct {
@@ -22,11 +26,16 @@ type grpcClients struct {
 	userService    auth_service.UserServiceClient
 	sessionService auth_service.SessionServiceClient
 	roleService    auth_service.RoleServiceClient
+	keywordService auth_service.KeywordServiceClient
 
 	// content
 	contentService    content_service.ContentServiceClient
 	universityService content_service.UniversityServiceClient
 	subjectService    content_service.SubjectServiceClient
+
+	// notification
+	notificationService notification_service.NotificationServiceClient
+	emailTmpService     notification_service.EmailTmpServiceClient
 }
 
 func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
@@ -40,12 +49,15 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 	}
 
 	return &grpcClients{
-		userService:       auth_service.NewUserServiceClient(connAuthService),
-		sessionService:    auth_service.NewSessionServiceClient(connAuthService),
-		roleService:       auth_service.NewRoleServiceClient(connAuthService),
-		contentService:    content_service.NewContentServiceClient(connAuthService),
-		universityService: content_service.NewUniversityServiceClient(connAuthService),
-		subjectService:    content_service.NewSubjectServiceClient(connAuthService),
+		userService:         auth_service.NewUserServiceClient(connAuthService),
+		sessionService:      auth_service.NewSessionServiceClient(connAuthService),
+		roleService:         auth_service.NewRoleServiceClient(connAuthService),
+		keywordService:      auth_service.NewKeywordServiceClient(connAuthService),
+		contentService:      content_service.NewContentServiceClient(connAuthService),
+		universityService:   content_service.NewUniversityServiceClient(connAuthService),
+		subjectService:      content_service.NewSubjectServiceClient(connAuthService),
+		emailTmpService:     notification_service.NewEmailTmpServiceClient(connAuthService),
+		notificationService: notification_service.NewNotificationServiceClient(connAuthService),
 	}, nil
 }
 
@@ -71,4 +83,16 @@ func (g *grpcClients) SubjectService() content_service.SubjectServiceClient {
 
 func (g *grpcClients) RoleService() auth_service.RoleServiceClient {
 	return g.roleService
+}
+
+func (g *grpcClients) KeywordService() auth_service.KeywordServiceClient {
+	return g.keywordService
+}
+
+func (g *grpcClients) NotificationService() notification_service.NotificationServiceClient {
+	return g.notificationService
+}
+
+func (g *grpcClients) EmailTmpService() notification_service.EmailTmpServiceClient {
+	return g.emailTmpService
 }

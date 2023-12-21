@@ -1,0 +1,94 @@
+syntax="proto3";
+
+package notification_service;
+option go_package="genproto/notification_service";
+
+import "google/protobuf/empty.proto";
+
+service NotificationService {
+  rpc CreateNotification(CreateNotificationReq) returns (CreateNotificationRes) {}
+  rpc GetNotification(GetNotificationReq) returns (GetNotificationRes) {}
+  rpc GetNotificationList(GetNotificationListReq) returns (GetNotificationListRes) {}
+  rpc UpdateNotification(UpdateNotificationReq) returns (UpdateNotificationRes) {}
+  rpc DeleteNotification(DeleteNotificationReq) returns (google.protobuf.Empty) {}
+}
+
+message Notification {
+  string id = 1;
+  string subject = 2;
+  string text = 3;
+  string email = 4;
+  string status = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message CreateNotificationReq {
+  string subject = 1;
+  string text = 2;
+  string email = 3;
+  string status = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message CreateNotificationRes {
+  string id = 1;
+  string subject = 2;
+  string text = 3;
+  string email = 4;
+  string status = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message GetNotificationReq {
+  string id = 1;
+}
+
+message GetNotificationRes {
+  string id = 1;
+  string subject = 2;
+  string text = 3;
+  string email = 4;
+  string status = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message GetNotificationListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string status = 4;
+  string email = 5;
+}
+
+message GetNotificationListRes {
+  repeated Notification notifications = 1;
+  int32 count = 2;
+}
+
+message UpdateNotificationReq {
+  string id = 1;
+  string subject = 2;
+  string text = 3;
+  string email = 4;
+  string status = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message UpdateNotificationRes {
+  string id = 1;
+  string subject = 2;
+  string text = 3;
+  string email = 4;
+  string status = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message DeleteNotificationReq {
+  string id = 1;
+}
