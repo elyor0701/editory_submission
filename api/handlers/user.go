@@ -6,11 +6,10 @@ import (
 	"editory_submission/api/models"
 	"editory_submission/config"
 	"editory_submission/genproto/auth_service"
-	"editory_submission/pkg/helper"
+	"editory_submission/genproto/notification_service"
 	"editory_submission/pkg/logger"
 	"editory_submission/pkg/util"
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -306,13 +305,23 @@ func (h *Handler) ResendVerificationMessage(c *gin.Context) {
 		return
 	}
 
-	err = h.SendVerificationMessage(
-		c.Request.Context(),
-		&models.SendVerificationMessageReq{
-			UserId:      data.UserId,
-			RedirectUrl: data.RedirectUrl,
-		},
-	)
+	//err = h.SendVerificationMessage(
+	//	c.Request.Context(),
+	//	&models.SendVerificationMessageReq{
+	//		UserId:      data.UserId,
+	//		RedirectUrl: data.RedirectUrl,
+	//	},
+	//)
+	//if err != nil {
+	//	h.handleResponse(c, http.InternalServerError, err)
+	//	return
+	//}
+
+	_, err = h.services.NotificationService().GenerateMailMessage(c.Request.Context(), &notification_service.GenerateMailMessageReq{
+		UserId:       data.UserId,
+		RedirectLink: data.RedirectUrl,
+		Type:         config.REGISTRATION,
+	})
 	if err != nil {
 		h.handleResponse(c, http.InternalServerError, err)
 		return
@@ -497,18 +506,28 @@ func (h *Handler) RegistrationEmail(c *gin.Context) {
 		return
 	}
 
-	err = h.SendVerificationMessage(
-		c.Request.Context(),
-		&models.SendVerificationMessageReq{
-			UserId:      resp.GetId(),
-			RedirectUrl: user.RedirectUrl,
-		},
-	)
 	res.MessageStatus = true
+	_, err = h.services.NotificationService().GenerateMailMessage(c.Request.Context(), &notification_service.GenerateMailMessageReq{
+		UserId:       resp.GetId(),
+		RedirectLink: user.RedirectUrl,
+		Type:         config.REGISTRATION,
+	})
 	if err != nil {
 		h.log.Error("cant send verification message", logger.String("err", err.Error()))
 		res.MessageStatus = false
 	}
+
+	//err = h.SendVerificationMessage(
+	//	c.Request.Context(),
+	//	&models.SendVerificationMessageReq{
+	//		UserId:      resp.GetId(),
+	//		RedirectUrl: user.RedirectUrl,
+	//	},
+	//)
+	//if err != nil {
+	//	h.log.Error("cant send verification message", logger.String("err", err.Error()))
+	//	res.MessageStatus = false
+	//}
 	res.Email = resp.GetEmail()
 	res.UserId = resp.GetId()
 
@@ -516,53 +535,53 @@ func (h *Handler) RegistrationEmail(c *gin.Context) {
 }
 
 func (h *Handler) SendVerificationMessage(ctx context.Context, req *models.SendVerificationMessageReq) error {
-	if !util.IsValidUUID(req.UserId) {
-		err := errors.New("invalid user id")
-		return err
-	}
-
-	user, err := h.services.UserService().GetUser(
-		ctx,
-		&auth_service.GetUserReq{
-			Id: req.UserId,
-		},
-	)
-	if err != nil {
-		return err
-	}
-
-	res, err := h.services.UserService().GenerateEmailVerificationToken(ctx, &auth_service.GenerateEmailVerificationTokenReq{
-		Email:  user.GetEmail(),
-		UserId: user.GetId(),
-	})
-	if err != nil {
-		return err
-	}
-
-	message := helper.MakeEmailMessage(
-		map[string]string{
-			"first_name": user.GetFirstName(),
-			"verification_link": fmt.Sprintf("%s?email=%s&token=%s",
-				req.RedirectUrl,
-				res.GetEmail(),
-				res.GetToken(),
-			),
-			"user_id": req.UserId,
-		},
-	)
-
-	err = helper.GoMessageSend(helper.SendMessageByEmail{
-		From: helper.EmailInfo{
-			Username: h.cfg.EmailUsername,
-			Password: h.cfg.EmailPassword,
-		},
-		To:      res.GetEmail(),
-		Subject: "Email Verification",
-		Message: message,
-	})
-	if err != nil {
-		return err
-	}
+	//if !util.IsValidUUID(req.UserId) {
+	//	err := errors.New("invalid user id")
+	//	return err
+	//}
+	//
+	//user, err := h.services.UserService().GetUser(
+	//	ctx,
+	//	&auth_service.GetUserReq{
+	//		Id: req.UserId,
+	//	},
+	//)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//res, err := h.services.UserService().GenerateEmailVerificationToken(ctx, &auth_service.GenerateEmailVerificationTokenReq{
+	//	Email:  user.GetEmail(),
+	//	UserId: user.GetId(),
+	//})
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//message := helper.MakeEmailMessage(
+	//	map[string]string{
+	//		"first_name": user.GetFirstName(),
+	//		"verification_link": fmt.Sprintf("%s?email=%s&token=%s",
+	//			req.RedirectUrl,
+	//			res.GetEmail(),
+	//			res.GetToken(),
+	//		),
+	//		"user_id": req.UserId,
+	//	},
+	//)
+	//
+	//err = helper.GoMessageSend(helper.SendMessageByEmail{
+	//	From: helper.EmailInfo{
+	//		Username: h.cfg.EmailUsername,
+	//		Password: h.cfg.EmailPassword,
+	//	},
+	//	To:      res.GetEmail(),
+	//	Subject: "Email Verification",
+	//	Message: message,
+	//})
+	//if err != nil {
+	//	return err
+	//}
 
 	return nil
 }

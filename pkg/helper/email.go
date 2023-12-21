@@ -153,14 +153,14 @@ func GoMessageSend(m SendMessageByEmail) error {
 	return nil
 }
 
-func MakeEmailMessage(m map[string]string) string {
-	messageTemp := verificationTemplateHtml
+func MakeEmailMessage(m map[string]string, subject, mailBody string) (string, string) {
 	for key, val := range m {
-		messageTemp = strings.ReplaceAll(messageTemp,
-			fmt.Sprintf("{{%s}}", key),
-			val,
-		)
+		subject = strings.ReplaceAll(subject, fmt.Sprintf("{{%s}}", key), val)
+		subject = strings.ReplaceAll(subject, fmt.Sprintf(`@[#%s](#%s)`, key, key), val)
+		subject = strings.ReplaceAll(subject, fmt.Sprintf(`##%s`, key), val)
+		subject = strings.ReplaceAll(subject, fmt.Sprintf(`#%s`, key), val)
+		mailBody = strings.ReplaceAll(mailBody, fmt.Sprintf(`#%s`, key), val)
 	}
 
-	return messageTemp
+	return subject, mailBody
 }

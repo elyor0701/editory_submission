@@ -108,6 +108,13 @@ func (s *EmailTmpRepo) GetList(ctx context.Context, req *pb.GetEmailTmpListReq) 
 	res = &pb.GetEmailTmpListRes{}
 	params := make(map[string]interface{})
 	var arr []interface{}
+	validMailNoType := map[string]bool{
+		config.REGISTRATION:          true,
+		config.NEW_ARTICLE_TO_REVIEW: true,
+		config.RESET_PASSWORD:        true,
+		config.ACCOUNT_DEACTIVATION:  true,
+		config.NEW_JOURNAL_USER:      true,
+	}
 
 	query := `SELECT
 		id, 
@@ -127,6 +134,11 @@ func (s *EmailTmpRepo) GetList(ctx context.Context, req *pb.GetEmailTmpListReq) 
 	if len(req.Search) > 0 {
 		params["search"] = req.Search
 		filter += ` AND (title ILIKE '%' || :search || '%')`
+	}
+
+	if _, ok := validMailNoType[req.GetType()]; ok {
+		params["type"] = req.Type
+		filter += ` AND type = :type`
 	}
 
 	if req.Offset > 0 {

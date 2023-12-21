@@ -28,6 +28,7 @@ type NotificationServiceClient interface {
 	GetNotificationList(ctx context.Context, in *GetNotificationListReq, opts ...grpc.CallOption) (*GetNotificationListRes, error)
 	UpdateNotification(ctx context.Context, in *UpdateNotificationReq, opts ...grpc.CallOption) (*UpdateNotificationRes, error)
 	DeleteNotification(ctx context.Context, in *DeleteNotificationReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GenerateMailMessage(ctx context.Context, in *GenerateMailMessageReq, opts ...grpc.CallOption) (*GenerateMailMessageRes, error)
 }
 
 type notificationServiceClient struct {
@@ -83,6 +84,15 @@ func (c *notificationServiceClient) DeleteNotification(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *notificationServiceClient) GenerateMailMessage(ctx context.Context, in *GenerateMailMessageReq, opts ...grpc.CallOption) (*GenerateMailMessageRes, error) {
+	out := new(GenerateMailMessageRes)
+	err := c.cc.Invoke(ctx, "/notification_service.NotificationService/GenerateMailMessage", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NotificationServiceServer is the server API for NotificationService service.
 // All implementations must embed UnimplementedNotificationServiceServer
 // for forward compatibility
@@ -92,6 +102,7 @@ type NotificationServiceServer interface {
 	GetNotificationList(context.Context, *GetNotificationListReq) (*GetNotificationListRes, error)
 	UpdateNotification(context.Context, *UpdateNotificationReq) (*UpdateNotificationRes, error)
 	DeleteNotification(context.Context, *DeleteNotificationReq) (*emptypb.Empty, error)
+	GenerateMailMessage(context.Context, *GenerateMailMessageReq) (*GenerateMailMessageRes, error)
 	mustEmbedUnimplementedNotificationServiceServer()
 }
 
@@ -113,6 +124,9 @@ func (UnimplementedNotificationServiceServer) UpdateNotification(context.Context
 }
 func (UnimplementedNotificationServiceServer) DeleteNotification(context.Context, *DeleteNotificationReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteNotification not implemented")
+}
+func (UnimplementedNotificationServiceServer) GenerateMailMessage(context.Context, *GenerateMailMessageReq) (*GenerateMailMessageRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateMailMessage not implemented")
 }
 func (UnimplementedNotificationServiceServer) mustEmbedUnimplementedNotificationServiceServer() {}
 
@@ -217,6 +231,24 @@ func _NotificationService_DeleteNotification_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NotificationService_GenerateMailMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GenerateMailMessageReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).GenerateMailMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/notification_service.NotificationService/GenerateMailMessage",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).GenerateMailMessage(ctx, req.(*GenerateMailMessageReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NotificationService_ServiceDesc is the grpc.ServiceDesc for NotificationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -243,6 +275,10 @@ var NotificationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteNotification",
 			Handler:    _NotificationService_DeleteNotification_Handler,
+		},
+		{
+			MethodName: "GenerateMailMessage",
+			Handler:    _NotificationService_GenerateMailMessage_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

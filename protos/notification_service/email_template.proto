@@ -56,6 +56,7 @@ message GetEmailTmpListReq {
   int32 limit = 1;
   int32 offset = 2;
   string search = 3;
+  string type = 4;
 }
 
 message GetEmailTmpListRes {
