@@ -43,14 +43,17 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		r.DELETE("/logout", h.Logout)
 		r.PUT("/refresh", h.RefreshToken)
 		r.POST("/has-access", h.HasAccess)
+
+		r.PUT("/profile", h.GetProfileByID)
+		r.GET("/profile/:profile-id", h.UpdateProfile)
 	}
 
 	// auth
-	r.POST("/user", h.CreateUser)
-	r.GET("/user", h.GetUserList)
-	r.GET("/user/:user-id", h.GetUserByID)
-	r.PUT("/user", h.UpdateUser)
-	r.DELETE("/user/:user-id", h.DeleteUser)
+	//r.POST("/user", h.CreateUser)
+	//r.GET("/user", h.GetUserList)
+	//r.GET("/user/:user-id", h.GetUserByID)
+	//r.PUT("/user", h.UpdateUser)
+	//r.DELETE("/user/:user-id", h.DeleteUser)
 	//r.PUT("/user/reset-password", h.ResetPassword)
 	//r.POST("/user/send-message", h.SendMessageToUserEmail)
 	//r.POST("/send-verification-message", h.SendVerificationMessage)
@@ -64,7 +67,7 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		journal.DELETE("/:journal-id", h.DeleteJournal) // @TODO
 
 		journal.POST("/:journal-id/article", h.CreateArticle)
-		journal.GET("/:journal-id/article", h.GetArticleList)
+		journal.GET("/:journal-id/article", h.GetArticleList) // @TODO add filter and sort
 		journal.GET("/:journal-id/article/:article-id", h.GetArticleByID)
 		journal.PUT("/:journal-id/article", h.UpdateArticle)
 		journal.DELETE("/:journal-id/article/:article-id", h.DeleteArticle)
@@ -75,10 +78,11 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		journal.PUT("/:journal-id/edition", h.UpdateEdition)
 		journal.DELETE("/:journal-id/edition/:edition-id", h.DeleteEdition)
 
-		journal.GET("/user")           //@TODO
-		journal.POST("/user")          //@TODO
-		journal.POST("/user/:user-id") //@TODO
-		journal.PUT("/user")           //@TODO
+		journal.GET("/:journal-id/user", h.GetJournalUserList)
+		journal.POST("/:journal-id/user", h.CreateJournalUser)
+		journal.GET("/:journal-id/user/:user-id", h.GetJournalUserByID)
+		journal.PUT("/:journal-id/user", h.UpdateJournalUser)
+		journal.DELETE("/:journal-id/user/:user-id", h.DeleteJournalUser)
 
 		journal.GET("/author")
 	}
@@ -128,9 +132,6 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		admin.GET("/email/template/:template-id")
 		admin.PUT("/email/template")
 		admin.DELETE("/email/template/:template-id")
-
-		admin.PUT("/profile", h.GetAdminUserByID)
-		admin.GET("/profile/:profile-id", h.UpdateAdminUser)
 	}
 
 	// swagger

@@ -9,10 +9,10 @@ import "auth.proto";
 service RoleService {
   // User
   rpc CreateRole(Role) returns (Role) {}
-  rpc GetUser(GetRoleReq) returns (Role) {}
-  rpc GetUserList(GetRoleListReq) returns (GetRoleListRes) {}
-  rpc UpdateUser(Role) returns (Role) {}
-  rpc DeleteUser(DeleteRoleReq) returns (google.protobuf.Empty) {}
+  rpc GetRole(GetRoleReq) returns (Role) {}
+  rpc GetRoleList(GetRoleListReq) returns (GetRoleListRes) {}
+  rpc UpdateRole(Role) returns (Role) {}
+  rpc DeleteRole(DeleteRoleReq) returns (google.protobuf.Empty) {}
 }
 
 message GetRoleReq {

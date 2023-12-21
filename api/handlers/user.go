@@ -8,26 +8,27 @@ import (
 	"editory_submission/genproto/auth_service"
 	"editory_submission/pkg/helper"
 	"editory_submission/pkg/logger"
+	"editory_submission/pkg/util"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/saidamir98/udevs_pkg/util"
 )
 
-// CreateUser godoc
-// @ID create_user
-// @Router /user [POST]
+// CreateJournalUser godoc
+// @ID create_journal_user
+// @Router /journal/{journal-id}/user [POST]
 // @Summary Create User
 // @Description Create User
-// @Tags User
+// @Tags Journal
 // @Accept json
 // @Produce json
-// @Param user body auth_service.User true "CreateUserRequestBody"
-// @Success 201 {object} http.Response{data=auth_service.User} "User data"
+// @Param journal-id path string true "Journal Id"
+// @Param user body models.CreateJournalUserReq true "CreateUserRequestBody"
+// @Success 201 {object} http.Response{data=models.CreateJournalUserRes} "User data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) CreateUser(c *gin.Context) {
-	var user auth_service.User
+func (h *Handler) CreateJournalUser(c *gin.Context) {
+	var user models.CreateJournalUserReq
 
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
@@ -35,51 +36,97 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.services.UserService().CreateUser(
-		c.Request.Context(),
-		&user,
-	)
-
-	if err != nil {
-		h.handleResponse(c, http.GRPCError, err.Error())
+	journalId := c.Param("journal-id")
+	if !util.IsValidUUID(journalId) {
+		err = errors.New("not valid journal id")
+		h.handleResponse(c, http.BadRequest, err.Error())
 		return
 	}
 
-	// @TODO create function to work with queries
+	userPb, err := h.services.UserService().GetUser(
+		c.Request.Context(),
+		&auth_service.GetUserReq{
+			Email: user.Email,
+		},
+	)
+	if err != nil {
+		if util.IsErrNoRows(err) {
+			userPb, err = h.services.UserService().CreateUser(
+				c.Request.Context(),
+				&auth_service.User{
+					FirstName: user.FirstName,
+					LastName:  user.LastName,
+					Email:     user.Email,
+					Password:  config.DEFAULT_PASSWORD,
+				},
+			)
 
-	//reqURL := c.Request.URL
-	//
-	//queryParams, _ := url.ParseQuery(reqURL.RawQuery)
-	//
-	//queryParams.Add("user-id", resp.GetId())
-	//
-	//reqURL.RawQuery = queryParams.Encode()
-	//
-	//c.Request.URL = reqURL
-	//
-	//err = h.SendVerificationMessageShared(c)
-	//if err != nil {
-	//	h.log.Error("send verification message is failed", logger.Any("error", err.Error()))
-	//}
+			if err != nil {
+				h.handleResponse(c, http.GRPCError, err.Error())
+				return
+			}
+		} else {
+			h.handleResponse(c, http.GRPCError, err.Error())
+			return
+		}
+	}
 
-	h.handleResponse(c, http.Created, resp)
+	validRoleTypes := map[string]bool{
+		config.EDITOR:   true,
+		config.REVIEWER: true,
+	}
+
+	if _, ok := validRoleTypes[user.RoleType]; ok {
+		role := auth_service.Role{
+			RoleType:  user.RoleType,
+			JournalId: journalId,
+			UserId:    userPb.GetId(),
+		}
+
+		_, err = h.services.RoleService().CreateRole(
+			c.Request.Context(),
+			&role,
+		)
+		if err != nil {
+			h.handleResponse(c, http.GRPCError, err.Error())
+			return
+		}
+	}
+
+	res := models.CreateEditorRes{
+		Id:        userPb.GetId(),
+		FirstName: userPb.GetFirstName(),
+		LastName:  userPb.GetLastName(),
+		Email:     userPb.GetEmail(),
+		Password:  userPb.GetPassword(),
+	}
+
+	h.handleResponse(c, http.Created, res)
 }
 
-// GetUserList godoc
-// @ID get_user_list
-// @Router /user [GET]
+// GetJournalUserList godoc
+// @ID get_journal_user_list
+// @Router /journal/{journal-id}/user [GET]
 // @Summary Get User List
 // @Description  Get User List
-// @Tags User
+// @Tags Journal
 // @Accept json
 // @Produce json
+// @Param journal-id path string true "journal id"
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
 // @Param search query string false "search"
 // @Success 200 {object} http.Response{data=auth_service.GetUserListRes} "GetUserListResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetUserList(c *gin.Context) {
+func (h *Handler) GetJournalUserList(c *gin.Context) {
+
+	journalId := c.Param("journal-id")
+	if !util.IsValidUUID(journalId) {
+		err := errors.New("not valid journal id")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
 
 	offset, err := h.getOffsetParam(c)
 	if err != nil {
@@ -93,12 +140,13 @@ func (h *Handler) GetUserList(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.services.UserService().GetUserList(
+	resp, err := h.services.UserService().GetUserListByRole(
 		c.Request.Context(),
-		&auth_service.GetUserListReq{
-			Limit:  int32(limit),
-			Offset: int32(offset),
-			Search: c.DefaultQuery("search", ""),
+		&auth_service.GetUserListByRoleReq{
+			Limit:     int32(limit),
+			Offset:    int32(offset),
+			Search:    c.DefaultQuery("search", ""),
+			JournalId: journalId,
 		},
 	)
 
@@ -110,19 +158,20 @@ func (h *Handler) GetUserList(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// GetUserByID godoc
-// @ID get_user_by_id
-// @Router /user/{user-id} [GET]
+// GetJournalUserByID godoc
+// @ID get_journal_user_by_id
+// @Router /journal/{journal-id}/user/{user-id} [GET]
 // @Summary Get User By ID
 // @Description Get User By ID
-// @Tags User
+// @Tags Journal
 // @Accept json
 // @Produce json
+// @Param journal-id path string true "journal id"
 // @Param user-id path string true "user-id"
 // @Success 200 {object} http.Response{data=auth_service.User} "UserBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetUserByID(c *gin.Context) {
+func (h *Handler) GetJournalUserByID(c *gin.Context) {
 	userID := c.Param("user-id")
 
 	if !util.IsValidUUID(userID) {
@@ -145,19 +194,20 @@ func (h *Handler) GetUserByID(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// UpdateUser godoc
-// @ID update_user
-// @Router /user [PUT]
+// UpdateJournalUser godoc
+// @ID update_journal_user
+// @Router /journal/{journal-id}/user [PUT]
 // @Summary Update User
 // @Description Update User
-// @Tags User
+// @Tags Journal
 // @Accept json
 // @Produce json
+// @Param journal-id path string true "journal id"
 // @Param user body auth_service.User true "UpdateUserRequestBody"
 // @Success 200 {object} http.Response{data=auth_service.User} "User data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) UpdateUser(c *gin.Context) {
+func (h *Handler) UpdateJournalUser(c *gin.Context) {
 	var user auth_service.User
 
 	err := c.ShouldBindJSON(&user)
@@ -179,35 +229,55 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// DeleteUser godoc
-// @ID delete_user
-// @Router /user/{user-id} [DELETE]
+// DeleteJournalUser godoc
+// @ID delete_journal_user
+// @Router /journal/{journal-id}/user/{user-id} [DELETE]
 // @Summary Delete User
 // @Description Get User
-// @Tags User
+// @Tags Journal
 // @Accept json
 // @Produce json
+// @Param journal-id path string true "journal id"
 // @Param user-id path string true "user-id"
 // @Success 204
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) DeleteUser(c *gin.Context) {
+func (h *Handler) DeleteJournalUser(c *gin.Context) {
 	userID := c.Param("user-id")
-
 	if !util.IsValidUUID(userID) {
 		h.handleResponse(c, http.InvalidArgument, "user id is an invalid uuid")
 		return
 	}
 
-	_, err := h.services.UserService().DeleteUser(
+	journalId := c.Param("journal-id")
+	if !util.IsValidUUID(journalId) {
+		h.handleResponse(c, http.InvalidArgument, "user id is an invalid uuid")
+		return
+	}
+
+	userRoles, err := h.services.RoleService().GetRoleList(
 		c.Request.Context(),
-		&auth_service.DeleteUserReq{
-			Id: userID,
+		&auth_service.GetRoleListReq{
+			UserId:    userID,
+			JournalId: journalId,
 		},
 	)
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
+	}
+
+	for _, v := range userRoles.GetRoles() {
+		_, err := h.services.RoleService().DeleteRole(
+			c.Request.Context(),
+			&auth_service.DeleteRoleReq{
+				Id: v.GetId(),
+			},
+		)
+		if err != nil {
+			h.log.Error("cant delete the user role", logger.Any("err", err.Error()))
+			continue
+		}
 	}
 
 	h.handleResponse(c, http.NoContent, "")
@@ -294,19 +364,19 @@ func (h *Handler) EmailVerification(c *gin.Context) {
 	h.handleResponse(c, http.OK, res)
 }
 
-// GetAdminUserByID godoc
-// @ID get_admin_profile_by_id
-// @Router /admin/profile/{profile-id} [GET]
+// GetProfileByID godoc
+// @ID get_profile_by_id
+// @Router /profile/{profile-id} [GET]
 // @Summary Get User By ID
 // @Description Get User By ID
-// @Tags Admin
+// @Tags User
 // @Accept json
 // @Produce json
 // @Param profile-id path string true "profile-id"
 // @Success 200 {object} http.Response{data=models.GetAdminUserRes} "UserBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetAdminUserByID(c *gin.Context) {
+func (h *Handler) GetProfileByID(c *gin.Context) {
 	userID := c.Param("profile-id")
 
 	if !util.IsValidUUID(userID) {
@@ -336,19 +406,19 @@ func (h *Handler) GetAdminUserByID(c *gin.Context) {
 	h.handleResponse(c, http.OK, user)
 }
 
-// UpdateAdminUser godoc
-// @ID update_admin_profile
-// @Router /admin/profile [PUT]
+// UpdateProfile godoc
+// @ID update_profile
+// @Router /profile [PUT]
 // @Summary Update User
 // @Description Update User
-// @Tags Admin
+// @Tags User
 // @Accept json
 // @Produce json
 // @Param user body models.UpdateAdminUserReq true "UpdateUserRequestBody"
 // @Success 200 {object} http.Response{data=models.UpdateAdminUserRes} "User data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) UpdateAdminUser(c *gin.Context) {
+func (h *Handler) UpdateProfile(c *gin.Context) {
 	var user models.UpdateAdminUserReq
 
 	err := c.ShouldBindJSON(&user)

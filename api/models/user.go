@@ -86,3 +86,19 @@ type RegisterDetailRes struct {
 	Gender     string `json:"gender,omitempty"`
 	IsReviewer bool   `json:"is_reviewer,omitempty"`
 }
+
+type CreateJournalUserReq struct {
+	FirstName string `json:"first_name,omitempty"`
+	LastName  string `json:"last_name,omitempty"`
+	Email     string `json:"email,omitempty"`
+	Password  string `json:"password,omitempty"`
+	RoleType  string `json:"role_type,omitempty"`
+}
+
+type CreateJournalUserRes struct {
+	FirstName string `json:"first_name,omitempty"`
+	LastName  string `json:"last_name,omitempty"`
+	Email     string `json:"email,omitempty"`
+	Password  string `json:"password,omitempty"`
+	Role      *Role  `json:"role,omitempty"`
+}
