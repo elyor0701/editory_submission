@@ -238,6 +238,10 @@ func (h *Handler) CreateAdminJournal(c *gin.Context) {
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
 // @Param search query string false "search"
+// @Param status query string false "status"
+// @Param date-from query string false "date-from"
+// @Param date-to query string false "date-to"
+// @Param sort query string false "sort"
 // @Success 200 {object} http.Response{data=content_service.GetJournalListRes} "GetJournalListResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
@@ -258,9 +262,13 @@ func (h *Handler) GetAdminJournalList(c *gin.Context) {
 	resp, err := h.services.ContentService().GetJournalList(
 		c.Request.Context(),
 		&content_service.GetList{
-			Limit:  int32(limit),
-			Offset: int32(offset),
-			Search: c.DefaultQuery("search", ""),
+			Limit:    int32(limit),
+			Offset:   int32(offset),
+			Search:   c.DefaultQuery("search", ""),
+			Status:   c.DefaultQuery("status", ""),
+			DateFrom: c.DefaultQuery("date-from", ""),
+			DateTo:   c.DefaultQuery("date-to", ""),
+			Sort:     c.DefaultQuery("sort", ""),
 		},
 	)
 

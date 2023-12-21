@@ -212,3 +212,85 @@ func (h *Handler) DeleteArticle(c *gin.Context) {
 
 	h.handleResponse(c, http.NoContent, "")
 }
+
+// GetAdminArticleList godoc
+// @ID get_admin_article_list
+// @Router /admin/article [GET]
+// @Summary Get Article List
+// @Description  Get Article List
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param journal-id path string false "Journal Id"
+// @Param offset query integer false "offset"
+// @Param limit query integer false "limit"
+// @Param search query string false "search"
+// @Success 200 {object} http.Response{data=content_service.GetArticleListRes} "GetArticleListResponseBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetAdminArticleList(c *gin.Context) {
+
+	offset, err := h.getOffsetParam(c)
+	if err != nil {
+		h.handleResponse(c, http.InvalidArgument, err.Error())
+		return
+	}
+
+	limit, err := h.getLimitParam(c)
+	if err != nil {
+		h.handleResponse(c, http.InvalidArgument, err.Error())
+		return
+	}
+
+	resp, err := h.services.ContentService().GetArticleList(
+		c.Request.Context(),
+		&content_service.GetArticleListReq{
+			Limit:     int32(limit),
+			Offset:    int32(offset),
+			Search:    c.Query("search"),
+			JournalId: c.Query("journal-id"),
+		},
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
+}
+
+// GetAdminArticleByID godoc
+// @ID get_admin_article_by_id
+// @Router /admin/article/{article-id} [GET]
+// @Summary Get Article By ID
+// @Description Get Article By ID
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Param article-id path string true "article-id"
+// @Success 200 {object} http.Response{data=content_service.Article} "ArticleBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetAdminArticleByID(c *gin.Context) {
+	articleID := c.Param("article-id")
+
+	if !util.IsValidUUID(articleID) {
+		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
+		return
+	}
+
+	resp, err := h.services.ContentService().GetArticle(
+		c.Request.Context(),
+		&content_service.PrimaryKey{
+			Id: articleID,
+		},
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
+}

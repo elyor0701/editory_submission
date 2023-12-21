@@ -91,8 +91,8 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		admin.PUT("/journal", h.UpdateAdminJournal)
 		admin.DELETE("/journal/:journal-id", h.DeleteAdminJournal)
 
-		admin.GET("/article")
-		admin.GET("/article/:article-id")
+		admin.GET("/article", h.GetAdminArticleList)
+		admin.GET("/article/:article-id", h.GetAdminArticleByID)
 
 		admin.POST("/university", h.CreateAdminUniversity)
 		admin.GET("/university", h.GetAdminUniversityList)
@@ -113,6 +113,9 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		admin.DELETE("/editor/:editor-id", h.DeleteEditor)
 
 		admin.GET("/author", h.GetAdminAuthorList)
+		admin.GET("/author/:author-id", h.GetAdminAuthorByID)
+		admin.POST("/author", h.CreateAdminAuthor)
+		admin.PUT("/author", h.UpdateAdminAuthor)
 
 		admin.POST("/keyword")
 		admin.GET("/keyword")
@@ -120,14 +123,14 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		admin.PUT("/keyword")
 		admin.DELETE("/keyword/:keyword-id")
 
-		admin.POST("/email-template")
-		admin.GET("/email-template")
-		admin.GET("/email-template/:email-template-id")
-		admin.PUT("/email-template")
-		admin.DELETE("/email-template/:email-template-id")
+		admin.POST("/email/template")
+		admin.GET("/email/template")
+		admin.GET("/email/template/:template-id")
+		admin.PUT("/email/template")
+		admin.DELETE("/email/template/:template-id")
 
-		admin.PUT("/user", h.GetAdminUserByID)
-		admin.GET("/user/:user-id", h.UpdateAdminUser)
+		admin.PUT("/profile", h.GetAdminUserByID)
+		admin.GET("/profile/:profile-id", h.UpdateAdminUser)
 	}
 
 	// swagger

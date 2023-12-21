@@ -12,7 +12,7 @@ const (
 )
 
 const (
-	// user types
+	// EDITOR user types
 	EDITOR      = `EDITOR`
 	SUPERADMIN  = `SUPERADMIN`
 	PROOFREADER = `PROOFREADER`
@@ -21,7 +21,12 @@ const (
 )
 
 const (
-	// platfrom types
+	// ADMIN platfrom types
 	ADMIN = `ADMIN`
 	USER  = `USER`
+)
+
+const (
+	// DEFAULT_PASSWORD user password
+	DEFAULT_PASSWORD = `default`
 )

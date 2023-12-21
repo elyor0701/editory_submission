@@ -32,35 +32,55 @@ func (h *Handler) CreateEditor(c *gin.Context) {
 		return
 	}
 
-	role := []*auth_service.Role{
-		{
-			RoleType:  config.EDITOR,
-			JournalId: user.JournalId,
-		},
-	}
-
-	resp, err := h.services.UserService().CreateUser(
+	userPb, err := h.services.UserService().GetUser(
 		c.Request.Context(),
-		&auth_service.User{
-			FirstName: user.FirstName,
-			LastName:  user.LastName,
-			Email:     user.Email,
-			Password:  user.Password,
-			Role:      role,
+		&auth_service.GetUserReq{
+			Email: user.Email,
 		},
 	)
+	if err != nil {
+		if util.IsErrNoRows(err) {
+			userPb, err = h.services.UserService().CreateUser(
+				c.Request.Context(),
+				&auth_service.User{
+					FirstName: user.FirstName,
+					LastName:  user.LastName,
+					Email:     user.Email,
+					Password:  config.DEFAULT_PASSWORD,
+				},
+			)
 
+			if err != nil {
+				h.handleResponse(c, http.GRPCError, err.Error())
+				return
+			}
+		} else {
+			h.handleResponse(c, http.GRPCError, err.Error())
+			return
+		}
+	}
+
+	role := auth_service.Role{
+		RoleType:  config.EDITOR,
+		JournalId: user.JournalId,
+		UserId:    userPb.GetId(),
+	}
+
+	_, err = h.services.RoleService().CreateRole(
+		c.Request.Context(),
+		&role,
+	)
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
 
 	res := models.CreateEditorRes{
-		Id:        resp.GetId(),
-		FirstName: resp.GetFirstName(),
-		LastName:  resp.GetLastName(),
-		Email:     resp.GetEmail(),
-		Password:  resp.GetPassword(),
+		Id:        userPb.GetId(),
+		FirstName: userPb.GetFirstName(),
+		LastName:  userPb.GetLastName(),
+		Email:     userPb.GetEmail(),
+		Password:  userPb.GetPassword(),
 	}
 
 	h.handleResponse(c, http.Created, res)

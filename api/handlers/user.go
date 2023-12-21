@@ -295,19 +295,19 @@ func (h *Handler) EmailVerification(c *gin.Context) {
 }
 
 // GetAdminUserByID godoc
-// @ID get_admin_user_by_id
-// @Router /admin/user/{user-id} [GET]
+// @ID get_admin_profile_by_id
+// @Router /admin/profile/{profile-id} [GET]
 // @Summary Get User By ID
 // @Description Get User By ID
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param user-id path string true "user-id"
+// @Param profile-id path string true "profile-id"
 // @Success 200 {object} http.Response{data=models.GetAdminUserRes} "UserBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetAdminUserByID(c *gin.Context) {
-	userID := c.Param("user-id")
+	userID := c.Param("profile-id")
 
 	if !util.IsValidUUID(userID) {
 		h.handleResponse(c, http.InvalidArgument, "user id is an invalid uuid")
@@ -337,8 +337,8 @@ func (h *Handler) GetAdminUserByID(c *gin.Context) {
 }
 
 // UpdateAdminUser godoc
-// @ID update_admin_user
-// @Router /admin/user [PUT]
+// @ID update_admin_profile
+// @Router /admin/profile [PUT]
 // @Summary Update User
 // @Description Update User
 // @Tags Admin

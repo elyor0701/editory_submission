@@ -7,8 +7,11 @@ import (
 	"editory_submission/pkg/helper"
 	"editory_submission/storage"
 	"editory_submission/storage/postgres/models"
+	"errors"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"time"
 )
 
 type JournalRepo struct {
@@ -141,6 +144,15 @@ func (s *JournalRepo) GetList(ctx context.Context, req *pb.GetList) (res *pb.Get
 	res = &pb.GetJournalListRes{}
 	params := make(map[string]interface{})
 	var arr []interface{}
+	validSortColumns := map[string]bool{
+		"id":         true,
+		"title":      true,
+		"price":      true,
+		"isbn":       true,
+		"author":     true,
+		"status":     true,
+		"created_at": true,
+	}
 
 	query := `SELECT
 		id,                 
@@ -162,11 +174,33 @@ func (s *JournalRepo) GetList(ctx context.Context, req *pb.GetList) (res *pb.Get
 
 	limit := " LIMIT 10"
 
+	orderBy := ""
+
 	if len(req.Search) > 0 {
 		params["search"] = req.Search
 		filter += ` AND ((title ILIKE '%' || :search || '%')
 					OR (description ILIKE '%' || :search || '%')
 					OR (isbn ILIKE '%' || :search || '%'))`
+	}
+
+	if req.GetStatus() != "" {
+		params["status"] = req.Status
+		filter += ` AND status = :status`
+	}
+
+	if _, err := time.Parse(time.RFC3339, req.GetDateFrom()); err == nil {
+		params["date_from"] = req.DateFrom
+		filter += ` AND created_at >= :date_from`
+	}
+
+	if _, err := time.Parse(time.RFC3339, req.GetDateTo()); err == nil {
+		params["date_to"] = req.DateTo
+		filter += ` AND created_at < :date_to`
+	}
+
+	if _, ok := validSortColumns[req.GetSort()]; ok {
+		params["sort"] = req.Sort
+		orderBy += ` ORDER BY :sort`
 	}
 
 	if req.Offset > 0 {
@@ -190,12 +224,14 @@ func (s *JournalRepo) GetList(ctx context.Context, req *pb.GetList) (res *pb.Get
 		return res, err
 	}
 
-	q := query + filter + offset + limit
+	q := query + filter + orderBy + offset + limit
 
 	q, arr = helper.ReplaceQueryParams(q, params)
 	rows, err := s.db.Query(ctx, q, arr...)
-	if err != nil {
-		return res, err
+	if errors.Is(err, pgx.ErrNoRows) {
+		return res, nil
+	} else if err != nil {
+		return nil, err
 	}
 	defer rows.Close()
 

@@ -29,7 +29,6 @@ func NewUserRepo(db *pgxpool.Pool) storage.UserRepoI {
 }
 
 func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err error) {
-
 	query := `INSERT INTO "user" (
 		id,                 
     	username,           
@@ -117,29 +116,30 @@ func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, e
 
 	query := `SELECT
 		id,                 
-    	coalesce(username, ''),           
-    	coalesce(first_name, ''),         
-    	coalesce(last_name, ''),        
-    	coalesce(phone, ''),              
-    	coalesce(extra_phone, ''),        
+    	COALESCE(username, ''),           
+    	COALESCE(first_name, ''),         
+    	COALESCE(last_name, ''),        
+    	COALESCE(phone, ''),              
+    	COALESCE(extra_phone, ''),        
     	email,      
     	email_verification,
-    	coalesce(country_id::VARCHAR, ''),         
-    	coalesce(city_id::VARCHAR, ''),            
-    	coalesce(prof_sphere, ''),        
-    	coalesce(degree, ''),             
-    	coalesce(address, ''),            
-    	coalesce(post_code, ''), 
-    	coalesce(gender::VARCHAR, '') 
+    	COALESCE(country_id::VARCHAR, ''),         
+    	COALESCE(city_id::VARCHAR, ''),            
+    	COALESCE(prof_sphere, ''),        
+    	COALESCE(degree, ''),             
+    	COALESCE(address, ''),            
+    	COALESCE(post_code, ''), 
+    	COALESCE(gender::VARCHAR, '') 
 	FROM
 		"user"
 	WHERE
-		id = $1`
+		id::VARCHAR = $1 OR email = $2`
 
 	err = s.db.QueryRow(
 		ctx,
 		query,
-		req.GetId()).Scan(
+		req.GetId(),
+		req.GetEmail()).Scan(
 		&res.Id,
 		&res.Username,
 		&res.FirstName,

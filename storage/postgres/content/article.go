@@ -179,8 +179,13 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
     	to_char(created_at, ` + config.DatabaseQueryTimeLayout + `) as created_at
 	FROM
 		"article"`
-	filter := " WHERE journal_id = :journal_id"
-	params["journal_id"] = req.GetJournalId()
+
+	filter := `WHERE 1=1`
+
+	if util.IsValidUUID(req.GetJournalId()) {
+		filter += " AND journal_id = :journal_id"
+		params["journal_id"] = req.GetJournalId()
+	}
 
 	offset := " OFFSET 0"
 
