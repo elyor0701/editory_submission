@@ -275,9 +275,9 @@ func (s *UserRepo) GetListWithRole(ctx context.Context, req *pb.GetUserListByRol
 	query := `SELECT
 		u.id,
 		coalesce(username, '') as username,
-		first_name,
-		last_name,
-		phone,
+		coalesce(first_name, '') as first_name,
+		coalesce(last_name, '') as last_name,
+		coalesce(phone, '') as phone,
 		email,
 		coalesce(country_id::VARCHAR, '') as country_id,
 		coalesce(city_id::VARCHAR, '') as city_id,
