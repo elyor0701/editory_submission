@@ -2,9 +2,13 @@ package handlers
 
 import (
 	"editory_submission/api/http"
+	"editory_submission/api/models"
+	"editory_submission/config"
+	"editory_submission/genproto/auth_service"
 	"editory_submission/genproto/content_service"
-
-	"github.com/saidamir98/udevs_pkg/util"
+	"editory_submission/genproto/notification_service"
+	"editory_submission/pkg/logger"
+	"editory_submission/pkg/util"
 
 	"github.com/gin-gonic/gin"
 )
@@ -201,12 +205,12 @@ func (h *Handler) DeleteJournal(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param journal body content_service.CreateJournalReq true "CreateJournalRequestBody"
-// @Success 201 {object} http.Response{data=content_service.Journal} "Journal data"
+// @Param journal body models.AdminJournalCreateReq true "CreateJournalRequestBody"
+// @Success 201 {object} http.Response{data=models.AdminJournalCreateRes} "Journal data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) CreateAdminJournal(c *gin.Context) {
-	var journal content_service.CreateJournalReq
+	var journal models.AdminJournalCreateReq
 
 	err := c.ShouldBindJSON(&journal)
 	if err != nil {
@@ -216,12 +220,67 @@ func (h *Handler) CreateAdminJournal(c *gin.Context) {
 
 	resp, err := h.services.ContentService().CreateJournal(
 		c.Request.Context(),
-		&journal,
+		&content_service.CreateJournalReq{
+			Title:       journal.Title,
+			Description: journal.Description,
+			Isbn:        journal.Isbn,
+			Author:      journal.Author,
+		},
 	)
 
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
+	}
+
+	userPb, err := h.services.UserService().GetUser(
+		c.Request.Context(),
+		&auth_service.GetUserReq{
+			Email: journal.Email,
+		},
+	)
+	if err != nil {
+		if util.IsErrNoRows(err) {
+			userPb, err = h.services.UserService().CreateUser(
+				c.Request.Context(),
+				&auth_service.User{
+					FirstName: journal.Author,
+					Email:     journal.Email,
+					Password:  config.DEFAULT_PASSWORD,
+				},
+			)
+
+			if err != nil {
+				h.handleResponse(c, http.GRPCError, err.Error())
+				return
+			}
+		} else {
+			h.handleResponse(c, http.GRPCError, err.Error())
+			return
+		}
+	}
+
+	role := auth_service.Role{
+		RoleType:  config.EDITOR,
+		JournalId: resp.Id,
+		UserId:    userPb.GetId(),
+	}
+
+	_, err = h.services.RoleService().CreateRole(
+		c.Request.Context(),
+		&role,
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	_, err = h.services.NotificationService().GenerateMailMessage(c.Request.Context(), &notification_service.GenerateMailMessageReq{
+		UserId: resp.GetId(),
+		Type:   config.NEW_JOURNAL_USER,
+	})
+	if err != nil {
+		h.log.Error("cant send verification message", logger.String("err", err.Error()))
 	}
 
 	h.handleResponse(c, http.Created, resp)

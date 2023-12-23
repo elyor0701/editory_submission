@@ -5,6 +5,8 @@ import (
 	"editory_submission/api/models"
 	"editory_submission/config"
 	"editory_submission/genproto/auth_service"
+	"editory_submission/genproto/notification_service"
+	"editory_submission/pkg/logger"
 	"editory_submission/pkg/util"
 	"github.com/gin-gonic/gin"
 )
@@ -73,6 +75,14 @@ func (h *Handler) CreateEditor(c *gin.Context) {
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
+	}
+
+	_, err = h.services.NotificationService().GenerateMailMessage(c.Request.Context(), &notification_service.GenerateMailMessageReq{
+		UserId: userPb.GetId(),
+		Type:   config.NEW_JOURNAL_USER,
+	})
+	if err != nil {
+		h.log.Error("cant send verification message", logger.String("err", err.Error()))
 	}
 
 	res := models.CreateEditorRes{
@@ -178,12 +188,12 @@ func (h *Handler) GetEditorByID(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param editor body auth_service.User true "UpdateUserRequestBody"
+// @Param editor body auth_service.UpdateUserReq true "UpdateUserRequestBody"
 // @Success 200 {object} http.Response{data=auth_service.User} "User data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) UpdateEditor(c *gin.Context) {
-	var user auth_service.User
+	var user auth_service.UpdateUserReq
 
 	err := c.ShouldBindJSON(&user)
 	if err != nil {

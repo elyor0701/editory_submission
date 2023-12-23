@@ -306,7 +306,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/editory_submission_genproto_auth_service.User"
+                            "$ref": "#/definitions/editory_submission_genproto_auth_service.UpdateUserReq"
                         }
                     }
                 ],
@@ -647,7 +647,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/editory_submission_genproto_auth_service.User"
+                            "$ref": "#/definitions/editory_submission_genproto_auth_service.UpdateUserReq"
                         }
                     }
                 ],
@@ -1550,7 +1550,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/editory_submission_genproto_content_service.CreateJournalReq"
+                            "$ref": "#/definitions/editory_submission_api_models.AdminJournalCreateReq"
                         }
                     }
                 ],
@@ -1566,7 +1566,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_content_service.Journal"
+                                            "$ref": "#/definitions/editory_submission_api_models.AdminJournalCreateRes"
                                         }
                                     }
                                 }
@@ -4487,7 +4487,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/editory_submission_genproto_auth_service.User"
+                            "$ref": "#/definitions/editory_submission_genproto_auth_service.UpdateUserReq"
                         }
                     }
                 ],
@@ -6016,6 +6016,49 @@ const docTemplate = `{
                 }
             }
         },
+        "editory_submission_api_models.AdminJournalCreateReq": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "isbn": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.AdminJournalCreateRes": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "isbn": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "editory_submission_api_models.CreateAuthorReq": {
             "type": "object",
             "properties": {
@@ -6647,6 +6690,65 @@ const docTemplate = `{
                 }
             }
         },
+        "editory_submission_genproto_auth_service.UpdateUserReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city_id": {
+                    "type": "string"
+                },
+                "confirm_password": {
+                    "type": "string"
+                },
+                "country_id": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "email_verification": {
+                    "type": "boolean"
+                },
+                "extra_phone": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "new_password": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "post_code": {
+                    "type": "string"
+                },
+                "prof_sphere": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "editory_submission_genproto_auth_service.User": {
             "type": "object",
             "properties": {
@@ -6820,62 +6922,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "journal_id": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "editory_submission_genproto_content_service.CreateJournalReq": {
-            "type": "object",
-            "properties": {
-                "acceptance_rate": {
-                    "type": "string"
-                },
-                "acceptance_to_publication": {
-                    "type": "string"
-                },
-                "access": {
-                    "type": "boolean"
-                },
-                "author": {
-                    "type": "string"
-                },
-                "citation_indicator": {
-                    "type": "string"
-                },
-                "cover_photo": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "impact_factor": {
-                    "type": "string"
-                },
-                "isbn": {
-                    "type": "string"
-                },
-                "journal_data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/editory_submission_genproto_content_service.JournalData"
-                    }
-                },
-                "price": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "subjects": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/editory_submission_genproto_content_service.Subject"
-                    }
-                },
-                "submission_to_final_decision": {
                     "type": "string"
                 },
                 "title": {

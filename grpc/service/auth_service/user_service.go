@@ -9,6 +9,7 @@ import (
 	"editory_submission/pkg/util"
 	"editory_submission/storage"
 	"editory_submission/storage/postgres/models"
+	"errors"
 	"fmt"
 	"github.com/saidamir98/udevs_pkg/logger"
 	"google.golang.org/grpc/codes"
@@ -147,12 +148,83 @@ func (s *userService) GetUserListByRole(ctx context.Context, req *pb.GetUserList
 	return res, nil
 }
 
-func (s *userService) UpdateUser(ctx context.Context, req *pb.User) (res *pb.User, err error) {
+func (s *userService) UpdateUser(ctx context.Context, req *pb.UpdateUserReq) (res *pb.User, err error) {
 	s.log.Info("---UpdateUser--->", logger.Any("req", req))
 
-	// validate data
+	//if ok := util.IsValidEmail(req.Email); !ok {
+	//	err = fmt.Errorf("email is not valid")
+	//	s.log.Error("!!!UpdateUser--->", logger.Error(err))
+	//	return nil, err
+	//}
+	user := pb.User{
+		Id:         req.GetId(),
+		FirstName:  req.GetFirstName(),
+		LastName:   req.GetLastName(),
+		Gender:     req.GetGender(),
+		Email:      req.GetEmail(),
+		PostCode:   req.GetPostCode(),
+		Address:    req.GetAddress(),
+		Degree:     req.GetDegree(),
+		ProfSphere: req.GetProfSphere(),
+		CountryId:  req.GetCountryId(),
+		CityId:     req.GetCityId(),
+		Username:   req.GetUsername(),
+		Phone:      req.GetPhone(),
+		ExtraPhone: req.GetExtraPhone(),
+	}
 
-	rowsAffected, err := s.strg.Auth().User().Update(ctx, req)
+	if req.GetPassword() != "" && req.GetNewPassword() != "" && req.GetConfirmPassword() != "" {
+		if req.GetNewPassword() != req.GetConfirmPassword() {
+			err := errors.New("invalid username or password")
+			s.log.Error("!!!UpdateUser--->", logger.Error(err))
+			return nil, status.Error(codes.InvalidArgument, err.Error())
+		}
+
+		if len(req.NewPassword) < 6 {
+			err := fmt.Errorf("password must not be less than 6 characters")
+			s.log.Error("!!!UpdateUser--->", logger.Error(err))
+			return nil, err
+		}
+
+		hashedPassword, err := security.HashPassword(req.Password)
+		if err != nil {
+			s.log.Error("!!!UpdateUser--->", logger.Error(err))
+			return nil, status.Error(codes.InvalidArgument, err.Error())
+		}
+
+		user, err := s.strg.Auth().User().GetByEmail(ctx, &pb.GetUserReq{
+			Email: req.GetEmail(),
+		})
+		if err != nil {
+			err := errors.New("invalid username or password")
+			s.log.Error("!!!UpdateUser--->", logger.Error(err))
+			return nil, status.Error(codes.InvalidArgument, err.Error())
+		}
+
+		match, err := security.ComparePassword(user.Password, req.Password)
+		if err != nil {
+			s.log.Error("!!!UpdateUser--->", logger.Error(err))
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		if !match {
+			err := errors.New("username or password is wrong")
+			s.log.Error("!!!UpdateUser--->", logger.Error(err))
+			return nil, status.Error(codes.InvalidArgument, err.Error())
+		}
+
+		user.Password = hashedPassword
+	}
+
+	if !util.IsValidPhone(user.GetPhone()) {
+		user.Phone = ""
+	}
+
+	if !util.IsValidPhone(user.GetExtraPhone()) {
+		user.ExtraPhone = ""
+	}
+
+	rowsAffected, err := s.strg.Auth().User().Update(ctx, &user)
 	if err != nil {
 		s.log.Error("!!!UpdateUser--->", logger.Error(err))
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -162,7 +234,7 @@ func (s *userService) UpdateUser(ctx context.Context, req *pb.User) (res *pb.Use
 		return nil, status.Error(codes.InvalidArgument, "no rows were affected")
 	}
 
-	return req, nil
+	return &user, nil
 }
 
 func (s *userService) DeleteUser(ctx context.Context, req *pb.DeleteUserReq) (res *emptypb.Empty, err error) {

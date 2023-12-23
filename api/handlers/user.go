@@ -202,12 +202,12 @@ func (h *Handler) GetJournalUserByID(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "journal id"
-// @Param user body auth_service.User true "UpdateUserRequestBody"
+// @Param user body auth_service.UpdateUserReq true "UpdateUserRequestBody"
 // @Success 200 {object} http.Response{data=auth_service.User} "User data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) UpdateJournalUser(c *gin.Context) {
-	var user auth_service.User
+	var user auth_service.UpdateUserReq
 
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
@@ -438,7 +438,7 @@ func (h *Handler) UpdateProfile(c *gin.Context) {
 
 	resp, err := h.services.UserService().UpdateUser(
 		c.Request.Context(),
-		&auth_service.User{
+		&auth_service.UpdateUserReq{
 			Gender:    user.Gender,
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
@@ -601,7 +601,7 @@ func (h *Handler) SendVerificationMessage(ctx context.Context, req *models.SendV
 func (h *Handler) RegisterDetail(c *gin.Context) {
 	var (
 		user   models.RegisterDetailReq
-		userPb auth_service.User
+		userPb auth_service.UpdateUserReq
 		res    models.RegisterDetailRes
 	)
 
@@ -611,21 +611,20 @@ func (h *Handler) RegisterDetail(c *gin.Context) {
 		return
 	}
 
-	userPb = auth_service.User{
-		Id:          user.Id,
-		Username:    user.Username,
-		FirstName:   user.FirstName,
-		LastName:    user.LastName,
-		Phone:       user.Phone,
-		ExtraPhone:  user.ExtraPhone,
-		CountryId:   user.CountryId,
-		CityId:      user.CityId,
-		ProfSphere:  user.ProfSphere,
-		Degree:      user.Degree,
-		Address:     user.Address,
-		PostCode:    user.PostCode,
-		Gender:      user.Gender,
-		IsCompleted: true,
+	userPb = auth_service.UpdateUserReq{
+		Id:         user.Id,
+		Username:   user.Username,
+		FirstName:  user.FirstName,
+		LastName:   user.LastName,
+		Phone:      user.Phone,
+		ExtraPhone: user.ExtraPhone,
+		CountryId:  user.CountryId,
+		CityId:     user.CityId,
+		ProfSphere: user.ProfSphere,
+		Degree:     user.Degree,
+		Address:    user.Address,
+		PostCode:   user.PostCode,
+		Gender:     user.Gender,
 	}
 
 	resp, err := h.services.UserService().UpdateUser(

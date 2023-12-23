@@ -173,12 +173,12 @@ func (h *Handler) GetAdminAuthorByID(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param editor body auth_service.User true "UpdateUserRequestBody"
+// @Param editor body auth_service.UpdateUserReq true "UpdateUserRequestBody"
 // @Success 200 {object} http.Response{data=auth_service.User} "User data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) UpdateAdminAuthor(c *gin.Context) {
-	var user auth_service.User
+	var user auth_service.UpdateUserReq
 
 	err := c.ShouldBindJSON(&user)
 	if err != nil {

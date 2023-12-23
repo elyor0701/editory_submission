@@ -27,7 +27,7 @@ type UserServiceClient interface {
 	CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 	GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*User, error)
 	GetUserList(ctx context.Context, in *GetUserListReq, opts ...grpc.CallOption) (*GetUserListRes, error)
-	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
+	UpdateUser(ctx context.Context, in *UpdateUserReq, opts ...grpc.CallOption) (*User, error)
 	DeleteUser(ctx context.Context, in *DeleteUserReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetUserListByRole(ctx context.Context, in *GetUserListByRoleReq, opts ...grpc.CallOption) (*GetUserListByRoleRes, error)
 	// rpc ResetPassword(ResetPasswordRequest) returns (User) {}
@@ -71,7 +71,7 @@ func (c *userServiceClient) GetUserList(ctx context.Context, in *GetUserListReq,
 	return out, nil
 }
 
-func (c *userServiceClient) UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error) {
+func (c *userServiceClient) UpdateUser(ctx context.Context, in *UpdateUserReq, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, "/auth_service.UserService/UpdateUser", in, out, opts...)
 	if err != nil {
@@ -124,7 +124,7 @@ type UserServiceServer interface {
 	CreateUser(context.Context, *User) (*User, error)
 	GetUser(context.Context, *GetUserReq) (*User, error)
 	GetUserList(context.Context, *GetUserListReq) (*GetUserListRes, error)
-	UpdateUser(context.Context, *User) (*User, error)
+	UpdateUser(context.Context, *UpdateUserReq) (*User, error)
 	DeleteUser(context.Context, *DeleteUserReq) (*emptypb.Empty, error)
 	GetUserListByRole(context.Context, *GetUserListByRoleReq) (*GetUserListByRoleRes, error)
 	// rpc ResetPassword(ResetPasswordRequest) returns (User) {}
@@ -147,7 +147,7 @@ func (UnimplementedUserServiceServer) GetUser(context.Context, *GetUserReq) (*Us
 func (UnimplementedUserServiceServer) GetUserList(context.Context, *GetUserListReq) (*GetUserListRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
 }
-func (UnimplementedUserServiceServer) UpdateUser(context.Context, *User) (*User, error) {
+func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UpdateUserReq) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
 func (UnimplementedUserServiceServer) DeleteUser(context.Context, *DeleteUserReq) (*emptypb.Empty, error) {
@@ -230,7 +230,7 @@ func _UserService_GetUserList_Handler(srv interface{}, ctx context.Context, dec 
 }
 
 func _UserService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(User)
+	in := new(UpdateUserReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -242,7 +242,7 @@ func _UserService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/auth_service.UserService/UpdateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).UpdateUser(ctx, req.(*User))
+		return srv.(UserServiceServer).UpdateUser(ctx, req.(*UpdateUserReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

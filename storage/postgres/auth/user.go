@@ -463,6 +463,11 @@ func (s *UserRepo) Update(ctx context.Context, req *pb.User) (rowsAffected int64
 		params["gender"] = req.GetGender()
 	}
 
+	if req.GetPassword() != "" {
+		fieldVal = append(fieldVal, ` password = :password`)
+		params["password"] = req.GetPassword()
+	}
+
 	querySet += strings.Join(fieldVal, ",")
 
 	query := querySet + filter
