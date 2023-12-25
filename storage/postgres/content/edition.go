@@ -33,8 +33,8 @@ func (s *EditionRepo) Create(ctx context.Context, req *pb.CreateEditionReq) (res
 		$1,
 		$2,
 		$3,
-		$4
-		$5
+		$4,
+		$5,
 		$6
 	)`
 
@@ -74,10 +74,10 @@ func (s *EditionRepo) Get(ctx context.Context, req *pb.PrimaryKey) (res *pb.Edit
 		id,                 
     	journal_id,           
     	edition,         
-    	coalesce(file, ''),
-    	coalesce(title, ''),
-    	coalesce(description, ''),
-    	to_char(created_at, ` + config.DatabaseQueryTimeLayout + `) as created_at
+    	coalesce(file, '') as file,
+    	coalesce(title, '') as title,
+    	coalesce(description, '') as description,
+    	to_char(created_at, ` + config.DatabaseQueryTimeLayout + `) as created_at,
     	to_char(updated_at, ` + config.DatabaseQueryTimeLayout + `) as updated_at
 	FROM
 		"edition"
@@ -112,10 +112,10 @@ func (s *EditionRepo) GetList(ctx context.Context, req *pb.GetEditionListReq) (r
 
 	query := `SELECT
 		id,                 
-    	coalesce(journal_id::VARCHAR, ''),           
+    	coalesce(journal_id::VARCHAR, '') as journal_id,           
     	edition,         
     	file,
-    	to_char(created_at, ` + config.DatabaseQueryTimeLayout + `) as created_at
+    	to_char(created_at, ` + config.DatabaseQueryTimeLayout + `) as created_at,
     	to_char(updated_at, ` + config.DatabaseQueryTimeLayout + `) as updated_at
 	FROM
 		"edition"`
