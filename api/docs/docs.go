@@ -54,6 +54,12 @@ const docTemplate = `{
                         "description": "search",
                         "name": "search",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "status",
+                        "name": "status",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -68,7 +74,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_content_service.GetArticleListRes"
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.GetArticleListRes"
                                         }
                                     }
                                 }
@@ -149,7 +155,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_content_service.Article"
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.Article"
                                         }
                                     }
                                 }
@@ -3504,10 +3510,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Article"
+                    "Journal"
                 ],
                 "summary": "Get Article List",
-                "operationId": "get_article_list",
+                "operationId": "get_journal_article_list",
                 "parameters": [
                     {
                         "type": "string",
@@ -3533,6 +3539,12 @@ const docTemplate = `{
                         "description": "search",
                         "name": "search",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "status",
+                        "name": "status",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -3547,7 +3559,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_content_service.GetArticleListRes"
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.GetArticleListRes"
                                         }
                                     }
                                 }
@@ -3601,10 +3613,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Article"
+                    "Journal"
                 ],
                 "summary": "Update Article",
-                "operationId": "update_article",
+                "operationId": "update_journal_article",
                 "parameters": [
                     {
                         "type": "string",
@@ -3619,7 +3631,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/editory_submission_genproto_content_service.Article"
+                            "$ref": "#/definitions/editory_submission_genproto_submission_service.UpdateArticleReq"
                         }
                     }
                 ],
@@ -3635,7 +3647,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_content_service.Article"
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.UpdateArticleRes"
                                         }
                                     }
                                 }
@@ -3689,10 +3701,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Article"
+                    "Journal"
                 ],
                 "summary": "Create Article",
-                "operationId": "create_article",
+                "operationId": "create_journal_article",
                 "parameters": [
                     {
                         "type": "string",
@@ -3707,7 +3719,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/editory_submission_genproto_content_service.CreateArticleReq"
+                            "$ref": "#/definitions/editory_submission_genproto_submission_service.CreateArticleReq"
                         }
                     }
                 ],
@@ -3723,7 +3735,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_content_service.Article"
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.CreateArticleRes"
                                         }
                                     }
                                 }
@@ -3779,10 +3791,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Article"
+                    "Journal"
                 ],
                 "summary": "Get Article By ID",
-                "operationId": "get_article_by_id",
+                "operationId": "get_journal_article_by_id",
                 "parameters": [
                     {
                         "type": "string",
@@ -3811,7 +3823,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_content_service.Article"
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.Article"
                                         }
                                     }
                                 }
@@ -3865,10 +3877,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Article"
+                    "Journal"
                 ],
                 "summary": "Delete Article",
-                "operationId": "delete_article",
+                "operationId": "delete_journal_article",
                 "parameters": [
                     {
                         "type": "string",
@@ -3881,6 +3893,384 @@ const docTemplate = `{
                         "type": "string",
                         "description": "article-id",
                         "name": "article-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/{journal-id}/article/{article-id}/review": {
+            "get": {
+                "description": "Get article review List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Journal"
+                ],
+                "summary": "Get article review List",
+                "operationId": "get_article_review_list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "journal-id",
+                        "name": "journal-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "article-id",
+                        "name": "article-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetArticleReviewerListRes",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.GetArticleReviewerListRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/{journal-id}/article/{article-id}/review/{review-id}": {
+            "get": {
+                "description": "Get article review",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Journal"
+                ],
+                "summary": "Get article review",
+                "operationId": "get_article_review_by_id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "journal-id",
+                        "name": "journal-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "article-id",
+                        "name": "article-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "review-id",
+                        "name": "review-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetArticleReviewerRes",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.GetArticleReviewerRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/{journal-id}/article/{article-id}/reviewer": {
+            "post": {
+                "description": "Create Article Reviewer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Journal"
+                ],
+                "summary": "Create Article Reviewer",
+                "operationId": "create_article_reviewer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "journal Id",
+                        "name": "journal-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "article Id",
+                        "name": "article-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "CreateArticleRequestBody",
+                        "name": "article",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_api_models.CreateArticleReviewerReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "CreateArticleReviewerRes",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.CreateArticleReviewerRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/{journal-id}/article/{article-id}/reviewer/{reviewer-id}": {
+            "delete": {
+                "description": "Get Article reviewer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Journal"
+                ],
+                "summary": "Delete Article reviewer",
+                "operationId": "delete_article_reviewer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "journal-id",
+                        "name": "journal-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "article-id",
+                        "name": "article-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "reviewer-id",
+                        "name": "reviewer-id",
                         "in": "path",
                         "required": true
                     }
@@ -5918,6 +6308,703 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/{user-id}/article": {
+            "get": {
+                "description": "Get Article List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get Article List",
+                "operationId": "get_user_article_list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user Id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "status",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetArticleListResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.GetArticleListRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update Article",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update Article",
+                "operationId": "update_user_article",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user Id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UpdateArticleRequestBody",
+                        "name": "article",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_genproto_submission_service.UpdateArticleReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article data",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.UpdateArticleRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create Article",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Create Article",
+                "operationId": "create_user_article",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user Id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "CreateArticleRequestBody",
+                        "name": "article",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_genproto_submission_service.CreateArticleReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Article data",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.CreateArticleRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{user-id}/article/{article-id}": {
+            "get": {
+                "description": "Get Article By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get Article By ID",
+                "operationId": "get_user_article_by_id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user Id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "article-id",
+                        "name": "article-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ArticleBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.Article"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Get Article",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete Article",
+                "operationId": "delete_journal_article",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user Id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "article-id",
+                        "name": "article-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{user-id}/review": {
+            "get": {
+                "description": "Get user review List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user review List",
+                "operationId": "get_user_review_list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user-id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetArticleReviewerListRes",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.GetArticleReviewerListRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update User Review",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update User Review",
+                "operationId": "update_user_review",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user-id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UpdateUserReviewReq",
+                        "name": "review",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_api_models.UpdateUserReviewReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "UpdateArticleReviewerRes",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.UpdateArticleReviewerRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{user-id}/review/{review-id}": {
+            "get": {
+                "description": "Get user review",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user review",
+                "operationId": "get_user_review_by_id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user-id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "review-id",
+                        "name": "review-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetArticleReviewerRes",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.GetArticleReviewerRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -6055,6 +7142,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.CreateArticleReviewerReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
                     "type": "string"
                 }
             }
@@ -6427,6 +7528,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.UpdateUserReviewReq": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }
@@ -6811,41 +7926,6 @@ const docTemplate = `{
                 }
             }
         },
-        "editory_submission_genproto_content_service.Article": {
-            "type": "object",
-            "properties": {
-                "author_id": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "files": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/editory_submission_genproto_content_service.File"
-                    }
-                },
-                "id": {
-                    "type": "string"
-                },
-                "journal_id": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                },
-                "udpated_at": {
-                    "type": "string"
-                }
-            }
-        },
         "editory_submission_genproto_content_service.City": {
             "type": "object",
             "properties": {
@@ -6879,32 +7959,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title_uz": {
-                    "type": "string"
-                }
-            }
-        },
-        "editory_submission_genproto_content_service.CreateArticleReq": {
-            "type": "object",
-            "properties": {
-                "author_id": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "files": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/editory_submission_genproto_content_service.File"
-                    }
-                },
-                "journal_id": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "type": {
                     "type": "string"
                 }
             }
@@ -6999,40 +8053,6 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
-                }
-            }
-        },
-        "editory_submission_genproto_content_service.File": {
-            "type": "object",
-            "properties": {
-                "article_id": {
-                    "type": "string"
-                },
-                "draft_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
-        "editory_submission_genproto_content_service.GetArticleListRes": {
-            "type": "object",
-            "properties": {
-                "articles": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/editory_submission_genproto_content_service.Article"
-                    }
-                },
-                "count": {
-                    "type": "integer"
                 }
             }
         },
@@ -7447,6 +8467,392 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.Article": {
+            "type": "object",
+            "properties": {
+                "author_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "editor_comment": {
+                    "type": "string"
+                },
+                "editor_id": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_submission_service.File"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "journal_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.CreateArticleReq": {
+            "type": "object",
+            "properties": {
+                "author_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_submission_service.File"
+                    }
+                },
+                "journal_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.CreateArticleRes": {
+            "type": "object",
+            "properties": {
+                "author_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "editor_comment": {
+                    "type": "string"
+                },
+                "editor_id": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_submission_service.File"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "journal_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.CreateArticleReviewerRes": {
+            "type": "object",
+            "properties": {
+                "article_id": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "reviewer_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.File": {
+            "type": "object",
+            "properties": {
+                "article_id": {
+                    "type": "string"
+                },
+                "draft_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.GetArticleListRes": {
+            "type": "object",
+            "properties": {
+                "articles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_submission_service.Article"
+                    }
+                },
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.GetArticleReviewerListRes": {
+            "type": "object",
+            "properties": {
+                "article_reviewers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_submission_service.GetArticleReviewerListRes_ArticleReview"
+                    }
+                },
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.GetArticleReviewerListRes_ArticleReview": {
+            "type": "object",
+            "properties": {
+                "article": {
+                    "$ref": "#/definitions/editory_submission_genproto_submission_service.Article"
+                },
+                "article_id": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "reviewer": {
+                    "$ref": "#/definitions/editory_submission_genproto_submission_service.Reviewer"
+                },
+                "reviewer_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.GetArticleReviewerRes": {
+            "type": "object",
+            "properties": {
+                "article": {
+                    "$ref": "#/definitions/editory_submission_genproto_submission_service.Article"
+                },
+                "article_id": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "reviewer": {
+                    "$ref": "#/definitions/editory_submission_genproto_submission_service.Reviewer"
+                },
+                "reviewer_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.Reviewer": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.UpdateArticleReq": {
+            "type": "object",
+            "properties": {
+                "author_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "editor_comment": {
+                    "type": "string"
+                },
+                "editor_id": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_submission_service.File"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "journal_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.UpdateArticleRes": {
+            "type": "object",
+            "properties": {
+                "author_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "editor_comment": {
+                    "type": "string"
+                },
+                "editor_id": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_submission_service.File"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "journal_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.UpdateArticleReviewerRes": {
+            "type": "object",
+            "properties": {
+                "article_id": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "reviewer_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }

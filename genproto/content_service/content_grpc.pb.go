@@ -29,12 +29,6 @@ type ContentServiceClient interface {
 	GetJournalList(ctx context.Context, in *GetList, opts ...grpc.CallOption) (*GetJournalListRes, error)
 	UpdateJournal(ctx context.Context, in *Journal, opts ...grpc.CallOption) (*Journal, error)
 	DeleteJournal(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Article
-	CreateArticle(ctx context.Context, in *CreateArticleReq, opts ...grpc.CallOption) (*Article, error)
-	GetArticle(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*Article, error)
-	GetArticleList(ctx context.Context, in *GetArticleListReq, opts ...grpc.CallOption) (*GetArticleListRes, error)
-	UpdateArticle(ctx context.Context, in *Article, opts ...grpc.CallOption) (*Article, error)
-	DeleteArticle(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Edition
 	CreateEdition(ctx context.Context, in *CreateEditionReq, opts ...grpc.CallOption) (*Edition, error)
 	GetEdition(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*Edition, error)
@@ -93,51 +87,6 @@ func (c *contentServiceClient) UpdateJournal(ctx context.Context, in *Journal, o
 func (c *contentServiceClient) DeleteJournal(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/content_service.ContentService/DeleteJournal", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *contentServiceClient) CreateArticle(ctx context.Context, in *CreateArticleReq, opts ...grpc.CallOption) (*Article, error) {
-	out := new(Article)
-	err := c.cc.Invoke(ctx, "/content_service.ContentService/CreateArticle", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *contentServiceClient) GetArticle(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*Article, error) {
-	out := new(Article)
-	err := c.cc.Invoke(ctx, "/content_service.ContentService/GetArticle", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *contentServiceClient) GetArticleList(ctx context.Context, in *GetArticleListReq, opts ...grpc.CallOption) (*GetArticleListRes, error) {
-	out := new(GetArticleListRes)
-	err := c.cc.Invoke(ctx, "/content_service.ContentService/GetArticleList", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *contentServiceClient) UpdateArticle(ctx context.Context, in *Article, opts ...grpc.CallOption) (*Article, error) {
-	out := new(Article)
-	err := c.cc.Invoke(ctx, "/content_service.ContentService/UpdateArticle", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *contentServiceClient) DeleteArticle(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/content_service.ContentService/DeleteArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -217,12 +166,6 @@ type ContentServiceServer interface {
 	GetJournalList(context.Context, *GetList) (*GetJournalListRes, error)
 	UpdateJournal(context.Context, *Journal) (*Journal, error)
 	DeleteJournal(context.Context, *PrimaryKey) (*emptypb.Empty, error)
-	// Article
-	CreateArticle(context.Context, *CreateArticleReq) (*Article, error)
-	GetArticle(context.Context, *PrimaryKey) (*Article, error)
-	GetArticleList(context.Context, *GetArticleListReq) (*GetArticleListRes, error)
-	UpdateArticle(context.Context, *Article) (*Article, error)
-	DeleteArticle(context.Context, *PrimaryKey) (*emptypb.Empty, error)
 	// Edition
 	CreateEdition(context.Context, *CreateEditionReq) (*Edition, error)
 	GetEdition(context.Context, *PrimaryKey) (*Edition, error)
@@ -253,21 +196,6 @@ func (UnimplementedContentServiceServer) UpdateJournal(context.Context, *Journal
 }
 func (UnimplementedContentServiceServer) DeleteJournal(context.Context, *PrimaryKey) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteJournal not implemented")
-}
-func (UnimplementedContentServiceServer) CreateArticle(context.Context, *CreateArticleReq) (*Article, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateArticle not implemented")
-}
-func (UnimplementedContentServiceServer) GetArticle(context.Context, *PrimaryKey) (*Article, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetArticle not implemented")
-}
-func (UnimplementedContentServiceServer) GetArticleList(context.Context, *GetArticleListReq) (*GetArticleListRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetArticleList not implemented")
-}
-func (UnimplementedContentServiceServer) UpdateArticle(context.Context, *Article) (*Article, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateArticle not implemented")
-}
-func (UnimplementedContentServiceServer) DeleteArticle(context.Context, *PrimaryKey) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticle not implemented")
 }
 func (UnimplementedContentServiceServer) CreateEdition(context.Context, *CreateEditionReq) (*Edition, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateEdition not implemented")
@@ -389,96 +317,6 @@ func _ContentService_DeleteJournal_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ContentServiceServer).DeleteJournal(ctx, req.(*PrimaryKey))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ContentService_CreateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateArticleReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ContentServiceServer).CreateArticle(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/content_service.ContentService/CreateArticle",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContentServiceServer).CreateArticle(ctx, req.(*CreateArticleReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ContentService_GetArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PrimaryKey)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ContentServiceServer).GetArticle(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/content_service.ContentService/GetArticle",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContentServiceServer).GetArticle(ctx, req.(*PrimaryKey))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ContentService_GetArticleList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetArticleListReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ContentServiceServer).GetArticleList(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/content_service.ContentService/GetArticleList",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContentServiceServer).GetArticleList(ctx, req.(*GetArticleListReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ContentService_UpdateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Article)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ContentServiceServer).UpdateArticle(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/content_service.ContentService/UpdateArticle",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContentServiceServer).UpdateArticle(ctx, req.(*Article))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ContentService_DeleteArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PrimaryKey)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ContentServiceServer).DeleteArticle(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/content_service.ContentService/DeleteArticle",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ContentServiceServer).DeleteArticle(ctx, req.(*PrimaryKey))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -635,26 +473,6 @@ var ContentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteJournal",
 			Handler:    _ContentService_DeleteJournal_Handler,
-		},
-		{
-			MethodName: "CreateArticle",
-			Handler:    _ContentService_CreateArticle_Handler,
-		},
-		{
-			MethodName: "GetArticle",
-			Handler:    _ContentService_GetArticle_Handler,
-		},
-		{
-			MethodName: "GetArticleList",
-			Handler:    _ContentService_GetArticleList_Handler,
-		},
-		{
-			MethodName: "UpdateArticle",
-			Handler:    _ContentService_UpdateArticle_Handler,
-		},
-		{
-			MethodName: "DeleteArticle",
-			Handler:    _ContentService_DeleteArticle_Handler,
 		},
 		{
 			MethodName: "CreateEdition",

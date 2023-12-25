@@ -1,0 +1,37 @@
+syntax="proto3";
+
+package submission_service;
+option go_package="genproto/submission_service";
+
+message ArticleReviewer {
+  string id = 1;
+  string reviewer_id = 2;
+  string article_id = 3;
+  string status = 4;
+  string comment = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message Article {
+  string id = 1;
+  string journal_id = 2;
+  string type = 3;
+  string title = 4;
+  string author_id = 5;
+  string description = 6;
+  string status = 7;
+  string editor_id = 8;
+  string editor_comment = 9;
+  repeated File files = 10;
+  string created_at = 11;
+  string updated_at = 12;
+}
+
+message File {
+  string id = 1;
+  string url = 2;
+  string type = 3;
+  string draft_id = 4;
+  string article_id = 5;
+}

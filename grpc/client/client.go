@@ -5,6 +5,7 @@ import (
 	"editory_submission/genproto/auth_service"
 	"editory_submission/genproto/content_service"
 	"editory_submission/genproto/notification_service"
+	"editory_submission/genproto/submission_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -19,6 +20,8 @@ type ServiceManagerI interface {
 	SubjectService() content_service.SubjectServiceClient
 	NotificationService() notification_service.NotificationServiceClient
 	EmailTmpService() notification_service.EmailTmpServiceClient
+	ArticleService() submission_service.ArticleServiceClient
+	ReviewerService() submission_service.ReviewerServiceClient
 }
 
 type grpcClients struct {
@@ -36,6 +39,10 @@ type grpcClients struct {
 	// notification
 	notificationService notification_service.NotificationServiceClient
 	emailTmpService     notification_service.EmailTmpServiceClient
+
+	// submission
+	articleService  submission_service.ArticleServiceClient
+	reviewerService submission_service.ReviewerServiceClient
 }
 
 func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
@@ -58,6 +65,8 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 		subjectService:      content_service.NewSubjectServiceClient(connAuthService),
 		emailTmpService:     notification_service.NewEmailTmpServiceClient(connAuthService),
 		notificationService: notification_service.NewNotificationServiceClient(connAuthService),
+		articleService:      submission_service.NewArticleServiceClient(connAuthService),
+		reviewerService:     submission_service.NewReviewerServiceClient(connAuthService),
 	}, nil
 }
 
@@ -95,4 +104,11 @@ func (g *grpcClients) NotificationService() notification_service.NotificationSer
 
 func (g *grpcClients) EmailTmpService() notification_service.EmailTmpServiceClient {
 	return g.emailTmpService
+}
+
+func (g *grpcClients) ArticleService() submission_service.ArticleServiceClient {
+	return g.articleService
+}
+func (g *grpcClients) ReviewerService() submission_service.ReviewerServiceClient {
+	return g.reviewerService
 }

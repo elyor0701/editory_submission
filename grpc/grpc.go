@@ -5,10 +5,12 @@ import (
 	"editory_submission/genproto/auth_service"
 	"editory_submission/genproto/content_service"
 	"editory_submission/genproto/notification_service"
+	"editory_submission/genproto/submission_service"
 	"editory_submission/grpc/client"
 	auth "editory_submission/grpc/service/auth_service"
 	content "editory_submission/grpc/service/content_service"
 	"editory_submission/grpc/service/notification"
+	submission "editory_submission/grpc/service/submission_service"
 	"editory_submission/storage"
 
 	"github.com/saidamir98/udevs_pkg/logger"
@@ -33,6 +35,10 @@ func SetUpServer(cfg config.Config, log logger.LoggerI, strg storage.StorageI, s
 	// notification
 	notification_service.RegisterEmailTmpServiceServer(grpcServer, notification.NewEmailTmpService(cfg, log, strg, svcs))
 	notification_service.RegisterNotificationServiceServer(grpcServer, notification.NewNotificationService(cfg, log, strg, svcs))
+
+	// submission
+	submission_service.RegisterArticleServiceServer(grpcServer, submission.NewArticleService(cfg, log, strg, svcs))
+	submission_service.RegisterReviewerServiceServer(grpcServer, submission.NewReviewerService(cfg, log, strg, svcs))
 
 	reflection.Register(grpcServer)
 	return

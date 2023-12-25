@@ -14,26 +14,12 @@ service ContentService {
   rpc UpdateJournal(Journal) returns (Journal) {}
   rpc DeleteJournal(PrimaryKey) returns (google.protobuf.Empty) {}
 
-  // Article
-  rpc CreateArticle(CreateArticleReq) returns (Article) {}
-  rpc GetArticle(PrimaryKey) returns (Article) {}
-  rpc GetArticleList(GetArticleListReq) returns (GetArticleListRes) {}
-  rpc UpdateArticle(Article) returns (Article) {}
-  rpc DeleteArticle(PrimaryKey) returns (google.protobuf.Empty) {}
-
   // Edition
   rpc CreateEdition(CreateEditionReq) returns (Edition) {}
   rpc GetEdition(PrimaryKey) returns (Edition) {}
   rpc GetEditionList(GetEditionListReq) returns (GetEditionListRes) {}
   rpc UpdateEdition(Edition) returns (Edition) {}
   rpc DeleteEdition(PrimaryKey) returns (google.protobuf.Empty) {}
-
-  // File
-  //  rpc CreateFile(CreateFileReq) returns (PrimaryKey) {}
-  //  rpc GetFile(PrimaryKey) returns (Article) {}
-  //  rpc GetFileList(GetList) returns (GetArticleListRes) {}
-  //  rpc UpdateFile(UpdateFileReq) returns (PrimaryKey) {}
-  //  rpc DeleteFile(PrimaryKey) returns (google.protobuf.Empty) {}
 
   // Countries and cities
   rpc GetCountryList(GetCountryListReq) returns (GetCountryListRes) {}
@@ -78,14 +64,6 @@ message GetCityListRes {
   int32 count = 2;
 }
 
-message File {
-  string id = 1;
-  string url = 2;
-  string type = 3;
-  string draft_id = 4;
-  string article_id = 5;
-}
-
 message PrimaryKey {
   string id = 1;
 }
@@ -102,13 +80,6 @@ message GetList {
   string date_from = 5;
   string date_to = 6;
   string sort = 7;
-}
-
-message GetArticleListReq {
-  int32 limit = 1;
-  int32 offset = 2;
-  string search = 3;
-  string journal_id = 4;
 }
 
 message Journal {
@@ -139,18 +110,6 @@ message JournalData {
   string short_text = 4;
 }
 
-message Article {
-  string id = 1;
-  string journal_id = 2;
-  string type = 3;
-  string title = 4;
-  string author_id = 5;
-  string description = 6;
-  string created_at = 7;
-  repeated File files = 8;
-  string udpated_at = 9;
-}
-
 message CreateJournalReq {
   string cover_photo = 2;
   string title = 3;
@@ -169,39 +128,10 @@ message CreateJournalReq {
   repeated Subject subjects = 16;
 }
 
-message CreateArticleReq {
-  string journal_id = 2;
-  string type = 3;
-  string title = 4;
-  string author_id = 5;
-  string description = 6;
-  repeated File files = 7;
-}
-
 message GetJournalListRes {
   repeated Journal journals = 1;
   int32 count = 2;
 }
-
-message GetArticleListRes {
-  repeated Article articles = 1;
-  int32 count = 2;
-}
-
-//message CreateFileReq {
-//  string url = 1;
-//  string type = 2;
-//  string draft_id = 3;
-//  string article_id = 4;
-//}
-//
-//message UpdateFileReq {
-//  string id = 1;
-//  string url = 2;
-//  string type = 3;
-//  string draft_id = 4;
-//  string article_id = 5;
-//}
 
 message Edition {
   string id = 1;

@@ -2,7 +2,6 @@ package util
 
 import (
 	"database/sql"
-	"github.com/jackc/pgconn"
 	"strings"
 )
 
@@ -26,12 +25,17 @@ func NewNullInt32(i int32) sql.NullInt32 {
 	}
 }
 
+//func IsErrDuplicateKey(err error) bool {
+//	pgErr, ok := err.(*pgconn.PgError)
+//	fmt.Println(pgErr.Code)
+//	if ok && pgErr.Code == "23505" {
+//		return true
+//	}
+//	return false
+//}
+
 func IsErrDuplicateKey(err error) bool {
-	pgErr, ok := err.(*pgconn.PgError)
-	if ok && pgErr.Code == "23505" {
-		return true
-	}
-	return false
+	return strings.Contains(err.Error(), "duplicate key value violates unique constraint")
 }
 
 func IsErrNoRows(err error) bool {

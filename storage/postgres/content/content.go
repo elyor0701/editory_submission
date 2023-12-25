@@ -30,14 +30,6 @@ func (s *contentRepo) Journal() storage.JournalRepoI {
 	return s.journal
 }
 
-func (s *contentRepo) Article() storage.ArticleRepoI {
-	if s.article == nil {
-		s.article = NewArticleRepo(s.db)
-	}
-
-	return s.article
-}
-
 func (s *contentRepo) CountryAndCity() storage.CountryAndCityRepoI {
 	if s.countryAndCity == nil {
 		s.countryAndCity = NewCountryAndCityRepo(s.db)

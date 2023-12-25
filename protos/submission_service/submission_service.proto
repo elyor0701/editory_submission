@@ -1,0 +1,103 @@
+syntax="proto3";
+
+package submission_service;
+option go_package="genproto/submission_service";
+
+import "google/protobuf/empty.proto";
+import "submission.proto";
+
+service ReviewerService {
+  rpc CreateArticleReviewer(CreateArticleReviewerReq) returns (CreateArticleReviewerRes) {}
+  rpc GetArticleReviewer(GetArticleReviewerReq) returns (GetArticleReviewerRes) {}
+  rpc GetArticleReviewerList(GetArticleReviewerListReq) returns (GetArticleReviewerListRes) {}
+  rpc UpdateArticleReviewer(UpdateArticleReviewerReq) returns (UpdateArticleReviewerRes) {}
+  rpc DeleteArticleReviewer(DeleteArticleReviewerReq) returns (google.protobuf.Empty) {}
+}
+
+message Reviewer {
+  string id = 1;
+  string email = 2;
+  string first_name = 3;
+  string last_name = 4;
+}
+
+message CreateArticleReviewerReq {
+  string reviewer_id = 1;
+  string article_id = 2;
+  string status = 3;
+  string comment = 4;
+}
+
+message CreateArticleReviewerRes {
+  string id = 1;
+  string reviewer_id = 2;
+  string article_id = 3;
+  string status = 4;
+  string comment = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message GetArticleReviewerReq {
+  string id = 1;
+}
+
+message GetArticleReviewerRes {
+  string id = 1;
+  string reviewer_id = 2;
+  string article_id = 3;
+  string status = 4;
+  string comment = 5;
+  string created_at = 6;
+  string updated_at = 7;
+  Article article = 8;
+  Reviewer reviewer = 9;
+}
+
+message GetArticleReviewerListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string reviewer_id = 4;
+  string article_id = 5;
+}
+
+message GetArticleReviewerListRes {
+  message ArticleReview {
+    string id = 1;
+    string reviewer_id = 2;
+    string article_id = 3;
+    string status = 4;
+    string comment = 5;
+    string created_at = 6;
+    string updated_at = 7;
+    Article article = 8;
+    Reviewer reviewer = 9;
+  }
+  repeated ArticleReview article_reviewers = 1;
+  int32 count = 2;
+}
+
+message UpdateArticleReviewerReq {
+  string id = 1;
+  string reviewer_id = 2;
+  string article_id = 3;
+  string status = 4;
+  string comment = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message UpdateArticleReviewerRes {
+  string id = 1;
+  string reviewer_id = 2;
+  string article_id = 3;
+  string status = 4;
+  string comment = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message DeleteArticleReviewerReq {
+  string id = 1;
+}

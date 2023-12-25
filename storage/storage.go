@@ -5,6 +5,7 @@ import (
 	pb "editory_submission/genproto/auth_service"
 	cs_pb "editory_submission/genproto/content_service"
 	"editory_submission/genproto/notification_service"
+	"editory_submission/genproto/submission_service"
 	"editory_submission/storage/postgres/models"
 )
 
@@ -13,6 +14,7 @@ type StorageI interface {
 	Auth() AuthRepoI
 	Content() ContentRepoI
 	Notification() NotificationRepoI
+	Submission() SubmissionRepoI
 }
 
 type AuthRepoI interface {
@@ -24,7 +26,6 @@ type AuthRepoI interface {
 
 type ContentRepoI interface {
 	Journal() JournalRepoI
-	Article() ArticleRepoI
 	Edition() EditionRepoI
 	CountryAndCity() CountryAndCityRepoI
 	University() UniversityRepoI
@@ -34,6 +35,11 @@ type ContentRepoI interface {
 type NotificationRepoI interface {
 	Notification() NotifyRepoI
 	EmailTemplate() EmailTemplateRepoI
+}
+
+type SubmissionRepoI interface {
+	Article() ArticleRepoI
+	Reviewer() ReviewerRepoI
 }
 
 type UserRepoI interface {
@@ -72,14 +78,6 @@ type JournalRepoI interface {
 	UpsertSubject(ctx context.Context, in *models.UpsertJournalSubjectReq) (*models.UpsertJournalSubjectRes, error)
 	GetSubject(ctx context.Context, in *cs_pb.PrimaryKey) ([]*cs_pb.Subject, error)
 	DeleteSubject(ctx context.Context, in *cs_pb.PrimaryKey) (rowsAffected int64, err error)
-}
-
-type ArticleRepoI interface {
-	Create(ctx context.Context, in *cs_pb.CreateArticleReq) (*cs_pb.Article, error)
-	Get(ctx context.Context, in *cs_pb.PrimaryKey) (*cs_pb.Article, error)
-	GetList(ctx context.Context, in *cs_pb.GetArticleListReq) (*cs_pb.GetArticleListRes, error)
-	Update(ctx context.Context, in *cs_pb.Article) (*cs_pb.Article, error)
-	Delete(ctx context.Context, in *cs_pb.PrimaryKey) (rowsAffected int64, err error)
 }
 
 type EditionRepoI interface {
@@ -141,4 +139,20 @@ type KeywordRepoI interface {
 	GetList(ctx context.Context, in *pb.GetKeywordListReq) (*pb.GetKeywordListRes, error)
 	Update(ctx context.Context, in *pb.UpdateKeywordReq) (*pb.UpdateKeywordRes, error)
 	Delete(ctx context.Context, in *pb.DeleteKeywordReq) (rowsAffected int64, err error)
+}
+
+type ArticleRepoI interface {
+	Create(ctx context.Context, in *submission_service.CreateArticleReq) (*submission_service.CreateArticleRes, error)
+	Get(ctx context.Context, in *submission_service.GetArticleReq) (*submission_service.GetArticleRes, error)
+	GetList(ctx context.Context, in *submission_service.GetArticleListReq) (*submission_service.GetArticleListRes, error)
+	Update(ctx context.Context, in *submission_service.UpdateArticleReq) (rowsAffected int64, err error)
+	Delete(ctx context.Context, in *submission_service.DeleteArticleReq) (rowsAffected int64, err error)
+}
+
+type ReviewerRepoI interface {
+	Create(ctx context.Context, in *submission_service.CreateArticleReviewerReq) (*submission_service.CreateArticleReviewerRes, error)
+	Get(ctx context.Context, in *submission_service.GetArticleReviewerReq) (*submission_service.GetArticleReviewerRes, error)
+	GetList(ctx context.Context, in *submission_service.GetArticleReviewerListReq) (*submission_service.GetArticleReviewerListRes, error)
+	Update(ctx context.Context, in *submission_service.UpdateArticleReviewerReq) (rowsAffected int64, err error)
+	Delete(ctx context.Context, in *submission_service.DeleteArticleReviewerReq) (rowsAffected int64, err error)
 }

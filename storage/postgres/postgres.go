@@ -7,6 +7,7 @@ import (
 	auth "editory_submission/storage/postgres/auth"
 	content "editory_submission/storage/postgres/content"
 	"editory_submission/storage/postgres/notification"
+	"editory_submission/storage/postgres/submission"
 	"fmt"
 
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -17,6 +18,7 @@ type Store struct {
 	auth         storage.AuthRepoI
 	content      storage.ContentRepoI
 	notification storage.NotificationRepoI
+	submission   storage.SubmissionRepoI
 }
 
 func NewPostgres(ctx context.Context, cfg config.Config) (storage.StorageI, error) {
@@ -77,4 +79,12 @@ func (s *Store) Notification() storage.NotificationRepoI {
 	}
 
 	return s.notification
+}
+
+func (s *Store) Submission() storage.SubmissionRepoI {
+	if s.submission == nil {
+		s.submission = submission.NewSubmissionRepo(s.db)
+	}
+
+	return s.submission
 }

@@ -47,6 +47,9 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 
 		r.PUT("/profile", h.GetProfileByID)
 		r.GET("/profile/:profile-id", h.UpdateProfile)
+
+		r.GET("/article")
+		r.GET("/journal")
 	}
 
 	// auth
@@ -60,6 +63,16 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	//r.POST("/send-verification-message", h.SendVerificationMessage)
 	//r.PUT("/verification", h.EmailVerification)
 
+	r.POST("/user/:user-id/article", h.CreateUserArticle)
+	r.GET("/user/:user-id/article", h.GetUserArticleList) // @TODO add filter and sort
+	r.GET("/user/:user-id/article/:article-id", h.GetUserArticleByID)
+	r.PUT("/user/:user-id/article", h.UpdateUserArticle)
+	r.DELETE("/user/:user-id/article/:article-id", h.DeleteUserArticle)
+
+	r.GET("/user/:user-id/review", h.GetUserReviewList)
+	r.GET("/user/:user-id/review/:review-id", h.GetUserReviewByID)
+	r.PUT("/user/:user-id/review", h.UpdateUserReview)
+
 	{
 		// journal
 		journal := r.Group("/journal")
@@ -67,11 +80,16 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		journal.PUT("", h.UpdateJournal)
 		journal.DELETE("/:journal-id", h.DeleteJournal) // @TODO
 
-		journal.POST("/:journal-id/article", h.CreateArticle)
-		journal.GET("/:journal-id/article", h.GetArticleList) // @TODO add filter and sort
-		journal.GET("/:journal-id/article/:article-id", h.GetArticleByID)
-		journal.PUT("/:journal-id/article", h.UpdateArticle)
-		journal.DELETE("/:journal-id/article/:article-id", h.DeleteArticle)
+		journal.POST("/:journal-id/article", h.CreateJournalArticle)
+		journal.GET("/:journal-id/article", h.GetJournalArticleList) // @TODO add filter and sort
+		journal.GET("/:journal-id/article/:article-id", h.GetJournalArticleByID)
+		journal.PUT("/:journal-id/article", h.UpdateJournalArticle)
+		journal.DELETE("/:journal-id/article/:article-id", h.DeleteJournalArticle)
+
+		journal.POST("/:journal-id/article/:article-id/reviewer", h.CreateArticleReviewer)
+		journal.DELETE("/:journal-id/article/:article-id/reviewer/:reviewer-id", h.DeleteArticleReviewer)
+		journal.GET("/:journal-id/article/:article-id/review", h.GetArticleReviewList)
+		journal.GET("/:journal-id/article/:article-id/review/:review-id", h.GetArticleReviewByID)
 
 		journal.POST("/:journal-id/edition", h.CreateEdition)
 		journal.GET("/:journal-id/edition", h.GetEditionList)

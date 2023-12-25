@@ -169,71 +169,71 @@ func (s *contentService) DeleteJournal(ctx context.Context, req *pb.PrimaryKey) 
 	return res, nil
 }
 
-func (s *contentService) CreateArticle(ctx context.Context, req *pb.CreateArticleReq) (res *pb.Article, err error) {
-	s.log.Info("---CreateArticle--->", logger.Any("req", req))
+//func (s *contentService) CreateArticle(ctx context.Context, req *pb.CreateArticleReq) (res *pb.Article, err error) {
+//	s.log.Info("---CreateArticle--->", logger.Any("req", req))
+//
+//	res, err = s.strg.Content().Article().Create(ctx, req)
+//	if err != nil {
+//		s.log.Error("!!!CreateArticle--->", logger.Error(err))
+//		return nil, status.Error(codes.InvalidArgument, err.Error())
+//	}
+//
+//	return res, nil
+//}
 
-	res, err = s.strg.Content().Article().Create(ctx, req)
-	if err != nil {
-		s.log.Error("!!!CreateArticle--->", logger.Error(err))
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
+//func (s *contentService) GetArticle(ctx context.Context, req *pb.PrimaryKey) (res *pb.Article, err error) {
+//	s.log.Info("---GetArticle--->", logger.Any("req", req))
+//
+//	res, err = s.strg.Content().Article().Get(ctx, req)
+//	if err != nil {
+//		s.log.Error("!!!GetArticle--->", logger.Error(err))
+//		return nil, status.Error(codes.NotFound, err.Error())
+//	}
+//
+//	return res, nil
+//}
 
-	return res, nil
-}
+//func (s *contentService) GetArticleList(ctx context.Context, req *pb.GetArticleListReq) (res *pb.GetArticleListRes, err error) {
+//	s.log.Info("---GetArticleList--->", logger.Any("req", req))
+//
+//	res, err = s.strg.Content().Article().GetList(ctx, req)
+//	if err != nil {
+//		s.log.Error("!!!GetArticleList--->", logger.Error(err))
+//		return nil, status.Error(codes.Internal, err.Error())
+//	}
+//
+//	return res, nil
+//}
 
-func (s *contentService) GetArticle(ctx context.Context, req *pb.PrimaryKey) (res *pb.Article, err error) {
-	s.log.Info("---GetArticle--->", logger.Any("req", req))
+//func (s *contentService) UpdateArticle(ctx context.Context, req *pb.Article) (res *pb.Article, err error) {
+//	s.log.Info("---UpdateArticle--->", logger.Any("req", req))
+//
+//	res, err = s.strg.Content().Article().Update(ctx, req)
+//	if err != nil {
+//		s.log.Error("!!!UpdateArticle--->", logger.Error(err))
+//		return nil, status.Error(codes.InvalidArgument, err.Error())
+//	}
+//
+//	return res, nil
+//}
 
-	res, err = s.strg.Content().Article().Get(ctx, req)
-	if err != nil {
-		s.log.Error("!!!GetArticle--->", logger.Error(err))
-		return nil, status.Error(codes.NotFound, err.Error())
-	}
-
-	return res, nil
-}
-
-func (s *contentService) GetArticleList(ctx context.Context, req *pb.GetArticleListReq) (res *pb.GetArticleListRes, err error) {
-	s.log.Info("---GetArticleList--->", logger.Any("req", req))
-
-	res, err = s.strg.Content().Article().GetList(ctx, req)
-	if err != nil {
-		s.log.Error("!!!GetArticleList--->", logger.Error(err))
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	return res, nil
-}
-
-func (s *contentService) UpdateArticle(ctx context.Context, req *pb.Article) (res *pb.Article, err error) {
-	s.log.Info("---UpdateArticle--->", logger.Any("req", req))
-
-	res, err = s.strg.Content().Article().Update(ctx, req)
-	if err != nil {
-		s.log.Error("!!!UpdateArticle--->", logger.Error(err))
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	return res, nil
-}
-
-func (s *contentService) DeleteArticle(ctx context.Context, req *pb.PrimaryKey) (res *emptypb.Empty, err error) {
-	s.log.Info("---DeleteArticle--->", logger.Any("req", req))
-
-	res = &emptypb.Empty{}
-
-	rowsAffected, err := s.strg.Content().Article().Delete(ctx, req)
-	if err != nil {
-		s.log.Error("!!!DeleteArticle--->", logger.Error(err))
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	if rowsAffected <= 0 {
-		return nil, status.Error(codes.InvalidArgument, "no rows were affected")
-	}
-
-	return res, nil
-}
+//func (s *contentService) DeleteArticle(ctx context.Context, req *pb.PrimaryKey) (res *emptypb.Empty, err error) {
+//	s.log.Info("---DeleteArticle--->", logger.Any("req", req))
+//
+//	res = &emptypb.Empty{}
+//
+//	rowsAffected, err := s.strg.Content().Article().Delete(ctx, req)
+//	if err != nil {
+//		s.log.Error("!!!DeleteArticle--->", logger.Error(err))
+//		return nil, status.Error(codes.Internal, err.Error())
+//	}
+//
+//	if rowsAffected <= 0 {
+//		return nil, status.Error(codes.InvalidArgument, "no rows were affected")
+//	}
+//
+//	return res, nil
+//}
 
 func (s *contentService) GetCountryList(ctx context.Context, req *pb.GetCountryListReq) (res *pb.GetCountryListRes, err error) {
 	s.log.Info("---GetCountryList--->", logger.Any("req", req))

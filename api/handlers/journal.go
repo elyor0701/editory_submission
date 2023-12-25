@@ -225,6 +225,7 @@ func (h *Handler) CreateAdminJournal(c *gin.Context) {
 			Description: journal.Description,
 			Isbn:        journal.Isbn,
 			Author:      journal.Author,
+			Status:      `ACTIVE`,
 		},
 	)
 

@@ -13,7 +13,16 @@ service RoleService {
   rpc GetRoleList(GetRoleListReq) returns (GetRoleListRes) {}
   rpc UpdateRole(Role) returns (Role) {}
   rpc DeleteRole(DeleteRoleReq) returns (google.protobuf.Empty) {}
+//  rpc AddUserRole(AddUserRoleReq) returns (AddUserRoleRes) {}
 }
+
+//message AddUserRoleReq {
+//
+//}
+//
+//message AddUserRoleRes {
+//
+//}
 
 message GetRoleReq {
   string id = 1;
