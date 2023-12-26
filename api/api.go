@@ -45,8 +45,8 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		r.PUT("/refresh", h.RefreshToken)
 		r.POST("/has-access", h.HasAccess)
 
-		r.PUT("/profile", h.GetProfileByID)
-		r.GET("/profile/:profile-id", h.UpdateProfile)
+		r.PUT("/profile", h.UpdateProfile)
+		r.GET("/profile/:profile-id", h.GetProfileByID)
 
 		r.GET("/article", h.GetGeneralArticleList)
 		r.GET("/article/:article-id", h.GetGeneralArticleByID)
