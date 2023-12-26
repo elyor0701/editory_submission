@@ -198,7 +198,7 @@ func (s *RoleRepo) Update(ctx context.Context, req *pb.Role) (rowsAffected int64
 	return rowsAffected, err
 }
 func (s *RoleRepo) Delete(ctx context.Context, req *pb.DeleteRoleReq) (rowsAffected int64, err error) {
-	query := `DELETE FROM "user" WHERE id = $1`
+	query := `DELETE FROM "role" WHERE id = $1`
 
 	result, err := s.db.Exec(ctx, query, req.GetId())
 	if err != nil {

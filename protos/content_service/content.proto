@@ -83,6 +83,12 @@ message GetList {
 }
 
 message Journal {
+  message Author {
+    string id = 1;
+    string email = 2;
+    string first_name = 3;
+    string last_name = 4;
+  }
   string id = 1;
   string cover_photo = 2;
   string title = 3;
@@ -90,17 +96,19 @@ message Journal {
   string description = 5;
   int32 price = 6;
   string isbn = 7;
-  string author = 8;
-  string status = 9;
-  string created_at = 10;
-  string updated_at = 11;
-  repeated JournalData journal_data = 12;
-  string acceptance_rate = 13;
-  string submission_to_final_decision = 14;
-  string acceptance_to_publication = 15;
-  string citation_indicator = 16;
-  string impact_factor = 17;
-  repeated Subject subjects = 18;
+  string status = 8;
+  string created_at = 9;
+  string updated_at = 10;
+  repeated JournalData journal_data = 11;
+  string acceptance_rate = 12;
+  string submission_to_final_decision = 13;
+  string acceptance_to_publication = 14;
+  string citation_indicator = 15;
+  string impact_factor = 16;
+  repeated Subject subjects = 17;
+  string author_id = 18;
+  Author author = 19;
+  string short_description = 20;
 }
 
 message JournalData {
@@ -117,7 +125,7 @@ message CreateJournalReq {
   string description = 5;
   int32 price = 6;
   string isbn = 7;
-  string author = 8;
+  string author_id = 8;
   string status = 9;
   repeated JournalData journal_data = 10;
   string acceptance_rate = 11;

@@ -48,8 +48,10 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		r.PUT("/profile", h.GetProfileByID)
 		r.GET("/profile/:profile-id", h.UpdateProfile)
 
-		r.GET("/article")
-		r.GET("/journal")
+		r.GET("/article", h.GetGeneralArticleList)
+		r.GET("/article/:article-id", h.GetGeneralArticleByID)
+		r.GET("general/journal", h.GetGeneralJournalList)
+		r.GET("general/journal/:journal-id", h.GetGeneralJournalByID)
 	}
 
 	// auth

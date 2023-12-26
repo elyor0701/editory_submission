@@ -10,6 +10,7 @@ import (
 	"editory_submission/pkg/logger"
 	"editory_submission/pkg/util"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -265,6 +266,8 @@ func (h *Handler) DeleteJournalUser(c *gin.Context) {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
+
+	fmt.Println("userRoles---->", userRoles)
 
 	for _, v := range userRoles.GetRoles() {
 		_, err := h.services.RoleService().DeleteRole(

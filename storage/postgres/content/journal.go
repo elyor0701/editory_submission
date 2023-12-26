@@ -5,9 +5,11 @@ import (
 	"editory_submission/config"
 	pb "editory_submission/genproto/content_service"
 	"editory_submission/pkg/helper"
+	"editory_submission/pkg/util"
 	"editory_submission/storage"
 	"editory_submission/storage/postgres/models"
 	"errors"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -36,7 +38,7 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
     	description,              
     	price,        
     	isbn,              
-    	author,
+    	author_id,
     	status
 	) VALUES (
 		$1,
@@ -56,7 +58,7 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
 	    description, 
 	    price, 
 	    isbn, 
-	    author,
+	    author_id,
 	    status,
 	    TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at, 
 	    TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at`
@@ -74,7 +76,7 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
 		req.GetDescription(),
 		req.GetPrice(),
 		req.GetIsbn(),
-		req.GetAuthor(),
+		req.GetAuthorId(),
 		req.GetStatus(),
 	).Scan(
 		&res.Id,
@@ -84,7 +86,7 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
 		&res.Description,
 		&res.Price,
 		&res.Isbn,
-		&res.Author,
+		&res.AuthorId,
 		&res.Status,
 		&res.CreatedAt,
 		&res.UpdatedAt,
@@ -98,23 +100,35 @@ func (s *JournalRepo) Create(ctx context.Context, req *pb.CreateJournalReq) (res
 
 func (s *JournalRepo) Get(ctx context.Context, req *pb.PrimaryKey) (res *pb.Journal, err error) {
 	res = &pb.Journal{}
+	author := &pb.Journal_Author{}
 
 	query := `SELECT
-		id,                 
-    	cover_photo,           
-    	title,         
-    	access,        
-    	description,              
-    	price,        
-    	isbn,              
-    	author,
-    	status,
-    	TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at, 
-	    TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at
+		j.id,                 
+    	j.cover_photo,           
+    	j.title,         
+    	j.access,        
+    	j.description,              
+    	j.price,        
+    	j.isbn,              
+    	coalesce(j.author_id::VARCHAR, ''),
+    	j.status,
+		coalesce(j.acceptance_rate, ''),
+		coalesce(j.submission_to_final_decision, ''),
+		coalesce(j.acceptance_to_publication, ''),
+		coalesce(j.citation_indicator, ''),
+		coalesce(j.impact_factor, ''),
+		coalesce(j.short_description, ''),
+    	TO_CHAR(j.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at, 
+	    TO_CHAR(j.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at,
+		coalesce(u.id::VARCHAR, ''),
+		coalesce(u.email::VARCHAR, ''),
+		coalesce(u.first_name, ''),
+		coalesce(u.last_name, '')
 	FROM
-		"journal"
+		"journal" j
+	LEFT JOIN "user" u ON (j.author_id is not null AND j.author_id = u.id)
 	WHERE
-		id = $1`
+		j.id = $1`
 
 	err = s.db.QueryRow(
 		ctx,
@@ -127,15 +141,27 @@ func (s *JournalRepo) Get(ctx context.Context, req *pb.PrimaryKey) (res *pb.Jour
 		&res.Description,
 		&res.Price,
 		&res.Isbn,
-		&res.Author,
+		&res.AuthorId,
 		&res.Status,
+		&res.AcceptanceRate,
+		&res.SubmissionToFinalDecision,
+		&res.AcceptanceToPublication,
+		&res.CitationIndicator,
+		&res.ImpactFactor,
+		&res.ShortDescription,
 		&res.CreatedAt,
 		&res.UpdatedAt,
+		&author.Id,
+		&author.Email,
+		&author.FirstName,
+		&author.LastName,
 	)
 
 	if err != nil {
-		return res, err
+		return nil, err
 	}
+
+	res.Author = author
 
 	return res, nil
 }
@@ -149,25 +175,36 @@ func (s *JournalRepo) GetList(ctx context.Context, req *pb.GetList) (res *pb.Get
 		"title":      true,
 		"price":      true,
 		"isbn":       true,
-		"author":     true,
 		"status":     true,
 		"created_at": true,
 	}
 
 	query := `SELECT
-		id,                 
-    	cover_photo,           
-    	title,         
-    	access,        
-    	description,              
-    	price,        
-    	isbn,              
-    	author,
-    	status,
-    	TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at, 
-	    TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at
+		j.id,                 
+    	j.cover_photo,           
+    	j.title,         
+    	j.access,        
+    	j.description,              
+    	j.price,        
+    	j.isbn,              
+    	coalesce(j.author_id::VARCHAR, ''),
+    	j.status,
+		coalesce(j.acceptance_rate, ''),
+		coalesce(j.submission_to_final_decision, ''),
+		coalesce(j.acceptance_to_publication, ''),
+		coalesce(j.citation_indicator, ''),
+		coalesce(j.impact_factor, ''),
+		coalesce(j.short_description, ''),
+    	TO_CHAR(j.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at, 
+	    TO_CHAR(j.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at,
+		coalesce(u.id::VARCHAR, ''),
+		coalesce(u.email::VARCHAR, ''),
+		coalesce(u.first_name, ''),
+		coalesce(u.last_name, '')
 	FROM
-		"journal"`
+		"journal" j
+	LEFT JOIN "user" u ON (j.author_id is not null AND j.author_id = u.id)`
+
 	filter := " WHERE 1=1"
 
 	offset := " OFFSET 0"
@@ -237,6 +274,7 @@ func (s *JournalRepo) GetList(ctx context.Context, req *pb.GetList) (res *pb.Get
 
 	for rows.Next() {
 		obj := &pb.Journal{}
+		author := &pb.Journal_Author{}
 
 		err = rows.Scan(
 			&obj.Id,
@@ -246,10 +284,20 @@ func (s *JournalRepo) GetList(ctx context.Context, req *pb.GetList) (res *pb.Get
 			&obj.Description,
 			&obj.Price,
 			&obj.Isbn,
-			&obj.Author,
+			&obj.AuthorId,
 			&obj.Status,
+			&obj.AcceptanceRate,
+			&obj.SubmissionToFinalDecision,
+			&obj.AcceptanceToPublication,
+			&obj.CitationIndicator,
+			&obj.ImpactFactor,
+			&obj.ShortDescription,
 			&obj.CreatedAt,
 			&obj.UpdatedAt,
+			&author.Id,
+			&author.Email,
+			&author.FirstName,
+			&author.LastName,
 		)
 		if err != nil {
 			return res, err
@@ -262,64 +310,89 @@ func (s *JournalRepo) GetList(ctx context.Context, req *pb.GetList) (res *pb.Get
 }
 
 func (s *JournalRepo) Update(ctx context.Context, req *pb.Journal) (res *pb.Journal, err error) {
-	res = &pb.Journal{}
 
-	query := `UPDATE "journal" SET                
-    	title = :title,           
-    	cover_photo = :cover_photo,         
-    	access = :access,        
-    	description = :description,              
-    	price = :price,                              
-    	isbn = :isbn,         
-    	author = :author,
-    	status = :status,
-    	updated_at = CURRENT_TIMESTAMP
-	WHERE
-		id = :id
-	RETURNING 
-		id,
-		cover_photo,
-		title,
-		access,
-		description,
-		price,
-		isbn,
-		author,
-		status,
-		TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at, 
-	    TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at`
-
-	params := map[string]interface{}{
-		"title":       req.GetTitle(),
-		"cover_photo": req.GetCoverPhoto(),
-		"access":      req.GetAccess(),
-		"description": req.GetDescription(),
-		"price":       req.GetPrice(),
-		"isbn":        req.GetIsbn(),
-		"author":      req.GetAuthor(),
-		"id":          req.GetId(),
-		"status":      req.GetStatus(),
+	validJournalStatus := map[string]bool{
+		"ACTIVE":   true,
+		"INACTIVE": true,
 	}
 
+	params := make(map[string]interface{})
+
+	querySet := `UPDATE "journal" SET                
+    	updated_at = CURRENT_TIMESTAMP`
+
+	filter := ` WHERE id = :id`
+	params["id"] = req.Id
+
+	if req.CoverPhoto != "" {
+		querySet += `, cover_photo = :cover_photo`
+		params["cover_photo"] = req.CoverPhoto
+	}
+
+	if req.Title != "" {
+		querySet += `, title = :title`
+		params["title"] = req.Title
+	}
+
+	if req.Description != "" {
+		querySet += `, description = :description`
+		params["description"] = req.Description
+	}
+
+	if req.Price > 0 {
+		querySet += `, price = :price`
+		params["price"] = req.Price
+	}
+
+	if req.Isbn != "" {
+		querySet += `, isbn = :isbn`
+		params["isbn"] = req.Isbn
+	}
+
+	if _, ok := validJournalStatus[req.Status]; ok {
+		querySet += `, status = :status`
+		params["status"] = req.Status
+	}
+
+	if req.AcceptanceRate != "" {
+		querySet += `, acceptance_rate = :acceptance_rate`
+		params["acceptance_rate"] = req.AcceptanceRate
+	}
+
+	if req.SubmissionToFinalDecision != "" {
+		querySet += `, submission_to_final_decision = :submission_to_final_decision`
+		params["submission_to_final_decision"] = req.SubmissionToFinalDecision
+	}
+
+	if req.AcceptanceToPublication != "" {
+		querySet += `, acceptance_to_publication = :acceptance_to_publication`
+		params["acceptance_to_publication"] = req.AcceptanceToPublication
+	}
+
+	if req.CitationIndicator != "" {
+		querySet += `, citation_indicator = :citation_indicator`
+		params["citation_indicator"] = req.CitationIndicator
+	}
+
+	if req.ImpactFactor != "" {
+		querySet += `, impact_factor = :impact_factor`
+		params["impact_factor"] = req.ImpactFactor
+	}
+
+	if util.IsValidUUID(req.AuthorId) {
+		querySet += `, author_id = :author_id`
+		params["author_id"] = req.AuthorId
+	}
+
+	query := querySet + filter
 	q, arr := helper.ReplaceQueryParams(query, params)
-	err = s.db.QueryRow(ctx, q, arr...).Scan(
-		&res.Id,
-		&res.CoverPhoto,
-		&res.Title,
-		&res.Access,
-		&res.Description,
-		&res.Price,
-		&res.Isbn,
-		&res.Author,
-		&res.Status,
-		&res.CreatedAt,
-		&res.UpdatedAt,
-	)
+
+	_, err = s.db.Exec(ctx, q, arr...)
 	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	return req, nil
 }
 func (s *JournalRepo) Delete(ctx context.Context, req *pb.PrimaryKey) (rowsAffected int64, err error) {
 	query := `DELETE FROM "journal" WHERE id = $1`
@@ -336,6 +409,7 @@ func (s *JournalRepo) Delete(ctx context.Context, req *pb.PrimaryKey) (rowsAffec
 
 func (s *JournalRepo) UpsertJournalData(ctx context.Context, in *pb.JournalData) (*pb.JournalData, error) {
 	res := &pb.JournalData{}
+	fmt.Println("UpsertJournalData--->", in)
 
 	query := `INSERT INTO journal_data(
                          journal_id, 
@@ -347,7 +421,7 @@ func (s *JournalRepo) UpsertJournalData(ctx context.Context, in *pb.JournalData)
             	          $2,
             	          $3,
             	          $4
-            	) ON CONFLICT ON CONSTRAINT unique_journal_id_type DO
+            	) ON CONFLICT ON CONSTRAINT journal_data_journal_id_type_key DO
             	UPDATE SET
             	        	text = $2,
             	        	short_desc = $4

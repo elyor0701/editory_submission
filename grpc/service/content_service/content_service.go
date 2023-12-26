@@ -130,21 +130,23 @@ func (s *contentService) UpdateJournal(ctx context.Context, req *pb.Journal) (re
 		}
 	}
 
-	_, err = s.strg.Content().Journal().DeleteSubject(ctx, &pb.PrimaryKey{
-		Id: res.GetId(),
-	})
-	if err != nil {
-		s.log.Error("!!!DeleteSubject--->", logger.Error(err))
-	}
-
-	for _, val := range req.GetSubjects() {
-		_, err = s.strg.Content().Journal().UpsertSubject(ctx, &models.UpsertJournalSubjectReq{
-			JournalId: res.GetId(),
-			SubjectId: val.GetId(),
+	if len(req.GetSubjects()) > 0 {
+		_, err = s.strg.Content().Journal().DeleteSubject(ctx, &pb.PrimaryKey{
+			Id: res.GetId(),
 		})
 		if err != nil {
-			s.log.Error("!!!CreateSubject--->", logger.Error(err))
-			continue
+			s.log.Error("!!!DeleteSubject--->", logger.Error(err))
+		}
+
+		for _, val := range req.GetSubjects() {
+			_, err = s.strg.Content().Journal().UpsertSubject(ctx, &models.UpsertJournalSubjectReq{
+				JournalId: res.GetId(),
+				SubjectId: val.GetId(),
+			})
+			if err != nil {
+				s.log.Error("!!!CreateSubject--->", logger.Error(err))
+				continue
+			}
 		}
 	}
 
