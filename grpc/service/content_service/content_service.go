@@ -44,6 +44,7 @@ func (s *contentService) CreateJournal(ctx context.Context, req *pb.CreateJourna
 			JournalId: res.GetId(),
 			Text:      val.GetText(),
 			Type:      val.GetType(),
+			ShortText: val.GetText(),
 		})
 		if err != nil {
 			s.log.Error("!!!CreateJournalData--->", logger.Error(err))
@@ -123,6 +124,7 @@ func (s *contentService) UpdateJournal(ctx context.Context, req *pb.Journal) (re
 			JournalId: res.GetId(),
 			Text:      val.GetText(),
 			Type:      val.GetType(),
+			ShortText: val.GetShortText(),
 		})
 		if err != nil {
 			s.log.Error("!!!CreateJournalData--->", logger.Error(err))
