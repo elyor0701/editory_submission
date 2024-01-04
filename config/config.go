@@ -69,11 +69,11 @@ func Load() Config {
 	config.HTTPPort = cast.ToString(getOrReturnDefaultValue("HTTP_PORT", ":9107"))
 	config.HTTPScheme = cast.ToString(getOrReturnDefaultValue("HTTP_SCHEME", "http"))
 
-	config.PostgresHost = cast.ToString(getOrReturnDefaultValue("POSTGRES_HOST", "localhost"))
-	config.PostgresPort = cast.ToInt(getOrReturnDefaultValue("POSTGRES_PORT", 5432))
-	config.PostgresUser = cast.ToString(getOrReturnDefaultValue("POSTGRES_USER", "euler"))
-	config.PostgresPassword = cast.ToString(getOrReturnDefaultValue("POSTGRES_PASSWORD", "euler"))
-	config.PostgresDatabase = cast.ToString(getOrReturnDefaultValue("POSTGRES_DATABASE", "editory_submission"))
+	config.PostgresHost = cast.ToString(getOrReturnDefaultValue("POSTGRES_HOST", "164.92.169.168"))
+	config.PostgresPort = cast.ToInt(getOrReturnDefaultValue("POSTGRES_PORT", 30032))
+	config.PostgresUser = cast.ToString(getOrReturnDefaultValue("POSTGRES_USER", "es_backend"))
+	config.PostgresPassword = cast.ToString(getOrReturnDefaultValue("POSTGRES_PASSWORD", "mob5jahb0Zeeriem"))
+	config.PostgresDatabase = cast.ToString(getOrReturnDefaultValue("POSTGRES_DATABASE", "es_backend"))
 
 	config.PostgresMaxConnections = cast.ToInt32(getOrReturnDefaultValue("POSTGRES_MAX_CONNECTIONS", 30))
 

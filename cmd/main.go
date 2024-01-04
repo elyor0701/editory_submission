@@ -8,10 +8,7 @@ import (
 	"editory_submission/grpc"
 	"editory_submission/grpc/client"
 	"editory_submission/storage/postgres"
-	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/golang-migrate/migrate/v4/source/github"
@@ -43,26 +40,26 @@ func main() {
 		}
 	}()
 
-	if cfg.PostgresHost == "localhost" {
-		m, err := migrate.New(
-			fmt.Sprintf("file://%s", cfg.MigrationPath),
-			fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
-				cfg.PostgresUser,
-				cfg.PostgresPassword,
-				cfg.PostgresHost,
-				cfg.PostgresPort,
-				cfg.PostgresDatabase,
-			),
-		)
-
-		if err != nil {
-			log.Panic("migrate.Postgres", logger.Error(err))
-		}
-
-		if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
-			log.Panic("migrate.Postgres", logger.Error(err))
-		}
-	}
+	//if cfg.PostgresHost == "localhost" {
+	//	m, err := migrate.New(
+	//		fmt.Sprintf("file://%s", cfg.MigrationPath),
+	//		fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+	//			cfg.PostgresUser,
+	//			cfg.PostgresPassword,
+	//			cfg.PostgresHost,
+	//			cfg.PostgresPort,
+	//			cfg.PostgresDatabase,
+	//		),
+	//	)
+	//
+	//	if err != nil {
+	//		log.Panic("migrate.Postgres", logger.Error(err))
+	//	}
+	//
+	//	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+	//		log.Panic("migrate.Postgres", logger.Error(err))
+	//	}
+	//}
 
 	pgStore, err := postgres.NewPostgres(context.Background(), cfg)
 	if err != nil {
