@@ -422,9 +422,15 @@ definitions:
     properties:
       comment:
         type: string
+      cover_letter_comment:
+        type: string
       id:
         type: string
+      manuscript_comment:
+        type: string
       status:
+        type: string
+      supplemental_comment:
         type: string
     type: object
   editory_submission_genproto_auth_service.CreateKeywordReq:
@@ -1165,13 +1171,19 @@ definitions:
         type: string
       comment:
         type: string
+      cover_letter_comment:
+        type: string
       created_at:
         type: string
       id:
         type: string
+      manuscript_comment:
+        type: string
       reviewer_id:
         type: string
       status:
+        type: string
+      supplemental_comment:
         type: string
       updated_at:
         type: string
@@ -1202,15 +1214,21 @@ definitions:
         type: string
       comment:
         type: string
+      cover_letter_comment:
+        type: string
       created_at:
         type: string
       id:
+        type: string
+      manuscript_comment:
         type: string
       reviewer:
         $ref: '#/definitions/editory_submission_genproto_submission_service.Reviewer'
       reviewer_id:
         type: string
       status:
+        type: string
+      supplemental_comment:
         type: string
       updated_at:
         type: string
@@ -1223,15 +1241,21 @@ definitions:
         type: string
       comment:
         type: string
+      cover_letter_comment:
+        type: string
       created_at:
         type: string
       id:
+        type: string
+      manuscript_comment:
         type: string
       reviewer:
         $ref: '#/definitions/editory_submission_genproto_submission_service.Reviewer'
       reviewer_id:
         type: string
       status:
+        type: string
+      supplemental_comment:
         type: string
       updated_at:
         type: string
@@ -1343,13 +1367,19 @@ definitions:
         type: string
       comment:
         type: string
+      cover_letter_comment:
+        type: string
       created_at:
         type: string
       id:
         type: string
+      manuscript_comment:
+        type: string
       reviewer_id:
         type: string
       status:
+        type: string
+      supplemental_comment:
         type: string
       updated_at:
         type: string
@@ -1972,7 +2002,7 @@ definitions:
       extKeyUsage:
         description: Sequence of extended key usages.
         items:
-          type: integer
+          $ref: '#/definitions/x509.ExtKeyUsage'
         type: array
       extensions:
         description: |-
@@ -2007,7 +2037,7 @@ definitions:
           type: string
         type: array
       keyUsage:
-        type: integer
+        $ref: '#/definitions/x509.KeyUsage'
       maxPathLen:
         description: |-
           MaxPathLen and MaxPathLenZero indicate the presence and
@@ -2065,7 +2095,7 @@ definitions:
         type: array
       publicKey: {}
       publicKeyAlgorithm:
-        type: integer
+        $ref: '#/definitions/x509.PublicKeyAlgorithm'
       raw:
         description: Complete ASN.1 DER content (certificate, signature algorithm
           and signature).
@@ -2099,7 +2129,7 @@ definitions:
           type: integer
         type: array
       signatureAlgorithm:
-        type: integer
+        $ref: '#/definitions/x509.SignatureAlgorithm'
       subject:
         $ref: '#/definitions/pkix.Name'
       subjectKeyId:
@@ -2135,6 +2165,123 @@ definitions:
       version:
         type: integer
     type: object
+  x509.ExtKeyUsage:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    type: integer
+    x-enum-varnames:
+    - ExtKeyUsageAny
+    - ExtKeyUsageServerAuth
+    - ExtKeyUsageClientAuth
+    - ExtKeyUsageCodeSigning
+    - ExtKeyUsageEmailProtection
+    - ExtKeyUsageIPSECEndSystem
+    - ExtKeyUsageIPSECTunnel
+    - ExtKeyUsageIPSECUser
+    - ExtKeyUsageTimeStamping
+    - ExtKeyUsageOCSPSigning
+    - ExtKeyUsageMicrosoftServerGatedCrypto
+    - ExtKeyUsageNetscapeServerGatedCrypto
+    - ExtKeyUsageMicrosoftCommercialCodeSigning
+    - ExtKeyUsageMicrosoftKernelCodeSigning
+  x509.KeyUsage:
+    enum:
+    - 1
+    - 2
+    - 4
+    - 8
+    - 16
+    - 32
+    - 64
+    - 128
+    - 256
+    type: integer
+    x-enum-varnames:
+    - KeyUsageDigitalSignature
+    - KeyUsageContentCommitment
+    - KeyUsageKeyEncipherment
+    - KeyUsageDataEncipherment
+    - KeyUsageKeyAgreement
+    - KeyUsageCertSign
+    - KeyUsageCRLSign
+    - KeyUsageEncipherOnly
+    - KeyUsageDecipherOnly
+  x509.PublicKeyAlgorithm:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    type: integer
+    x-enum-comments:
+      DSA: Unsupported.
+    x-enum-varnames:
+    - UnknownPublicKeyAlgorithm
+    - RSA
+    - DSA
+    - ECDSA
+    - Ed25519
+  x509.SignatureAlgorithm:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    type: integer
+    x-enum-comments:
+      DSAWithSHA1: Unsupported.
+      DSAWithSHA256: Unsupported.
+      ECDSAWithSHA1: Only supported for signing, and verification of CRLs, CSRs, and
+        OCSP responses.
+      MD2WithRSA: Unsupported.
+      MD5WithRSA: Only supported for signing, not verification.
+      SHA1WithRSA: Only supported for signing, and verification of CRLs, CSRs, and
+        OCSP responses.
+    x-enum-varnames:
+    - UnknownSignatureAlgorithm
+    - MD2WithRSA
+    - MD5WithRSA
+    - SHA1WithRSA
+    - SHA256WithRSA
+    - SHA384WithRSA
+    - SHA512WithRSA
+    - DSAWithSHA1
+    - DSAWithSHA256
+    - ECDSAWithSHA1
+    - ECDSAWithSHA256
+    - ECDSAWithSHA384
+    - ECDSAWithSHA512
+    - SHA256WithRSAPSS
+    - SHA384WithRSAPSS
+    - SHA512WithRSAPSS
+    - PureEd25519
 info:
   contact: {}
   description: This is a api gateway
@@ -2353,6 +2500,10 @@ paths:
       - description: status
         in: query
         name: status
+        type: string
+      - description: group id
+        in: query
+        name: group-id
         type: string
       produces:
       - application/json
@@ -4338,6 +4489,10 @@ paths:
         in: query
         name: status
         type: string
+      - description: group_id
+        in: query
+        name: group-id
+        type: string
       produces:
       - application/json
       responses:
@@ -5942,7 +6097,7 @@ paths:
         type: string
       - description: group id
         in: query
-        name: group_id
+        name: group-id
         type: string
       produces:
       - application/json
