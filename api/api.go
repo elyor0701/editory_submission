@@ -66,7 +66,7 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	//r.PUT("/verification", h.EmailVerification)
 
 	r.POST("/user/:user-id/draft", h.CreateUserArticle)
-	r.GET("/user/:user-id/draft", h.GetUserArticleList) // @TODO add filter and sort
+	r.GET("/user/:user-id/draft", h.GetUserArticleList)
 	r.GET("/user/:user-id/draft/:draft-id", h.GetUserArticleByID)
 	r.PUT("/user/:user-id/draft", h.UpdateUserArticle)
 	r.DELETE("/user/:user-id/draft/:draft-id", h.DeleteUserArticle)
@@ -83,7 +83,7 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		journal.DELETE("/:journal-id", h.DeleteJournal) // @TODO
 
 		journal.POST("/:journal-id/draft", h.CreateJournalArticle)
-		journal.GET("/:journal-id/draft", h.GetJournalArticleList) // @TODO add filter and sort
+		journal.GET("/:journal-id/draft", h.GetJournalArticleList)
 		journal.GET("/:journal-id/draft/:draft-id", h.GetJournalArticleByID)
 		journal.PUT("/:journal-id/draft", h.UpdateJournalArticle)
 		journal.DELETE("/:journal-id/draft/:draft-id", h.DeleteJournalArticle)

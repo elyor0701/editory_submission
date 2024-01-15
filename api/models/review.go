@@ -7,7 +7,10 @@ type CreateArticleReviewerReq struct {
 }
 
 type UpdateUserReviewReq struct {
-	Id      string `json:"id,omitempty"`
-	Status  string `json:"status,omitempty"`
-	Comment string `json:"comment,omitempty"`
+	Id                  string `json:"id,omitempty"`
+	Status              string `json:"status,omitempty"`
+	Comment             string `json:"comment,omitempty"`
+	ManuscriptComment   string `json:"manuscript_comment,omitempty"`
+	CoverLetterComment  string `json:"cover_letter_comment,omitempty"`
+	SupplementalComment string `json:"supplemental_comment,omitempty"`
 }

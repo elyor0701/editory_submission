@@ -53,7 +53,7 @@ alter type "reviewer_ans" add value 'BACK_FOR_CORRECTION';
 alter table "draft" add column "step" draft_step default 'AUTHOR';
 alter table "draft" add column "editor_status" draft_editor_status default 'NEW';
 alter table "draft" add column "reviewer_status" draft_reviewer_status default 'NEW';
-alter table "draft" add column "group_id" uuid unique;
+alter table "draft" add column "group_id" uuid;
 alter table "draft" add column "manuscript" varchar;
 alter table "draft" add column "cover_letter" varchar;
 alter table "draft" add column "supplemental" varchar;

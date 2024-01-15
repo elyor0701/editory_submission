@@ -23,9 +23,18 @@ message Article {
   string status = 7;
   string editor_id = 8;
   string editor_comment = 9;
-  repeated File files = 10;
-  string created_at = 11;
-  string updated_at = 12;
+  string step = 10;
+  string editor_status = 11;
+  string reviewer_status = 12;
+  string group_id = 13;
+  string manuscript = 14;
+  string cover_letter = 15;
+  string supplemental = 16;
+  string editor_manuscript_comment = 17;
+  string editor_cover_letter_comment = 18;
+  string editor_supplemental_comment = 19;
+  string created_at = 20;
+  string updated_at = 21;
 }
 
 message File {

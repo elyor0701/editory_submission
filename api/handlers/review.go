@@ -106,6 +106,20 @@ func (h *Handler) CreateArticleReviewer(c *gin.Context) {
 		return
 	}
 
+	_, err = h.services.ArticleService().UpdateArticle(
+		c.Request.Context(),
+		&pb.UpdateArticleReq{
+			Id:             articleId,
+			Step:           "REVIEWER",
+			ReviewerStatus: "PENDING",
+			EditorStatus:   "PENDING",
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
 	h.handleResponse(c, http.Created, resp)
 }
 

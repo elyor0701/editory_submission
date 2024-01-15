@@ -32,6 +32,9 @@ func NewArticleService(cfg config.Config, log logger.LoggerI, strg storage.Stora
 func (s *articleService) CreateArticle(ctx context.Context, req *pb.CreateArticleReq) (res *pb.CreateArticleRes, err error) {
 	s.log.Info("---CreateArticle--->", logger.Any("req", req))
 
+	req.Step = "EDITOR"
+	req.EditorStatus = "NEW"
+
 	res, err = s.strg.Submission().Article().Create(ctx, req)
 	if err != nil {
 		s.log.Error("!!!CreateArticle--->", logger.Error(err))

@@ -30,19 +30,28 @@ func (s *ReviewerRepo) Create(ctx context.Context, req *pb.CreateArticleReviewer
     	reviewer_id,
         article_id,
         status,
-        comment
+        comment,
+        manuscript_comment,
+        cover_letter_comment,
+        supplemental_comment
 	) VALUES (
 		$1,
 		$2,
 		$3,
 		$4,
-		$5
+		$5,
+		$6,
+		$7,
+		$8
 	) RETURNING 
 	    id, 
 	    reviewer_id,
         article_id,
         status,
         COALESCE(comment, '') as comment,
+        COALESCE(manuscript_comment, '') as manuscript_comment,
+        COALESCE(cover_letter_comment, '') as cover_letter_comment,
+        COALESCE(supplemental_comment, '') as supplemental_comment,
         TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
         TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at`
 
@@ -57,12 +66,18 @@ func (s *ReviewerRepo) Create(ctx context.Context, req *pb.CreateArticleReviewer
 		req.ArticleId,
 		util.NewNullString(req.Status),
 		util.NewNullString(req.Comment),
+		util.NewNullString(req.ManuscriptComment),
+		util.NewNullString(req.CoverLetterComment),
+		util.NewNullString(req.SupplementalComment),
 	).Scan(
 		&res.Id,
 		&res.ReviewerId,
 		&res.ArticleId,
 		&res.Status,
 		&res.Comment,
+		&res.ManuscriptComment,
+		&res.CoverLetterComment,
+		&res.SupplementalComment,
 		&res.CreatedAt,
 		&res.UpdatedAt,
 	)
@@ -84,6 +99,9 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (
         r.article_id,
         COALESCE(r.status::VARCHAR, '') as status,
         COALESCE(r.comment, '') as comment,
+        COALESCE(r.manuscript_comment, '') as manuscript_comment,
+        COALESCE(r.cover_letter_comment, '') as cover_letter_comment,
+        COALESCE(r.supplemental_comment, '') as supplemental_comment,
         TO_CHAR(r.created_at, ` + config.DatabaseQueryTimeLayout + `) AS r_created_at,
         TO_CHAR(r.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS r_updated_at,
 		a.id,                 
@@ -117,6 +135,9 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (
 		&res.ArticleId,
 		&res.Status,
 		&res.Comment,
+		&res.ManuscriptComment,
+		&res.CoverLetterComment,
+		&res.SupplementalComment,
 		&res.CreatedAt,
 		&res.UpdatedAt,
 		&article.Id,
@@ -156,6 +177,9 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
         r.article_id,
         COALESCE(r.status::VARCHAR, '') as status,
         COALESCE(r.comment, '') as comment,
+		COALESCE(r.manuscript_comment, '') as manuscript_comment,
+        COALESCE(r.cover_letter_comment, '') as cover_letter_comment,
+        COALESCE(r.supplemental_comment, '') as supplemental_comment,
         TO_CHAR(r.created_at, ` + config.DatabaseQueryTimeLayout + `) AS r_created_at,
         TO_CHAR(r.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS r_updated_at,
 		a.id,                 
@@ -239,6 +263,9 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 			&obj.ArticleId,
 			&obj.Status,
 			&obj.Comment,
+			&obj.ManuscriptComment,
+			&obj.CoverLetterComment,
+			&obj.SupplementalComment,
 			&obj.CreatedAt,
 			&obj.UpdatedAt,
 			&article.Id,
@@ -295,6 +322,21 @@ func (s *ReviewerRepo) Update(ctx context.Context, req *pb.UpdateArticleReviewer
 	if req.Comment != "" {
 		querySet += `, comment = :comment`
 		params["comment"] = req.Comment
+	}
+
+	if req.ManuscriptComment != "" {
+		querySet += `, manuscript_comment = :manuscript_comment`
+		params["manuscript_comment"] = req.Comment
+	}
+
+	if req.CoverLetterComment != "" {
+		querySet += `, cover_letter_comment = :cover_letter_comment`
+		params["cover_letter_comment"] = req.CoverLetterComment
+	}
+
+	if req.SupplementalComment != "" {
+		querySet += `, supplemental_comment = :supplemental_comment`
+		params["supplemental_comment"] = req.SupplementalComment
 	}
 
 	query := querySet + filter

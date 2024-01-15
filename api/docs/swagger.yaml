@@ -1046,23 +1046,39 @@ definitions:
     properties:
       author_id:
         type: string
+      cover_letter:
+        type: string
       created_at:
         type: string
       description:
         type: string
       editor_comment:
         type: string
+      editor_cover_letter_comment:
+        type: string
       editor_id:
         type: string
-      files:
-        items:
-          $ref: '#/definitions/editory_submission_genproto_submission_service.File'
-        type: array
+      editor_manuscript_comment:
+        type: string
+      editor_status:
+        type: string
+      editor_supplemental_comment:
+        type: string
+      group_id:
+        type: string
       id:
         type: string
       journal_id:
         type: string
+      manuscript:
+        type: string
+      reviewer_status:
+        type: string
       status:
+        type: string
+      step:
+        type: string
+      supplemental:
         type: string
       title:
         type: string
@@ -1075,15 +1091,23 @@ definitions:
     properties:
       author_id:
         type: string
+      cover_letter:
+        type: string
       description:
         type: string
-      files:
-        items:
-          $ref: '#/definitions/editory_submission_genproto_submission_service.File'
-        type: array
+      editor_status:
+        type: string
+      group_id:
+        type: string
       journal_id:
         type: string
+      manuscript:
+        type: string
       status:
+        type: string
+      step:
+        type: string
+      supplemental:
         type: string
       title:
         type: string
@@ -1094,23 +1118,39 @@ definitions:
     properties:
       author_id:
         type: string
+      cover_letter:
+        type: string
       created_at:
         type: string
       description:
         type: string
       editor_comment:
         type: string
+      editor_cover_letter_comment:
+        type: string
       editor_id:
         type: string
-      files:
-        items:
-          $ref: '#/definitions/editory_submission_genproto_submission_service.File'
-        type: array
+      editor_manuscript_comment:
+        type: string
+      editor_status:
+        type: string
+      editor_supplemental_comment:
+        type: string
+      group_id:
+        type: string
       id:
         type: string
       journal_id:
         type: string
+      manuscript:
+        type: string
+      reviewer_status:
+        type: string
       status:
+        type: string
+      step:
+        type: string
+      supplemental:
         type: string
       title:
         type: string
@@ -1134,19 +1174,6 @@ definitions:
       status:
         type: string
       updated_at:
-        type: string
-    type: object
-  editory_submission_genproto_submission_service.File:
-    properties:
-      article_id:
-        type: string
-      draft_id:
-        type: string
-      id:
-        type: string
-      type:
-        type: string
-      url:
         type: string
     type: object
   editory_submission_genproto_submission_service.GetArticleListRes:
@@ -1224,23 +1251,39 @@ definitions:
     properties:
       author_id:
         type: string
+      cover_letter:
+        type: string
       created_at:
         type: string
       description:
         type: string
       editor_comment:
         type: string
+      editor_cover_letter_comment:
+        type: string
       editor_id:
         type: string
-      files:
-        items:
-          $ref: '#/definitions/editory_submission_genproto_submission_service.File'
-        type: array
+      editor_manuscript_comment:
+        type: string
+      editor_status:
+        type: string
+      editor_supplemental_comment:
+        type: string
+      group_id:
+        type: string
       id:
         type: string
       journal_id:
         type: string
+      manuscript:
+        type: string
+      reviewer_status:
+        type: string
       status:
+        type: string
+      step:
+        type: string
+      supplemental:
         type: string
       title:
         type: string
@@ -1253,23 +1296,39 @@ definitions:
     properties:
       author_id:
         type: string
+      cover_letter:
+        type: string
       created_at:
         type: string
       description:
         type: string
       editor_comment:
         type: string
+      editor_cover_letter_comment:
+        type: string
       editor_id:
         type: string
-      files:
-        items:
-          $ref: '#/definitions/editory_submission_genproto_submission_service.File'
-        type: array
+      editor_manuscript_comment:
+        type: string
+      editor_status:
+        type: string
+      editor_supplemental_comment:
+        type: string
+      group_id:
+        type: string
       id:
         type: string
       journal_id:
         type: string
+      manuscript:
+        type: string
+      reviewer_status:
+        type: string
       status:
+        type: string
+      step:
+        type: string
+      supplemental:
         type: string
       title:
         type: string
@@ -5880,6 +5939,10 @@ paths:
       - description: status
         in: query
         name: status
+        type: string
+      - description: group id
+        in: query
+        name: group_id
         type: string
       produces:
       - application/json

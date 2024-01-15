@@ -1,1 +1,0 @@
-alter table "draft" drop constraint draft_group_id_key;

@@ -26,6 +26,9 @@ message CreateArticleReviewerReq {
   string article_id = 2;
   string status = 3;
   string comment = 4;
+  string manuscript_comment = 5;
+  string cover_letter_comment = 6;
+  string supplemental_comment = 7;
 }
 
 message CreateArticleReviewerRes {
@@ -34,8 +37,11 @@ message CreateArticleReviewerRes {
   string article_id = 3;
   string status = 4;
   string comment = 5;
-  string created_at = 6;
-  string updated_at = 7;
+  string manuscript_comment = 6;
+  string cover_letter_comment = 7;
+  string supplemental_comment = 8;
+  string created_at = 9;
+  string updated_at = 10;
 }
 
 message GetArticleReviewerReq {
@@ -48,10 +54,13 @@ message GetArticleReviewerRes {
   string article_id = 3;
   string status = 4;
   string comment = 5;
-  string created_at = 6;
-  string updated_at = 7;
-  Article article = 8;
-  Reviewer reviewer = 9;
+  string manuscript_comment = 6;
+  string cover_letter_comment = 7;
+  string supplemental_comment = 8;
+  string created_at = 9;
+  string updated_at = 10;
+  Article article = 11;
+  Reviewer reviewer = 12;
 }
 
 message GetArticleReviewerListReq {
@@ -69,10 +78,13 @@ message GetArticleReviewerListRes {
     string article_id = 3;
     string status = 4;
     string comment = 5;
-    string created_at = 6;
-    string updated_at = 7;
-    Article article = 8;
-    Reviewer reviewer = 9;
+    string manuscript_comment = 6;
+    string cover_letter_comment = 7;
+    string supplemental_comment = 8;
+    string created_at = 9;
+    string updated_at = 10;
+    Article article = 11;
+    Reviewer reviewer = 12;
   }
   repeated ArticleReview article_reviewers = 1;
   int32 count = 2;
@@ -84,8 +96,11 @@ message UpdateArticleReviewerReq {
   string article_id = 3;
   string status = 4;
   string comment = 5;
-  string created_at = 6;
-  string updated_at = 7;
+  string manuscript_comment = 6;
+  string cover_letter_comment = 7;
+  string supplemental_comment = 8;
+  string created_at = 9;
+  string updated_at = 10;
 }
 
 message UpdateArticleReviewerRes {
@@ -94,8 +109,11 @@ message UpdateArticleReviewerRes {
   string article_id = 3;
   string status = 4;
   string comment = 5;
-  string created_at = 6;
-  string updated_at = 7;
+  string manuscript_comment = 6;
+  string cover_letter_comment = 7;
+  string supplemental_comment = 8;
+  string created_at = 9;
+  string updated_at = 10;
 }
 
 message DeleteArticleReviewerReq {

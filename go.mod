@@ -1,6 +1,6 @@
 module editory_submission
 
-go 1.19
+go 1.20
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

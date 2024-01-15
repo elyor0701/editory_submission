@@ -6718,6 +6718,12 @@ const docTemplate = `{
                         "description": "status",
                         "name": "status",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "group id",
+                        "name": "group_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -8982,6 +8988,9 @@ const docTemplate = `{
                 "author_id": {
                     "type": "string"
                 },
+                "cover_letter": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -8991,14 +9000,23 @@ const docTemplate = `{
                 "editor_comment": {
                     "type": "string"
                 },
+                "editor_cover_letter_comment": {
+                    "type": "string"
+                },
                 "editor_id": {
                     "type": "string"
                 },
-                "files": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/editory_submission_genproto_submission_service.File"
-                    }
+                "editor_manuscript_comment": {
+                    "type": "string"
+                },
+                "editor_status": {
+                    "type": "string"
+                },
+                "editor_supplemental_comment": {
+                    "type": "string"
+                },
+                "group_id": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -9006,7 +9024,19 @@ const docTemplate = `{
                 "journal_id": {
                     "type": "string"
                 },
+                "manuscript": {
+                    "type": "string"
+                },
+                "reviewer_status": {
+                    "type": "string"
+                },
                 "status": {
+                    "type": "string"
+                },
+                "step": {
+                    "type": "string"
+                },
+                "supplemental": {
                     "type": "string"
                 },
                 "title": {
@@ -9026,19 +9056,31 @@ const docTemplate = `{
                 "author_id": {
                     "type": "string"
                 },
+                "cover_letter": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string"
                 },
-                "files": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/editory_submission_genproto_submission_service.File"
-                    }
+                "editor_status": {
+                    "type": "string"
+                },
+                "group_id": {
+                    "type": "string"
                 },
                 "journal_id": {
                     "type": "string"
                 },
+                "manuscript": {
+                    "type": "string"
+                },
                 "status": {
+                    "type": "string"
+                },
+                "step": {
+                    "type": "string"
+                },
+                "supplemental": {
                     "type": "string"
                 },
                 "title": {
@@ -9055,6 +9097,9 @@ const docTemplate = `{
                 "author_id": {
                     "type": "string"
                 },
+                "cover_letter": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -9064,14 +9109,23 @@ const docTemplate = `{
                 "editor_comment": {
                     "type": "string"
                 },
+                "editor_cover_letter_comment": {
+                    "type": "string"
+                },
                 "editor_id": {
                     "type": "string"
                 },
-                "files": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/editory_submission_genproto_submission_service.File"
-                    }
+                "editor_manuscript_comment": {
+                    "type": "string"
+                },
+                "editor_status": {
+                    "type": "string"
+                },
+                "editor_supplemental_comment": {
+                    "type": "string"
+                },
+                "group_id": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -9079,7 +9133,19 @@ const docTemplate = `{
                 "journal_id": {
                     "type": "string"
                 },
+                "manuscript": {
+                    "type": "string"
+                },
+                "reviewer_status": {
+                    "type": "string"
+                },
                 "status": {
+                    "type": "string"
+                },
+                "step": {
+                    "type": "string"
+                },
+                "supplemental": {
                     "type": "string"
                 },
                 "title": {
@@ -9115,26 +9181,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "editory_submission_genproto_submission_service.File": {
-            "type": "object",
-            "properties": {
-                "article_id": {
-                    "type": "string"
-                },
-                "draft_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                },
-                "url": {
                     "type": "string"
                 }
             }
@@ -9254,6 +9300,9 @@ const docTemplate = `{
                 "author_id": {
                     "type": "string"
                 },
+                "cover_letter": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -9263,14 +9312,23 @@ const docTemplate = `{
                 "editor_comment": {
                     "type": "string"
                 },
+                "editor_cover_letter_comment": {
+                    "type": "string"
+                },
                 "editor_id": {
                     "type": "string"
                 },
-                "files": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/editory_submission_genproto_submission_service.File"
-                    }
+                "editor_manuscript_comment": {
+                    "type": "string"
+                },
+                "editor_status": {
+                    "type": "string"
+                },
+                "editor_supplemental_comment": {
+                    "type": "string"
+                },
+                "group_id": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -9278,7 +9336,19 @@ const docTemplate = `{
                 "journal_id": {
                     "type": "string"
                 },
+                "manuscript": {
+                    "type": "string"
+                },
+                "reviewer_status": {
+                    "type": "string"
+                },
                 "status": {
+                    "type": "string"
+                },
+                "step": {
+                    "type": "string"
+                },
+                "supplemental": {
                     "type": "string"
                 },
                 "title": {
@@ -9298,6 +9368,9 @@ const docTemplate = `{
                 "author_id": {
                     "type": "string"
                 },
+                "cover_letter": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -9307,14 +9380,23 @@ const docTemplate = `{
                 "editor_comment": {
                     "type": "string"
                 },
+                "editor_cover_letter_comment": {
+                    "type": "string"
+                },
                 "editor_id": {
                     "type": "string"
                 },
-                "files": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/editory_submission_genproto_submission_service.File"
-                    }
+                "editor_manuscript_comment": {
+                    "type": "string"
+                },
+                "editor_status": {
+                    "type": "string"
+                },
+                "editor_supplemental_comment": {
+                    "type": "string"
+                },
+                "group_id": {
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -9322,7 +9404,19 @@ const docTemplate = `{
                 "journal_id": {
                     "type": "string"
                 },
+                "manuscript": {
+                    "type": "string"
+                },
+                "reviewer_status": {
+                    "type": "string"
+                },
                 "status": {
+                    "type": "string"
+                },
+                "step": {
+                    "type": "string"
+                },
+                "supplemental": {
                     "type": "string"
                 },
                 "title": {

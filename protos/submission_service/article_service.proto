@@ -29,7 +29,12 @@ message CreateArticleReq {
   string author_id = 4;
   string description = 5;
   string status = 6;
-  repeated File files = 7;
+  string group_id = 7;
+  string manuscript = 8;
+  string cover_letter = 9;
+  string supplemental = 10;
+  string step = 11;
+  string editor_status = 12;
 }
 
 message CreateArticleRes {
@@ -42,9 +47,18 @@ message CreateArticleRes {
   string status = 7;
   string editor_id = 8;
   string editor_comment = 9;
-  repeated File files = 10;
-  string created_at = 11;
-  string updated_at = 12;
+  string step = 10;
+  string editor_status = 11;
+  string reviewer_status = 12;
+  string group_id = 13;
+  string manuscript = 14;
+  string cover_letter = 15;
+  string supplemental = 16;
+  string editor_manuscript_comment = 17;
+  string editor_cover_letter_comment = 18;
+  string editor_supplemental_comment = 19;
+  string created_at = 20;
+  string updated_at = 21;
 }
 
 message GetArticleReq {
@@ -61,9 +75,18 @@ message GetArticleRes {
   string status = 7;
   string editor_id = 8;
   string editor_comment = 9;
-  repeated File files = 10;
-  string created_at = 11;
-  string updated_at = 12;
+  string step = 10;
+  string editor_status = 11;
+  string reviewer_status = 12;
+  string group_id = 13;
+  string manuscript = 14;
+  string cover_letter = 15;
+  string supplemental = 16;
+  string editor_manuscript_comment = 17;
+  string editor_cover_letter_comment = 18;
+  string editor_supplemental_comment = 19;
+  string created_at = 20;
+  string updated_at = 21;
 }
 
 message GetArticleListReq {
@@ -73,6 +96,7 @@ message GetArticleListReq {
   string journal_id = 4;
   string author_id = 5;
   string status = 6;
+  string group_id = 7;
 }
 
 message GetArticleListRes {
@@ -90,9 +114,18 @@ message UpdateArticleReq {
   string status = 7;
   string editor_id = 8;
   string editor_comment = 9;
-  repeated File files = 10;
-  string created_at = 11;
-  string updated_at = 12;
+  string step = 10;
+  string editor_status = 11;
+  string reviewer_status = 12;
+  string group_id = 13;
+  string manuscript = 14;
+  string cover_letter = 15;
+  string supplemental = 16;
+  string editor_manuscript_comment = 17;
+  string editor_cover_letter_comment = 18;
+  string editor_supplemental_comment = 19;
+  string created_at = 20;
+  string updated_at = 21;
 }
 
 message UpdateArticleRes {
@@ -105,9 +138,18 @@ message UpdateArticleRes {
   string status = 7;
   string editor_id = 8;
   string editor_comment = 9;
-  repeated File files = 10;
-  string created_at = 11;
-  string updated_at = 12;
+  string step = 10;
+  string editor_status = 11;
+  string reviewer_status = 12;
+  string group_id = 13;
+  string manuscript = 14;
+  string cover_letter = 15;
+  string supplemental = 16;
+  string editor_manuscript_comment = 17;
+  string editor_cover_letter_comment = 18;
+  string editor_supplemental_comment = 19;
+  string created_at = 20;
+  string updated_at = 21;
 }
 
 message DeleteArticleReq {
