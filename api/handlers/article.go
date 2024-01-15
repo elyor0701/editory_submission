@@ -13,7 +13,7 @@ import (
 
 // CreateJournalArticle godoc
 // @ID create_journal_article
-// @Router /journal/{journal-id}/article [POST]
+// @Router /journal/{journal-id}/draft [POST]
 // @Summary Create Article
 // @Description Create Article
 // @Tags Journal
@@ -53,7 +53,7 @@ func (h *Handler) CreateJournalArticle(c *gin.Context) {
 
 // GetJournalArticleList godoc
 // @ID get_journal_article_list
-// @Router /journal/{journal-id}/article [GET]
+// @Router /journal/{journal-id}/draft [GET]
 // @Summary Get Article List
 // @Description  Get Article List
 // @Tags Journal
@@ -109,19 +109,19 @@ func (h *Handler) GetJournalArticleList(c *gin.Context) {
 
 // GetJournalArticleByID godoc
 // @ID get_journal_article_by_id
-// @Router /journal/{journal-id}/article/{article-id} [GET]
+// @Router /journal/{journal-id}/draft/{draft-id} [GET]
 // @Summary Get Article By ID
 // @Description Get Article By ID
 // @Tags Journal
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "Journal Id"
-// @Param article-id path string true "article-id"
+// @Param draft-id path string true "draft-id"
 // @Success 200 {object} http.Response{data=submission_service.Article} "ArticleBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetJournalArticleByID(c *gin.Context) {
-	articleID := c.Param("article-id")
+	articleID := c.Param("draft-id")
 
 	if !util.IsValidUUID(articleID) {
 		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
@@ -145,7 +145,7 @@ func (h *Handler) GetJournalArticleByID(c *gin.Context) {
 
 // UpdateJournalArticle godoc
 // @ID update_journal_article
-// @Router /journal/{journal-id}/article [PUT]
+// @Router /journal/{journal-id}/draft [PUT]
 // @Summary Update Article
 // @Description Update Article
 // @Tags Journal
@@ -183,20 +183,20 @@ func (h *Handler) UpdateJournalArticle(c *gin.Context) {
 }
 
 // DeleteJournalArticle godoc
-// @ID delete_journal_article
-// @Router /journal/{journal-id}/article/{article-id} [DELETE]
+// @ID delete_journal_draft
+// @Router /journal/{journal-id}/draft/{draft-id} [DELETE]
 // @Summary Delete Article
 // @Description Get Article
 // @Tags Journal
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "Journal Id"
-// @Param article-id path string true "article-id"
+// @Param draft-id path string true "draft-id"
 // @Success 204
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) DeleteJournalArticle(c *gin.Context) {
-	articleID := c.Param("article-id")
+	articleID := c.Param("draft-id")
 
 	if !util.IsValidUUID(articleID) {
 		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
@@ -219,7 +219,7 @@ func (h *Handler) DeleteJournalArticle(c *gin.Context) {
 
 // GetAdminArticleList godoc
 // @ID get_admin_article_list
-// @Router /admin/article [GET]
+// @Router /admin/draft [GET]
 // @Summary Get Article List
 // @Description  Get Article List
 // @Tags Admin
@@ -268,18 +268,18 @@ func (h *Handler) GetAdminArticleList(c *gin.Context) {
 
 // GetAdminArticleByID godoc
 // @ID get_admin_article_by_id
-// @Router /admin/article/{article-id} [GET]
+// @Router /admin/draft/{draft-id} [GET]
 // @Summary Get Article By ID
 // @Description Get Article By ID
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param article-id path string true "article-id"
+// @Param draft-id path string true "draft-id"
 // @Success 200 {object} http.Response{data=submission_service.Article} "ArticleBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetAdminArticleByID(c *gin.Context) {
-	articleID := c.Param("article-id")
+	articleID := c.Param("draft-id")
 
 	if !util.IsValidUUID(articleID) {
 		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
@@ -303,7 +303,7 @@ func (h *Handler) GetAdminArticleByID(c *gin.Context) {
 
 // CreateUserArticle godoc
 // @ID create_user_article
-// @Router /user/{user-id}/article [POST]
+// @Router /user/{user-id}/draft [POST]
 // @Summary Create Article
 // @Description Create Article
 // @Tags User
@@ -343,7 +343,7 @@ func (h *Handler) CreateUserArticle(c *gin.Context) {
 
 // GetUserArticleList godoc
 // @ID get_user_article_list
-// @Router /user/{user-id}/article [GET]
+// @Router /user/{user-id}/draft [GET]
 // @Summary Get Article List
 // @Description  Get Article List
 // @Tags User
@@ -399,19 +399,19 @@ func (h *Handler) GetUserArticleList(c *gin.Context) {
 
 // GetUserArticleByID godoc
 // @ID get_user_article_by_id
-// @Router /user/{user-id}/article/{article-id} [GET]
+// @Router /user/{user-id}/draft/{draft-id} [GET]
 // @Summary Get Article By ID
 // @Description Get Article By ID
 // @Tags User
 // @Accept json
 // @Produce json
 // @Param user-id path string true "user Id"
-// @Param article-id path string true "article-id"
+// @Param draft-id path string true "draft-id"
 // @Success 200 {object} http.Response{data=submission_service.Article} "ArticleBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetUserArticleByID(c *gin.Context) {
-	articleID := c.Param("article-id")
+	articleID := c.Param("draft-id")
 
 	if !util.IsValidUUID(articleID) {
 		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
@@ -435,7 +435,7 @@ func (h *Handler) GetUserArticleByID(c *gin.Context) {
 
 // UpdateUserArticle godoc
 // @ID update_user_article
-// @Router /user/{user-id}/article [PUT]
+// @Router /user/{user-id}/draft [PUT]
 // @Summary Update Article
 // @Description Update Article
 // @Tags User
@@ -474,22 +474,22 @@ func (h *Handler) UpdateUserArticle(c *gin.Context) {
 
 // DeleteUserArticle godoc
 // @ID delete_journal_article
-// @Router /user/{user-id}/article/{article-id} [DELETE]
+// @Router /user/{user-id}/draft/{draft-id} [DELETE]
 // @Summary Delete Article
 // @Description Get Article
 // @Tags User
 // @Accept json
 // @Produce json
 // @Param user-id path string true "user Id"
-// @Param article-id path string true "article-id"
+// @Param draft-id path string true "draft-id"
 // @Success 204
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) DeleteUserArticle(c *gin.Context) {
-	articleID := c.Param("article-id")
+	articleID := c.Param("draft-id")
 
 	if !util.IsValidUUID(articleID) {
-		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
+		h.handleResponse(c, http.InvalidArgument, "draft id is an invalid uuid")
 		return
 	}
 

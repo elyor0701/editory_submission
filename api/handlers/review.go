@@ -13,14 +13,14 @@ import (
 
 // CreateArticleReviewer godoc
 // @ID create_article_reviewer
-// @Router /journal/{journal-id}/article/{article-id}/reviewer [POST]
+// @Router /journal/{journal-id}/draft/{draft-id}/reviewer [POST]
 // @Summary Create Article Reviewer
 // @Description Create Article Reviewer
 // @Tags Journal
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "journal Id"
-// @Param article-id path string true "article Id"
+// @Param draft-id path string true "draft Id"
 // @Param article body models.CreateArticleReviewerReq true "CreateArticleRequestBody"
 // @Success 201 {object} http.Response{data=pb.CreateArticleReviewerRes} "CreateArticleReviewerRes"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
@@ -35,9 +35,9 @@ func (h *Handler) CreateArticleReviewer(c *gin.Context) {
 		return
 	}
 
-	articleId := c.Param("article-id")
+	articleId := c.Param("draft-id")
 	if !util.IsValidUUID(articleId) {
-		err := errors.New("article-id is not valid")
+		err := errors.New("draft-id is not valid")
 		h.handleResponse(c, http.BadRequest, err.Error())
 		return
 	}
@@ -111,14 +111,14 @@ func (h *Handler) CreateArticleReviewer(c *gin.Context) {
 
 // DeleteArticleReviewer godoc
 // @ID delete_article_reviewer
-// @Router /journal/{journal-id}/article/{article-id}/reviewer/{reviewer-id} [DELETE]
+// @Router /journal/{journal-id}/draft/{draft-id}/reviewer/{reviewer-id} [DELETE]
 // @Summary Delete Article reviewer
 // @Description Get Article reviewer
 // @Tags Journal
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "journal-id"
-// @Param article-id path string true "article-id"
+// @Param draft-id path string true "draft-id"
 // @Param reviewer-id path string true "reviewer-id"
 // @Success 204
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
@@ -130,7 +130,7 @@ func (h *Handler) DeleteArticleReviewer(c *gin.Context) {
 		return
 	}
 
-	articleID := c.Param("article-id")
+	articleID := c.Param("draft-id")
 	if !util.IsValidUUID(articleID) {
 		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
 		return
@@ -158,14 +158,14 @@ func (h *Handler) DeleteArticleReviewer(c *gin.Context) {
 
 // GetArticleReviewList godoc
 // @ID get_article_review_list
-// @Router /journal/{journal-id}/article/{article-id}/review [GET]
+// @Router /journal/{journal-id}/draft/{draft-id}/review [GET]
 // @Summary Get article review List
 // @Description  Get article review List
 // @Tags Journal
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "journal-id"
-// @Param article-id path string true "article-id"
+// @Param draft-id path string true "draft-id"
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
 // @Param search query string false "search"
@@ -174,7 +174,7 @@ func (h *Handler) DeleteArticleReviewer(c *gin.Context) {
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetArticleReviewList(c *gin.Context) {
 
-	articleId := c.Param("article-id")
+	articleId := c.Param("draft-id")
 	if !util.IsValidUUID(articleId) {
 		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
 		return
@@ -212,21 +212,21 @@ func (h *Handler) GetArticleReviewList(c *gin.Context) {
 
 // GetArticleReviewByID godoc
 // @ID get_article_review_by_id
-// @Router /journal/{journal-id}/article/{article-id}/review/{review-id} [GET]
+// @Router /journal/{journal-id}/draft/{draft-id}/review/{review-id} [GET]
 // @Summary Get article review
 // @Description  Get article review
 // @Tags Journal
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "journal-id"
-// @Param article-id path string true "article-id"
+// @Param draft-id path string true "draft-id"
 // @Param review-id path string true "review-id"
 // @Success 200 {object} http.Response{data=pb.GetArticleReviewerRes} "GetArticleReviewerRes"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetArticleReviewByID(c *gin.Context) {
 
-	articleId := c.Param("article-id")
+	articleId := c.Param("draft-id")
 	if !util.IsValidUUID(articleId) {
 		h.handleResponse(c, http.InvalidArgument, "article id is an invalid uuid")
 		return

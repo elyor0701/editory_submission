@@ -25,7 +25,7 @@ func NewArticleRepo(db *pgxpool.Pool) storage.ArticleRepoI {
 func (s *ArticleRepo) Create(ctx context.Context, req *pb.CreateArticleReq) (res *pb.CreateArticleRes, err error) {
 	res = &pb.CreateArticleRes{}
 
-	query := `INSERT INTO "article" (
+	query := `INSERT INTO "draft" (
 		id,                 
     	journal_id,           
     	type,         
@@ -144,7 +144,7 @@ func (s *ArticleRepo) Get(ctx context.Context, req *pb.GetArticleReq) (res *pb.G
     	to_char(created_at, ` + config.DatabaseQueryTimeLayout + `) as created_at
     	to_char(updated_at, ` + config.DatabaseQueryTimeLayout + `) as updated_at
 	FROM
-		"article"
+		"draft"
 	WHERE
 		id = $1`
 
@@ -228,7 +228,7 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
     	TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
     	TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at
 	FROM
-		"article"`
+		"draft"`
 
 	filter := `WHERE 1=1`
 
@@ -267,7 +267,7 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 		limit = " LIMIT :limit"
 	}
 
-	cQ := `SELECT count(1) FROM "article"` + filter
+	cQ := `SELECT count(1) FROM "draft"` + filter
 
 	cQ, arr = helper.ReplaceQueryParams(cQ, params)
 
@@ -324,7 +324,7 @@ func (s *ArticleRepo) Update(ctx context.Context, req *pb.UpdateArticleReq) (row
 
 	params := make(map[string]interface{})
 
-	querySet := `UPDATE "article" SET                                              
+	querySet := `UPDATE "draft" SET                                              
     	updated_at = CURRENT_TIMESTAMP`
 
 	filter := ` WHERE id = :id`
@@ -427,7 +427,7 @@ func (s *ArticleRepo) Update(ctx context.Context, req *pb.UpdateArticleReq) (row
 	return result.RowsAffected(), err
 }
 func (s *ArticleRepo) Delete(ctx context.Context, req *pb.DeleteArticleReq) (rowsAffected int64, err error) {
-	queryArticleDelete := `DELETE FROM "article" WHERE id = $1`
+	queryArticleDelete := `DELETE FROM "draft" WHERE id = $1`
 	//queryFileDelete := `DELETE FROM "file" WHERE article_id = $1 AND draft_id is NULL`
 	//queryFileUpdate := `UPDATE "file" SET
 	//	article_id = NULL

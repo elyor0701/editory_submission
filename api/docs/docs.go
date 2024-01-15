@@ -16,191 +16,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/article": {
-            "get": {
-                "description": "Get Article List",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Get Article List",
-                "operationId": "get_admin_article_list",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Journal Id",
-                        "name": "journal-id",
-                        "in": "path"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "offset",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "search",
-                        "name": "search",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "status",
-                        "name": "status",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "GetArticleListResponseBody",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.GetArticleListRes"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid Argument",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "Server Error",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "/admin/article/{article-id}": {
-            "get": {
-                "description": "Get Article By ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Get Article By ID",
-                "operationId": "get_admin_article_by_id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "article-id",
-                        "name": "article-id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "ArticleBody",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.Article"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid Argument",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "Server Error",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
         "/admin/author": {
             "get": {
                 "description": "Get Author List",
@@ -491,6 +306,191 @@ const docTemplate = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/editory_submission_genproto_auth_service.User"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/draft": {
+            "get": {
+                "description": "Get Article List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get Article List",
+                "operationId": "get_admin_article_list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Journal Id",
+                        "name": "journal-id",
+                        "in": "path"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "status",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetArticleListResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.GetArticleListRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/draft/{draft-id}": {
+            "get": {
+                "description": "Get Article By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get Article By ID",
+                "operationId": "get_admin_article_by_id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "draft-id",
+                        "name": "draft-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ArticleBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.Article"
                                         }
                                     }
                                 }
@@ -3864,7 +3864,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/journal/{journal-id}/article": {
+        "/journal/{journal-id}/draft": {
             "get": {
                 "description": "Get Article List",
                 "consumes": [
@@ -4145,7 +4145,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/journal/{journal-id}/article/{article-id}": {
+        "/journal/{journal-id}/draft/{draft-id}": {
             "get": {
                 "description": "Get Article By ID",
                 "consumes": [
@@ -4169,8 +4169,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "article-id",
-                        "name": "article-id",
+                        "description": "draft-id",
+                        "name": "draft-id",
                         "in": "path",
                         "required": true
                     }
@@ -4244,7 +4244,7 @@ const docTemplate = `{
                     "Journal"
                 ],
                 "summary": "Delete Article",
-                "operationId": "delete_journal_article",
+                "operationId": "delete_journal_draft",
                 "parameters": [
                     {
                         "type": "string",
@@ -4255,8 +4255,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "article-id",
-                        "name": "article-id",
+                        "description": "draft-id",
+                        "name": "draft-id",
                         "in": "path",
                         "required": true
                     }
@@ -4304,7 +4304,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/journal/{journal-id}/article/{article-id}/review": {
+        "/journal/{journal-id}/draft/{draft-id}/review": {
             "get": {
                 "description": "Get article review List",
                 "consumes": [
@@ -4328,8 +4328,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "article-id",
-                        "name": "article-id",
+                        "description": "draft-id",
+                        "name": "draft-id",
                         "in": "path",
                         "required": true
                     },
@@ -4410,7 +4410,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/journal/{journal-id}/article/{article-id}/review/{review-id}": {
+        "/journal/{journal-id}/draft/{draft-id}/review/{review-id}": {
             "get": {
                 "description": "Get article review",
                 "consumes": [
@@ -4434,8 +4434,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "article-id",
-                        "name": "article-id",
+                        "description": "draft-id",
+                        "name": "draft-id",
                         "in": "path",
                         "required": true
                     },
@@ -4505,7 +4505,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/journal/{journal-id}/article/{article-id}/reviewer": {
+        "/journal/{journal-id}/draft/{draft-id}/reviewer": {
             "post": {
                 "description": "Create Article Reviewer",
                 "consumes": [
@@ -4529,8 +4529,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "article Id",
-                        "name": "article-id",
+                        "description": "draft Id",
+                        "name": "draft-id",
                         "in": "path",
                         "required": true
                     },
@@ -4602,7 +4602,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/journal/{journal-id}/article/{article-id}/reviewer/{reviewer-id}": {
+        "/journal/{journal-id}/draft/{draft-id}/reviewer/{reviewer-id}": {
             "delete": {
                 "description": "Get Article reviewer",
                 "consumes": [
@@ -4626,8 +4626,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "article-id",
-                        "name": "article-id",
+                        "description": "draft-id",
+                        "name": "draft-id",
                         "in": "path",
                         "required": true
                     },
@@ -6673,7 +6673,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/{user-id}/article": {
+        "/user/{user-id}/draft": {
             "get": {
                 "description": "Get Article List",
                 "consumes": [
@@ -6954,7 +6954,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/{user-id}/article/{article-id}": {
+        "/user/{user-id}/draft/{draft-id}": {
             "get": {
                 "description": "Get Article By ID",
                 "consumes": [
@@ -6978,8 +6978,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "article-id",
-                        "name": "article-id",
+                        "description": "draft-id",
+                        "name": "draft-id",
                         "in": "path",
                         "required": true
                     }
@@ -7064,8 +7064,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "article-id",
-                        "name": "article-id",
+                        "description": "draft-id",
+                        "name": "draft-id",
                         "in": "path",
                         "required": true
                     }

@@ -2081,111 +2081,6 @@ info:
   description: This is a api gateway
   termsOfService: https://udevs.io
 paths:
-  /admin/article:
-    get:
-      consumes:
-      - application/json
-      description: Get Article List
-      operationId: get_admin_article_list
-      parameters:
-      - description: Journal Id
-        in: path
-        name: journal-id
-        type: string
-      - description: offset
-        in: query
-        name: offset
-        type: integer
-      - description: limit
-        in: query
-        name: limit
-        type: integer
-      - description: search
-        in: query
-        name: search
-        type: string
-      - description: status
-        in: query
-        name: status
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: GetArticleListResponseBody
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleListRes'
-              type: object
-        "400":
-          description: Invalid Argument
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Get Article List
-      tags:
-      - Admin
-  /admin/article/{article-id}:
-    get:
-      consumes:
-      - application/json
-      description: Get Article By ID
-      operationId: get_admin_article_by_id
-      parameters:
-      - description: article-id
-        in: path
-        name: article-id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ArticleBody
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.Article'
-              type: object
-        "400":
-          description: Invalid Argument
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-        "500":
-          description: Server Error
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
-      summary: Get Article By ID
-      tags:
-      - Admin
   /admin/author:
     get:
       consumes:
@@ -2371,6 +2266,111 @@ paths:
                   type: string
               type: object
       summary: Get Author By ID
+      tags:
+      - Admin
+  /admin/draft:
+    get:
+      consumes:
+      - application/json
+      description: Get Article List
+      operationId: get_admin_article_list
+      parameters:
+      - description: Journal Id
+        in: path
+        name: journal-id
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      - description: status
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetArticleListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Article List
+      tags:
+      - Admin
+  /admin/draft/{draft-id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Article By ID
+      operationId: get_admin_article_by_id
+      parameters:
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ArticleBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.Article'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Article By ID
       tags:
       - Admin
   /admin/editor:
@@ -4251,7 +4251,7 @@ paths:
       summary: Get Journal By ID
       tags:
       - Journal
-  /journal/{journal-id}/article:
+  /journal/{journal-id}/draft:
     get:
       consumes:
       - application/json
@@ -4412,21 +4412,21 @@ paths:
       summary: Update Article
       tags:
       - Journal
-  /journal/{journal-id}/article/{article-id}:
+  /journal/{journal-id}/draft/{draft-id}:
     delete:
       consumes:
       - application/json
       description: Get Article
-      operationId: delete_journal_article
+      operationId: delete_journal_draft
       parameters:
       - description: Journal Id
         in: path
         name: journal-id
         required: true
         type: string
-      - description: article-id
+      - description: draft-id
         in: path
-        name: article-id
+        name: draft-id
         required: true
         type: string
       produces:
@@ -4466,9 +4466,9 @@ paths:
         name: journal-id
         required: true
         type: string
-      - description: article-id
+      - description: draft-id
         in: path
-        name: article-id
+        name: draft-id
         required: true
         type: string
       produces:
@@ -4504,7 +4504,7 @@ paths:
       summary: Get Article By ID
       tags:
       - Journal
-  /journal/{journal-id}/article/{article-id}/review:
+  /journal/{journal-id}/draft/{draft-id}/review:
     get:
       consumes:
       - application/json
@@ -4516,9 +4516,9 @@ paths:
         name: journal-id
         required: true
         type: string
-      - description: article-id
+      - description: draft-id
         in: path
-        name: article-id
+        name: draft-id
         required: true
         type: string
       - description: offset
@@ -4566,7 +4566,7 @@ paths:
       summary: Get article review List
       tags:
       - Journal
-  /journal/{journal-id}/article/{article-id}/review/{review-id}:
+  /journal/{journal-id}/draft/{draft-id}/review/{review-id}:
     get:
       consumes:
       - application/json
@@ -4578,9 +4578,9 @@ paths:
         name: journal-id
         required: true
         type: string
-      - description: article-id
+      - description: draft-id
         in: path
-        name: article-id
+        name: draft-id
         required: true
         type: string
       - description: review-id
@@ -4621,7 +4621,7 @@ paths:
       summary: Get article review
       tags:
       - Journal
-  /journal/{journal-id}/article/{article-id}/reviewer:
+  /journal/{journal-id}/draft/{draft-id}/reviewer:
     post:
       consumes:
       - application/json
@@ -4633,9 +4633,9 @@ paths:
         name: journal-id
         required: true
         type: string
-      - description: article Id
+      - description: draft Id
         in: path
-        name: article-id
+        name: draft-id
         required: true
         type: string
       - description: CreateArticleRequestBody
@@ -4677,7 +4677,7 @@ paths:
       summary: Create Article Reviewer
       tags:
       - Journal
-  /journal/{journal-id}/article/{article-id}/reviewer/{reviewer-id}:
+  /journal/{journal-id}/draft/{draft-id}/reviewer/{reviewer-id}:
     delete:
       consumes:
       - application/json
@@ -4689,9 +4689,9 @@ paths:
         name: journal-id
         required: true
         type: string
-      - description: article-id
+      - description: draft-id
         in: path
-        name: article-id
+        name: draft-id
         required: true
         type: string
       - description: reviewer-id
@@ -5853,7 +5853,7 @@ paths:
       summary: Upload
       tags:
       - file
-  /user/{user-id}/article:
+  /user/{user-id}/draft:
     get:
       consumes:
       - application/json
@@ -6014,7 +6014,7 @@ paths:
       summary: Update Article
       tags:
       - User
-  /user/{user-id}/article/{article-id}:
+  /user/{user-id}/draft/{draft-id}:
     delete:
       consumes:
       - application/json
@@ -6026,9 +6026,9 @@ paths:
         name: user-id
         required: true
         type: string
-      - description: article-id
+      - description: draft-id
         in: path
-        name: article-id
+        name: draft-id
         required: true
         type: string
       produces:
@@ -6068,9 +6068,9 @@ paths:
         name: user-id
         required: true
         type: string
-      - description: article-id
+      - description: draft-id
         in: path
-        name: article-id
+        name: draft-id
         required: true
         type: string
       produces:
