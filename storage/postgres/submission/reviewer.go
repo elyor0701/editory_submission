@@ -113,6 +113,10 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (
 		a.status,
 		COALESCE(a.editor_id::VARCHAR, '') AS editor_id,
 		COALESCE(a.editor_comment::VARCHAR, '') AS editor_comment,
+		a.group_id,
+		a.manuscript,
+		a.cover_letter,
+		a.supplemental,
     	TO_CHAR(a.created_at, ` + config.DatabaseQueryTimeLayout + `) AS a_created_at,
     	TO_CHAR(a.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS a_updated_at,
 		u.id,
@@ -149,6 +153,10 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (
 		&article.Status,
 		&article.EditorId,
 		&article.EditorComment,
+		&article.GroupId,
+		&article.Manuscript,
+		&article.CoverLetter,
+		&article.Supplemental,
 		&article.CreatedAt,
 		&article.UpdatedAt,
 		&user.Id,
@@ -191,6 +199,10 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 		a.status,
 		COALESCE(a.editor_id::VARCHAR, '') AS editor_id,
 		COALESCE(a.editor_comment::VARCHAR, '') AS editor_comment,
+		a.group_id,
+		a.manuscript,
+		a.cover_letter,
+		a.supplemental,
     	TO_CHAR(a.created_at, ` + config.DatabaseQueryTimeLayout + `) AS a_created_at,
     	TO_CHAR(a.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS a_updated_at,
 		u.id,
@@ -199,7 +211,7 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 		u.email
 	FROM
 		"article_reviewer" r
-	INNER JOIN "article" a ON r.article_id = a.id
+	INNER JOIN "draft" a ON r.article_id = a.id
 	INNER JOIN "user" u ON r.reviewer_id = u.id`
 	filter := " WHERE 1=1"
 
@@ -277,6 +289,10 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 			&article.Status,
 			&article.EditorId,
 			&article.EditorComment,
+			&article.GroupId,
+			&article.Manuscript,
+			&article.CoverLetter,
+			&article.Supplemental,
 			&article.CreatedAt,
 			&article.UpdatedAt,
 			&user.Id,
