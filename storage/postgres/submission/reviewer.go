@@ -125,7 +125,7 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (
 		u.email
 	FROM
 		"article_reviewer" r
-	INNER JOIN "article" a ON r.article_id = a.id
+	INNER JOIN "draft" a ON r.article_id = a.id
 	INNER JOIN "user" u ON r.reviewer_id = u.id
 	WHERE
 		r.id = $1`
