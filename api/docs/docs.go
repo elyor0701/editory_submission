@@ -6910,7 +6910,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/editory_submission_genproto_submission_service.CreateArticleReq"
+                            "$ref": "#/definitions/editory_submission_api_models.CreateUserArticleReq"
                         }
                     }
                 ],
@@ -7708,6 +7708,35 @@ const docTemplate = `{
                 },
                 "role": {
                     "$ref": "#/definitions/editory_submission_api_models.Role"
+                }
+            }
+        },
+        "editory_submission_api_models.CreateUserArticleReq": {
+            "type": "object",
+            "properties": {
+                "cover_letter": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "group_id": {
+                    "type": "string"
+                },
+                "journal_id": {
+                    "type": "string"
+                },
+                "manuscript": {
+                    "type": "string"
+                },
+                "supplemental": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },

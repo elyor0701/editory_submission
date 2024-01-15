@@ -316,9 +316,10 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 func (s *ReviewerRepo) Update(ctx context.Context, req *pb.UpdateArticleReviewerReq) (rowsAffected int64, err error) {
 
 	validArticleReviewerStatus := map[string]bool{
-		config.ARTICLE_REVIEWER_STATUS_PENDING:  true,
-		config.ARTICLE_REVIEWER_STATUS_APPROVED: true,
-		config.ARTICLE_REVIEWER_STATUS_REJECTED: true,
+		config.ARTICLE_REVIEWER_STATUS_PENDING:             true,
+		config.ARTICLE_REVIEWER_STATUS_APPROVED:            true,
+		config.ARTICLE_REVIEWER_STATUS_REJECTED:            true,
+		config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION: true,
 	}
 
 	querySet := `UPDATE "article_reviewer" SET                
@@ -342,7 +343,7 @@ func (s *ReviewerRepo) Update(ctx context.Context, req *pb.UpdateArticleReviewer
 
 	if req.ManuscriptComment != "" {
 		querySet += `, manuscript_comment = :manuscript_comment`
-		params["manuscript_comment"] = req.Comment
+		params["manuscript_comment"] = req.ManuscriptComment
 	}
 
 	if req.CoverLetterComment != "" {

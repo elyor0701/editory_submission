@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"editory_submission/api/http"
+	"editory_submission/api/models"
 	"editory_submission/config"
 	"editory_submission/genproto/submission_service"
 	"editory_submission/pkg/util"
+	"encoding/json"
 	"errors"
 	"github.com/gin-gonic/gin"
 )
@@ -18,12 +20,15 @@ import (
 // @Accept json
 // @Produce json
 // @Param user-id path string true "user Id"
-// @Param article body submission_service.CreateArticleReq true "CreateArticleRequestBody"
+// @Param article body models.CreateUserArticleReq true "CreateArticleRequestBody"
 // @Success 201 {object} http.Response{data=submission_service.CreateArticleRes} "Article data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) CreateUserArticle(c *gin.Context) {
-	var article submission_service.CreateArticleReq
+	var (
+		article   models.CreateUserArticleReq
+		articlePB submission_service.CreateArticleReq
+	)
 
 	userId := c.Param("user-id")
 
@@ -33,12 +38,24 @@ func (h *Handler) CreateUserArticle(c *gin.Context) {
 		return
 	}
 
-	article.AuthorId = userId
-	article.Status = config.ARTICLE_STATUS_NEW
+	artJSON, err := json.Marshal(article)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	err = json.Unmarshal(artJSON, &articlePB)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	articlePB.AuthorId = userId
+	articlePB.Status = config.ARTICLE_STATUS_NEW
 
 	resp, err := h.services.ArticleService().CreateArticle(
 		c.Request.Context(),
-		&article,
+		&articlePB,
 	)
 
 	if err != nil {

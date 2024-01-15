@@ -390,9 +390,12 @@ func (h *Handler) UpdateUserReview(c *gin.Context) {
 	resp, err := h.services.ReviewerService().UpdateArticleReviewer(
 		c.Request.Context(),
 		&pb.UpdateArticleReviewerReq{
-			Id:      review.Id,
-			Status:  review.Status,
-			Comment: review.Comment,
+			Id:                  review.Id,
+			Status:              review.Status,
+			Comment:             review.Comment,
+			ManuscriptComment:   review.ManuscriptComment,
+			CoverLetterComment:  review.CoverLetterComment,
+			SupplementalComment: review.SupplementalComment,
 		},
 	)
 

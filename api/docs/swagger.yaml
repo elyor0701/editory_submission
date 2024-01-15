@@ -209,6 +209,25 @@ definitions:
       role:
         $ref: '#/definitions/editory_submission_api_models.Role'
     type: object
+  editory_submission_api_models.CreateUserArticleReq:
+    properties:
+      cover_letter:
+        type: string
+      description:
+        type: string
+      group_id:
+        type: string
+      journal_id:
+        type: string
+      manuscript:
+        type: string
+      supplemental:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
   editory_submission_api_models.EmailVerificationReq:
     properties:
       email:
@@ -6148,7 +6167,7 @@ paths:
         name: article
         required: true
         schema:
-          $ref: '#/definitions/editory_submission_genproto_submission_service.CreateArticleReq'
+          $ref: '#/definitions/editory_submission_api_models.CreateUserArticleReq'
       produces:
       - application/json
       responses:
