@@ -30,6 +30,11 @@ const (
 	ContentService_GetEditionList_FullMethodName = "/content_service.ContentService/GetEditionList"
 	ContentService_UpdateEdition_FullMethodName  = "/content_service.ContentService/UpdateEdition"
 	ContentService_DeleteEdition_FullMethodName  = "/content_service.ContentService/DeleteEdition"
+	ContentService_CreateArticle_FullMethodName  = "/content_service.ContentService/CreateArticle"
+	ContentService_GetArticle_FullMethodName     = "/content_service.ContentService/GetArticle"
+	ContentService_GetArticleList_FullMethodName = "/content_service.ContentService/GetArticleList"
+	ContentService_UpdateArticle_FullMethodName  = "/content_service.ContentService/UpdateArticle"
+	ContentService_DeleteArticle_FullMethodName  = "/content_service.ContentService/DeleteArticle"
 	ContentService_GetCountryList_FullMethodName = "/content_service.ContentService/GetCountryList"
 	ContentService_GetCityList_FullMethodName    = "/content_service.ContentService/GetCityList"
 )
@@ -50,6 +55,12 @@ type ContentServiceClient interface {
 	GetEditionList(ctx context.Context, in *GetEditionListReq, opts ...grpc.CallOption) (*GetEditionListRes, error)
 	UpdateEdition(ctx context.Context, in *Edition, opts ...grpc.CallOption) (*Edition, error)
 	DeleteEdition(ctx context.Context, in *PrimaryKey, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// Article
+	CreateArticle(ctx context.Context, in *CreateArticleReq, opts ...grpc.CallOption) (*CreateArticleRes, error)
+	GetArticle(ctx context.Context, in *GetArticleReq, opts ...grpc.CallOption) (*GetArticleRes, error)
+	GetArticleList(ctx context.Context, in *GetArticleListReq, opts ...grpc.CallOption) (*GetArticleListRes, error)
+	UpdateArticle(ctx context.Context, in *UpdateArticleReq, opts ...grpc.CallOption) (*UpdateArticleRes, error)
+	DeleteArticle(ctx context.Context, in *DeleteArticleReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Countries and cities
 	GetCountryList(ctx context.Context, in *GetCountryListReq, opts ...grpc.CallOption) (*GetCountryListRes, error)
 	GetCityList(ctx context.Context, in *GetCityListReq, opts ...grpc.CallOption) (*GetCityListRes, error)
@@ -153,6 +164,51 @@ func (c *contentServiceClient) DeleteEdition(ctx context.Context, in *PrimaryKey
 	return out, nil
 }
 
+func (c *contentServiceClient) CreateArticle(ctx context.Context, in *CreateArticleReq, opts ...grpc.CallOption) (*CreateArticleRes, error) {
+	out := new(CreateArticleRes)
+	err := c.cc.Invoke(ctx, ContentService_CreateArticle_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) GetArticle(ctx context.Context, in *GetArticleReq, opts ...grpc.CallOption) (*GetArticleRes, error) {
+	out := new(GetArticleRes)
+	err := c.cc.Invoke(ctx, ContentService_GetArticle_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) GetArticleList(ctx context.Context, in *GetArticleListReq, opts ...grpc.CallOption) (*GetArticleListRes, error) {
+	out := new(GetArticleListRes)
+	err := c.cc.Invoke(ctx, ContentService_GetArticleList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) UpdateArticle(ctx context.Context, in *UpdateArticleReq, opts ...grpc.CallOption) (*UpdateArticleRes, error) {
+	out := new(UpdateArticleRes)
+	err := c.cc.Invoke(ctx, ContentService_UpdateArticle_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) DeleteArticle(ctx context.Context, in *DeleteArticleReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ContentService_DeleteArticle_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *contentServiceClient) GetCountryList(ctx context.Context, in *GetCountryListReq, opts ...grpc.CallOption) (*GetCountryListRes, error) {
 	out := new(GetCountryListRes)
 	err := c.cc.Invoke(ctx, ContentService_GetCountryList_FullMethodName, in, out, opts...)
@@ -187,6 +243,12 @@ type ContentServiceServer interface {
 	GetEditionList(context.Context, *GetEditionListReq) (*GetEditionListRes, error)
 	UpdateEdition(context.Context, *Edition) (*Edition, error)
 	DeleteEdition(context.Context, *PrimaryKey) (*emptypb.Empty, error)
+	// Article
+	CreateArticle(context.Context, *CreateArticleReq) (*CreateArticleRes, error)
+	GetArticle(context.Context, *GetArticleReq) (*GetArticleRes, error)
+	GetArticleList(context.Context, *GetArticleListReq) (*GetArticleListRes, error)
+	UpdateArticle(context.Context, *UpdateArticleReq) (*UpdateArticleRes, error)
+	DeleteArticle(context.Context, *DeleteArticleReq) (*emptypb.Empty, error)
 	// Countries and cities
 	GetCountryList(context.Context, *GetCountryListReq) (*GetCountryListRes, error)
 	GetCityList(context.Context, *GetCityListReq) (*GetCityListRes, error)
@@ -226,6 +288,21 @@ func (UnimplementedContentServiceServer) UpdateEdition(context.Context, *Edition
 }
 func (UnimplementedContentServiceServer) DeleteEdition(context.Context, *PrimaryKey) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteEdition not implemented")
+}
+func (UnimplementedContentServiceServer) CreateArticle(context.Context, *CreateArticleReq) (*CreateArticleRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateArticle not implemented")
+}
+func (UnimplementedContentServiceServer) GetArticle(context.Context, *GetArticleReq) (*GetArticleRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticle not implemented")
+}
+func (UnimplementedContentServiceServer) GetArticleList(context.Context, *GetArticleListReq) (*GetArticleListRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticleList not implemented")
+}
+func (UnimplementedContentServiceServer) UpdateArticle(context.Context, *UpdateArticleReq) (*UpdateArticleRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateArticle not implemented")
+}
+func (UnimplementedContentServiceServer) DeleteArticle(context.Context, *DeleteArticleReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticle not implemented")
 }
 func (UnimplementedContentServiceServer) GetCountryList(context.Context, *GetCountryListReq) (*GetCountryListRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCountryList not implemented")
@@ -426,6 +503,96 @@ func _ContentService_DeleteEdition_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ContentService_CreateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateArticleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).CreateArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_CreateArticle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).CreateArticle(ctx, req.(*CreateArticleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_GetArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).GetArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_GetArticle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).GetArticle(ctx, req.(*GetArticleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_GetArticleList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticleListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).GetArticleList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_GetArticleList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).GetArticleList(ctx, req.(*GetArticleListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_UpdateArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateArticleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).UpdateArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_UpdateArticle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).UpdateArticle(ctx, req.(*UpdateArticleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_DeleteArticle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteArticleReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).DeleteArticle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_DeleteArticle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).DeleteArticle(ctx, req.(*DeleteArticleReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ContentService_GetCountryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetCountryListReq)
 	if err := dec(in); err != nil {
@@ -508,6 +675,26 @@ var ContentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteEdition",
 			Handler:    _ContentService_DeleteEdition_Handler,
+		},
+		{
+			MethodName: "CreateArticle",
+			Handler:    _ContentService_CreateArticle_Handler,
+		},
+		{
+			MethodName: "GetArticle",
+			Handler:    _ContentService_GetArticle_Handler,
+		},
+		{
+			MethodName: "GetArticleList",
+			Handler:    _ContentService_GetArticleList_Handler,
+		},
+		{
+			MethodName: "UpdateArticle",
+			Handler:    _ContentService_UpdateArticle_Handler,
+		},
+		{
+			MethodName: "DeleteArticle",
+			Handler:    _ContentService_DeleteArticle_Handler,
 		},
 		{
 			MethodName: "GetCountryList",

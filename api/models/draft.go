@@ -1,6 +1,6 @@
 package models
 
-type CreateUserArticleReq struct {
+type CreateUserDraftReq struct {
 	JournalId    string `json:"journal_id,omitempty"`
 	Type         string `json:"type,omitempty"`
 	Title        string `json:"title,omitempty"`

@@ -11,22 +11,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CreateUserArticle godoc
-// @ID create_user_article
+// CreateUserDraft godoc
+// @ID create_user_draft
 // @Router /user/{user-id}/draft [POST]
-// @Summary Create Article
-// @Description Create Article
+// @Summary Create Draft
+// @Description Create Draft
 // @Tags User
 // @Accept json
 // @Produce json
 // @Param user-id path string true "user Id"
-// @Param article body models.CreateUserArticleReq true "CreateArticleRequestBody"
-// @Success 201 {object} http.Response{data=submission_service.CreateArticleRes} "Article data"
+// @Param draft body models.CreateUserDraftReq true "CreateDraftRequestBody"
+// @Success 201 {object} http.Response{data=submission_service.CreateArticleRes} "Draft data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) CreateUserArticle(c *gin.Context) {
+func (h *Handler) CreateUserDraft(c *gin.Context) {
 	var (
-		article   models.CreateUserArticleReq
+		article   models.CreateUserDraftReq
 		articlePB submission_service.CreateArticleReq
 	)
 
@@ -66,11 +66,11 @@ func (h *Handler) CreateUserArticle(c *gin.Context) {
 	h.handleResponse(c, http.Created, resp)
 }
 
-// GetUserArticleList godoc
-// @ID get_user_article_list
+// GetUserDraftList godoc
+// @ID get_user_draft_list
 // @Router /user/{user-id}/draft [GET]
-// @Summary Get Article List
-// @Description  Get Article List
+// @Summary Get Draft List
+// @Description  Get Draft List
 // @Tags User
 // @Accept json
 // @Produce json
@@ -80,10 +80,10 @@ func (h *Handler) CreateUserArticle(c *gin.Context) {
 // @Param search query string false "search"
 // @Param status query string false "status"
 // @Param group-id query string false "group id"
-// @Success 200 {object} http.Response{data=submission_service.GetArticleListRes} "GetArticleListResponseBody"
+// @Success 200 {object} http.Response{data=submission_service.GetArticleListRes} "GetDraftListResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetUserArticleList(c *gin.Context) {
+func (h *Handler) GetUserDraftList(c *gin.Context) {
 
 	offset, err := h.getOffsetParam(c)
 	if err != nil {
@@ -124,20 +124,20 @@ func (h *Handler) GetUserArticleList(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// GetUserArticleByID godoc
-// @ID get_user_article_by_id
+// GetUserDraftByID godoc
+// @ID get_user_draft_by_id
 // @Router /user/{user-id}/draft/{draft-id} [GET]
-// @Summary Get Article By ID
-// @Description Get Article By ID
+// @Summary Get Draft By ID
+// @Description Get Draft By ID
 // @Tags User
 // @Accept json
 // @Produce json
 // @Param user-id path string true "user Id"
 // @Param draft-id path string true "draft-id"
-// @Success 200 {object} http.Response{data=submission_service.Article} "ArticleBody"
+// @Success 200 {object} http.Response{data=submission_service.Article} "DraftBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetUserArticleByID(c *gin.Context) {
+func (h *Handler) GetUserDraftByID(c *gin.Context) {
 	articleID := c.Param("draft-id")
 
 	if !util.IsValidUUID(articleID) {
@@ -160,20 +160,20 @@ func (h *Handler) GetUserArticleByID(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// UpdateUserArticle godoc
-// @ID update_user_article
+// UpdateUserDraft godoc
+// @ID update_user_draft
 // @Router /user/{user-id}/draft [PUT]
-// @Summary Update Article
-// @Description Update Article
+// @Summary Update Draft
+// @Description Update Draft
 // @Tags User
 // @Accept json
 // @Produce json
 // @Param user-id path string true "user Id"
-// @Param article body submission_service.UpdateArticleReq true "UpdateArticleRequestBody"
-// @Success 200 {object} http.Response{data=submission_service.UpdateArticleRes} "Article data"
+// @Param draft body submission_service.UpdateArticleReq true "UpdateDraftRequestBody"
+// @Success 200 {object} http.Response{data=submission_service.UpdateArticleRes} "Draft data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) UpdateUserArticle(c *gin.Context) {
+func (h *Handler) UpdateUserDraft(c *gin.Context) {
 	var article submission_service.UpdateArticleReq
 
 	userId := c.Param("user-id")
@@ -199,11 +199,11 @@ func (h *Handler) UpdateUserArticle(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// DeleteUserArticle godoc
-// @ID delete_journal_article
+// DeleteUserDraft godoc
+// @ID delete_journal_draft
 // @Router /user/{user-id}/draft/{draft-id} [DELETE]
-// @Summary Delete Article
-// @Description Get Article
+// @Summary Delete Draft
+// @Description Get Draft
 // @Tags User
 // @Accept json
 // @Produce json
@@ -212,7 +212,7 @@ func (h *Handler) UpdateUserArticle(c *gin.Context) {
 // @Success 204
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) DeleteUserArticle(c *gin.Context) {
+func (h *Handler) DeleteUserDraft(c *gin.Context) {
 	articleID := c.Param("draft-id")
 
 	if !util.IsValidUUID(articleID) {
@@ -234,20 +234,20 @@ func (h *Handler) DeleteUserArticle(c *gin.Context) {
 	h.handleResponse(c, http.NoContent, "")
 }
 
-// CreateJournalArticle godoc
-// @ID create_journal_article
+// CreateJournalDraft godoc
+// @ID create_journal_draft
 // @Router /journal/{journal-id}/draft [POST]
-// @Summary Create Article
-// @Description Create Article
+// @Summary Create Draft
+// @Description Create Draft
 // @Tags Journal
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "Journal Id"
-// @Param article body submission_service.CreateArticleReq true "CreateArticleRequestBody"
-// @Success 201 {object} http.Response{data=submission_service.CreateArticleRes} "Article data"
+// @Param draft body submission_service.CreateArticleReq true "CreateDraftRequestBody"
+// @Success 201 {object} http.Response{data=submission_service.CreateArticleRes} "Draft data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) CreateJournalArticle(c *gin.Context) {
+func (h *Handler) CreateJournalDraft(c *gin.Context) {
 	var article submission_service.CreateArticleReq
 
 	journalId := c.Param("journal-id")
@@ -274,11 +274,11 @@ func (h *Handler) CreateJournalArticle(c *gin.Context) {
 	h.handleResponse(c, http.Created, resp)
 }
 
-// GetJournalArticleList godoc
-// @ID get_journal_article_list
+// GetJournalDraftList godoc
+// @ID get_journal_draft_list
 // @Router /journal/{journal-id}/draft [GET]
-// @Summary Get Article List
-// @Description  Get Article List
+// @Summary Get Draft List
+// @Description  Get Draft List
 // @Tags Journal
 // @Accept json
 // @Produce json
@@ -288,10 +288,10 @@ func (h *Handler) CreateJournalArticle(c *gin.Context) {
 // @Param search query string false "search"
 // @Param status query string false "status"
 // @Param group-id query string false "group_id"
-// @Success 200 {object} http.Response{data=submission_service.GetArticleListRes} "GetArticleListResponseBody"
+// @Success 200 {object} http.Response{data=submission_service.GetArticleListRes} "GetDraftListResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetJournalArticleList(c *gin.Context) {
+func (h *Handler) GetJournalDraftList(c *gin.Context) {
 
 	offset, err := h.getOffsetParam(c)
 	if err != nil {
@@ -332,20 +332,20 @@ func (h *Handler) GetJournalArticleList(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// GetJournalArticleByID godoc
-// @ID get_journal_article_by_id
+// GetJournalDraftByID godoc
+// @ID get_journal_draft_by_id
 // @Router /journal/{journal-id}/draft/{draft-id} [GET]
-// @Summary Get Article By ID
-// @Description Get Article By ID
+// @Summary Get Draft By ID
+// @Description Get Draft By ID
 // @Tags Journal
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "Journal Id"
 // @Param draft-id path string true "draft-id"
-// @Success 200 {object} http.Response{data=submission_service.Article} "ArticleBody"
+// @Success 200 {object} http.Response{data=submission_service.Article} "DraftBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetJournalArticleByID(c *gin.Context) {
+func (h *Handler) GetJournalDraftByID(c *gin.Context) {
 	articleID := c.Param("draft-id")
 
 	if !util.IsValidUUID(articleID) {
@@ -368,20 +368,20 @@ func (h *Handler) GetJournalArticleByID(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// UpdateJournalArticle godoc
-// @ID update_journal_article
+// UpdateJournalDraft godoc
+// @ID update_journal_draft
 // @Router /journal/{journal-id}/draft [PUT]
-// @Summary Update Article
-// @Description Update Article
+// @Summary Update Draft
+// @Description Update Draft
 // @Tags Journal
 // @Accept json
 // @Produce json
 // @Param journal-id path string true "Journal Id"
-// @Param article body submission_service.UpdateArticleReq true "UpdateArticleRequestBody"
-// @Success 200 {object} http.Response{data=submission_service.UpdateArticleRes} "Article data"
+// @Param draft body submission_service.UpdateArticleReq true "UpdateDraftRequestBody"
+// @Success 200 {object} http.Response{data=submission_service.UpdateArticleRes} "Draft data"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) UpdateJournalArticle(c *gin.Context) {
+func (h *Handler) UpdateJournalDraft(c *gin.Context) {
 	var article submission_service.UpdateArticleReq
 
 	journalId := c.Param("journal-id")
@@ -407,11 +407,11 @@ func (h *Handler) UpdateJournalArticle(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// DeleteJournalArticle godoc
+// DeleteJournalDraft godoc
 // @ID delete_journal_draft
 // @Router /journal/{journal-id}/draft/{draft-id} [DELETE]
-// @Summary Delete Article
-// @Description Get Article
+// @Summary Delete Draft
+// @Description Get Draft
 // @Tags Journal
 // @Accept json
 // @Produce json
@@ -420,7 +420,7 @@ func (h *Handler) UpdateJournalArticle(c *gin.Context) {
 // @Success 204
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) DeleteJournalArticle(c *gin.Context) {
+func (h *Handler) DeleteJournalDraft(c *gin.Context) {
 	articleID := c.Param("draft-id")
 
 	if !util.IsValidUUID(articleID) {
@@ -442,11 +442,11 @@ func (h *Handler) DeleteJournalArticle(c *gin.Context) {
 	h.handleResponse(c, http.NoContent, "")
 }
 
-// GetAdminArticleList godoc
-// @ID get_admin_article_list
+// GetAdminDraftList godoc
+// @ID get_admin_draft_list
 // @Router /admin/draft [GET]
-// @Summary Get Article List
-// @Description  Get Article List
+// @Summary Get Draft List
+// @Description  Get Draft List
 // @Tags Admin
 // @Accept json
 // @Produce json
@@ -456,10 +456,10 @@ func (h *Handler) DeleteJournalArticle(c *gin.Context) {
 // @Param search query string false "search"
 // @Param status query string false "status"
 // @Param group-id query string false "group id"
-// @Success 200 {object} http.Response{data=submission_service.GetArticleListRes} "GetArticleListResponseBody"
+// @Success 200 {object} http.Response{data=submission_service.GetArticleListRes} "GetDraftListResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetAdminArticleList(c *gin.Context) {
+func (h *Handler) GetAdminDraftList(c *gin.Context) {
 
 	offset, err := h.getOffsetParam(c)
 	if err != nil {
@@ -493,19 +493,19 @@ func (h *Handler) GetAdminArticleList(c *gin.Context) {
 	h.handleResponse(c, http.OK, resp)
 }
 
-// GetAdminArticleByID godoc
-// @ID get_admin_article_by_id
+// GetAdminDraftByID godoc
+// @ID get_admin_draft_by_id
 // @Router /admin/draft/{draft-id} [GET]
-// @Summary Get Article By ID
-// @Description Get Article By ID
+// @Summary Get Draft By ID
+// @Description Get Draft By ID
 // @Tags Admin
 // @Accept json
 // @Produce json
 // @Param draft-id path string true "draft-id"
-// @Success 200 {object} http.Response{data=submission_service.Article} "ArticleBody"
+// @Success 200 {object} http.Response{data=submission_service.Article} "DraftBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
-func (h *Handler) GetAdminArticleByID(c *gin.Context) {
+func (h *Handler) GetAdminDraftByID(c *gin.Context) {
 	articleID := c.Param("draft-id")
 
 	if !util.IsValidUUID(articleID) {

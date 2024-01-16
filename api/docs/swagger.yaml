@@ -209,7 +209,7 @@ definitions:
       role:
         $ref: '#/definitions/editory_submission_api_models.Role'
     type: object
-  editory_submission_api_models.CreateUserArticleReq:
+  editory_submission_api_models.CreateUserDraftReq:
     properties:
       cover_letter:
         type: string
@@ -699,6 +699,29 @@ definitions:
       username:
         type: string
     type: object
+  editory_submission_genproto_content_service.Article:
+    properties:
+      author:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      edition:
+        type: integer
+      file:
+        type: string
+      id:
+        type: string
+      journal_id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
   editory_submission_genproto_content_service.City:
     properties:
       country_id:
@@ -721,6 +744,46 @@ definitions:
       title_ru:
         type: string
       title_uz:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.CreateArticleReq:
+    properties:
+      author:
+        type: string
+      content:
+        type: string
+      description:
+        type: string
+      edition:
+        type: integer
+      file:
+        type: string
+      journal_id:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.CreateArticleRes:
+    properties:
+      author:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      edition:
+        type: integer
+      file:
+        type: string
+      id:
+        type: string
+      journal_id:
+        type: string
+      title:
+        type: string
+      updated_at:
         type: string
     type: object
   editory_submission_genproto_content_service.CreateEditionReq:
@@ -766,6 +829,38 @@ definitions:
     type: object
   editory_submission_genproto_content_service.Edition:
     properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      edition:
+        type: integer
+      file:
+        type: string
+      id:
+        type: string
+      journal_id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.GetArticleListRes:
+    properties:
+      articles:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_content_service.Article'
+        type: array
+      count:
+        type: integer
+    type: object
+  editory_submission_genproto_content_service.GetArticleRes:
+    properties:
+      author:
+        type: string
+      content:
+        type: string
       created_at:
         type: string
       description:
@@ -936,6 +1031,48 @@ definitions:
       logo:
         type: string
       title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.UpdateArticleReq:
+    properties:
+      author:
+        type: string
+      content:
+        type: string
+      description:
+        type: string
+      edition:
+        type: integer
+      file:
+        type: string
+      id:
+        type: string
+      journal_id:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_content_service.UpdateArticleRes:
+    properties:
+      author:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      edition:
+        type: integer
+      file:
+        type: string
+      id:
+        type: string
+      journal_id:
+        type: string
+      title:
+        type: string
+      updated_at:
         type: string
     type: object
   editory_submission_genproto_content_service.UpdateSubjectReq:
@@ -2497,8 +2634,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get Article List
-      operationId: get_admin_article_list
+      description: Get Draft List
+      operationId: get_admin_draft_list
       parameters:
       - description: Journal Id
         in: path
@@ -2528,7 +2665,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: GetArticleListResponseBody
+          description: GetDraftListResponseBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -2554,15 +2691,15 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Get Article List
+      summary: Get Draft List
       tags:
       - Admin
   /admin/draft/{draft-id}:
     get:
       consumes:
       - application/json
-      description: Get Article By ID
-      operationId: get_admin_article_by_id
+      description: Get Draft By ID
+      operationId: get_admin_draft_by_id
       parameters:
       - description: draft-id
         in: path
@@ -2573,7 +2710,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: ArticleBody
+          description: DraftBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -2599,7 +2736,7 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Get Article By ID
+      summary: Get Draft By ID
       tags:
       - Admin
   /admin/editor:
@@ -3987,6 +4124,18 @@ paths:
         in: query
         name: search
         type: string
+      - description: date-from
+        in: query
+        name: date-from
+        type: string
+      - description: date-to
+        in: query
+        name: date-to
+        type: string
+      - description: sort
+        in: query
+        name: sort
+        type: string
       produces:
       - application/json
       responses:
@@ -3997,7 +4146,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleListRes'
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetArticleListRes'
               type: object
         "400":
           description: Invalid Argument
@@ -4042,7 +4191,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.Article'
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetArticleRes'
               type: object
         "400":
           description: Invalid Argument
@@ -4480,12 +4629,273 @@ paths:
       summary: Get Journal By ID
       tags:
       - Journal
-  /journal/{journal-id}/draft:
+  /journal/{journal-id}/article:
     get:
       consumes:
       - application/json
       description: Get Article List
       operationId: get_journal_article_list
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      - description: date-from
+        in: query
+        name: date-from
+        type: string
+      - description: date-to
+        in: query
+        name: date-to
+        type: string
+      - description: sort
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetArticleListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetArticleListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Article List
+      tags:
+      - Journal
+    post:
+      consumes:
+      - application/json
+      description: Create Article
+      operationId: create_journal_article
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: CreateArticleRequestBody
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.CreateArticleReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Article data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.CreateArticleRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Article
+      tags:
+      - Journal
+    put:
+      consumes:
+      - application/json
+      description: Update Article
+      operationId: update_journal_article
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: UpdateArticleRequestBody
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_genproto_content_service.UpdateArticleReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Article data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.UpdateArticleRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Update Article
+      tags:
+      - Journal
+  /journal/{journal-id}/article/{article-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Get Article
+      operationId: delete_journal_article
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: article-id
+        in: path
+        name: article-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Article
+      tags:
+      - Journal
+    get:
+      consumes:
+      - application/json
+      description: Get Article By ID
+      operationId: get_journal_article_by_id
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: article-id
+        in: path
+        name: article-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ArticleBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetArticleRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Article By ID
+      tags:
+      - Journal
+  /journal/{journal-id}/draft:
+    get:
+      consumes:
+      - application/json
+      description: Get Draft List
+      operationId: get_journal_draft_list
       parameters:
       - description: Journal Id
         in: path
@@ -4516,7 +4926,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: GetArticleListResponseBody
+          description: GetDraftListResponseBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -4542,23 +4952,23 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Get Article List
+      summary: Get Draft List
       tags:
       - Journal
     post:
       consumes:
       - application/json
-      description: Create Article
-      operationId: create_journal_article
+      description: Create Draft
+      operationId: create_journal_draft
       parameters:
       - description: Journal Id
         in: path
         name: journal-id
         required: true
         type: string
-      - description: CreateArticleRequestBody
+      - description: CreateDraftRequestBody
         in: body
-        name: article
+        name: draft
         required: true
         schema:
           $ref: '#/definitions/editory_submission_genproto_submission_service.CreateArticleReq'
@@ -4566,7 +4976,7 @@ paths:
       - application/json
       responses:
         "201":
-          description: Article data
+          description: Draft data
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -4592,23 +5002,23 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Create Article
+      summary: Create Draft
       tags:
       - Journal
     put:
       consumes:
       - application/json
-      description: Update Article
-      operationId: update_journal_article
+      description: Update Draft
+      operationId: update_journal_draft
       parameters:
       - description: Journal Id
         in: path
         name: journal-id
         required: true
         type: string
-      - description: UpdateArticleRequestBody
+      - description: UpdateDraftRequestBody
         in: body
-        name: article
+        name: draft
         required: true
         schema:
           $ref: '#/definitions/editory_submission_genproto_submission_service.UpdateArticleReq'
@@ -4616,7 +5026,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Article data
+          description: Draft data
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -4642,14 +5052,14 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Update Article
+      summary: Update Draft
       tags:
       - Journal
   /journal/{journal-id}/draft/{draft-id}:
     delete:
       consumes:
       - application/json
-      description: Get Article
+      description: Get Draft
       operationId: delete_journal_draft
       parameters:
       - description: Journal Id
@@ -4685,14 +5095,14 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Delete Article
+      summary: Delete Draft
       tags:
       - Journal
     get:
       consumes:
       - application/json
-      description: Get Article By ID
-      operationId: get_journal_article_by_id
+      description: Get Draft By ID
+      operationId: get_journal_draft_by_id
       parameters:
       - description: Journal Id
         in: path
@@ -4708,7 +5118,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: ArticleBody
+          description: DraftBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -4734,7 +5144,7 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Get Article By ID
+      summary: Get Draft By ID
       tags:
       - Journal
   /journal/{journal-id}/draft/{draft-id}/review:
@@ -6090,8 +6500,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get Article List
-      operationId: get_user_article_list
+      description: Get Draft List
+      operationId: get_user_draft_list
       parameters:
       - description: user Id
         in: path
@@ -6122,7 +6532,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: GetArticleListResponseBody
+          description: GetDraftListResponseBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -6148,31 +6558,31 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Get Article List
+      summary: Get Draft List
       tags:
       - User
     post:
       consumes:
       - application/json
-      description: Create Article
-      operationId: create_user_article
+      description: Create Draft
+      operationId: create_user_draft
       parameters:
       - description: user Id
         in: path
         name: user-id
         required: true
         type: string
-      - description: CreateArticleRequestBody
+      - description: CreateDraftRequestBody
         in: body
-        name: article
+        name: draft
         required: true
         schema:
-          $ref: '#/definitions/editory_submission_api_models.CreateUserArticleReq'
+          $ref: '#/definitions/editory_submission_api_models.CreateUserDraftReq'
       produces:
       - application/json
       responses:
         "201":
-          description: Article data
+          description: Draft data
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -6198,23 +6608,23 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Create Article
+      summary: Create Draft
       tags:
       - User
     put:
       consumes:
       - application/json
-      description: Update Article
-      operationId: update_user_article
+      description: Update Draft
+      operationId: update_user_draft
       parameters:
       - description: user Id
         in: path
         name: user-id
         required: true
         type: string
-      - description: UpdateArticleRequestBody
+      - description: UpdateDraftRequestBody
         in: body
-        name: article
+        name: draft
         required: true
         schema:
           $ref: '#/definitions/editory_submission_genproto_submission_service.UpdateArticleReq'
@@ -6222,7 +6632,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Article data
+          description: Draft data
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -6248,15 +6658,15 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Update Article
+      summary: Update Draft
       tags:
       - User
   /user/{user-id}/draft/{draft-id}:
     delete:
       consumes:
       - application/json
-      description: Get Article
-      operationId: delete_journal_article
+      description: Get Draft
+      operationId: delete_journal_draft
       parameters:
       - description: user Id
         in: path
@@ -6291,14 +6701,14 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Delete Article
+      summary: Delete Draft
       tags:
       - User
     get:
       consumes:
       - application/json
-      description: Get Article By ID
-      operationId: get_user_article_by_id
+      description: Get Draft By ID
+      operationId: get_user_draft_by_id
       parameters:
       - description: user Id
         in: path
@@ -6314,7 +6724,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: ArticleBody
+          description: DraftBody
           schema:
             allOf:
             - $ref: '#/definitions/http.Response'
@@ -6340,7 +6750,7 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Get Article By ID
+      summary: Get Draft By ID
       tags:
       - User
   /user/{user-id}/review:

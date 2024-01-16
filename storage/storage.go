@@ -30,6 +30,7 @@ type ContentRepoI interface {
 	CountryAndCity() CountryAndCityRepoI
 	University() UniversityRepoI
 	Subject() SubjectRepoI
+	Article() ContentArticleRepoI
 }
 
 type NotificationRepoI interface {
@@ -86,6 +87,14 @@ type EditionRepoI interface {
 	GetList(ctx context.Context, in *cs_pb.GetEditionListReq) (*cs_pb.GetEditionListRes, error)
 	Update(ctx context.Context, in *cs_pb.Edition) (*cs_pb.Edition, error)
 	Delete(ctx context.Context, in *cs_pb.PrimaryKey) (rowsAffected int64, err error)
+}
+
+type ContentArticleRepoI interface {
+	Create(ctx context.Context, in *cs_pb.CreateArticleReq) (*cs_pb.CreateArticleRes, error)
+	Get(ctx context.Context, in *cs_pb.GetArticleReq) (*cs_pb.GetArticleRes, error)
+	GetList(ctx context.Context, in *cs_pb.GetArticleListReq) (*cs_pb.GetArticleListRes, error)
+	Update(ctx context.Context, in *cs_pb.UpdateArticleReq) (*cs_pb.UpdateArticleRes, error)
+	Delete(ctx context.Context, in *cs_pb.DeleteArticleReq) (rowsAffected int64, err error)
 }
 
 type CountryAndCityRepoI interface {
