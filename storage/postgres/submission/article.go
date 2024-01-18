@@ -204,11 +204,12 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 	var arr []interface{}
 
 	validArticleStatus := map[string]bool{
-		config.ARTICLE_STATUS_NEW:       true,
-		config.ARTICLE_STATUS_PENDING:   true,
-		config.ARTICLE_STATUS_DENIED:    true,
-		config.ARTICLE_STATUS_CONFIRMED: true,
-		config.ARTICLE_STATUS_PUBLISHED: true,
+		config.ARTICLE_STATUS_NEW:                          true,
+		config.ARTICLE_STATUS_PENDING:                      true,
+		config.ARTICLE_STATUS_DENIED:                       true,
+		config.ARTICLE_STATUS_CONFIRMED:                    true,
+		config.ARTICLE_STATUS_PUBLISHED:                    true,
+		config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION: true,
 	}
 
 	query := `SELECT
