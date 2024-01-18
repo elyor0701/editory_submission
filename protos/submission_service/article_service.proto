@@ -15,11 +15,9 @@ service ArticleService {
   rpc DeleteArticle(DeleteArticleReq) returns (google.protobuf.Empty) {}
 
   // File
-  //  rpc CreateFile(CreateFileReq) returns (PrimaryKey) {}
-  //  rpc GetFile(PrimaryKey) returns (Article) {}
-  //  rpc GetFileList(GetList) returns (GetArticleListRes) {}
-  //  rpc UpdateFile(UpdateFileReq) returns (PrimaryKey) {}
-  //  rpc DeleteFile(PrimaryKey) returns (google.protobuf.Empty) {}
+  rpc AddFiles(AddFilesReq) returns (AddFilesRes) {}
+  rpc GetFiles(GetFilesReq) returns (GetFilesRes) {}
+  rpc DeleteFiles(DeleteFilesReq) returns (google.protobuf.Empty) {}
 }
 
 message CreateArticleReq {
@@ -29,12 +27,12 @@ message CreateArticleReq {
   string author_id = 4;
   string description = 5;
   string status = 6;
-  string group_id = 7;
-  string manuscript = 8;
-  string cover_letter = 9;
-  string supplemental = 10;
-  string step = 11;
-  string editor_status = 12;
+  string step = 7;
+  string group_id = 8;
+  bool conflict = 9;
+  string availability = 10;
+  string funding = 11;
+  string draft_step = 12;
 }
 
 message CreateArticleRes {
@@ -45,20 +43,18 @@ message CreateArticleRes {
   string author_id = 5;
   string description = 6;
   string status = 7;
-  string editor_id = 8;
-  string editor_comment = 9;
-  string step = 10;
-  string editor_status = 11;
-  string reviewer_status = 12;
-  string group_id = 13;
-  string manuscript = 14;
-  string cover_letter = 15;
-  string supplemental = 16;
-  string editor_manuscript_comment = 17;
-  string editor_cover_letter_comment = 18;
-  string editor_supplemental_comment = 19;
-  string created_at = 20;
-  string updated_at = 21;
+  string step = 8;
+  string editor_status = 9;
+  string reviewer_status = 10;
+  string group_id = 11;
+  bool conflict = 12;
+  string availability = 113;
+  string funding = 14;
+  string draft_step = 15;
+  string created_at = 16;
+  string updated_at = 17;
+  Journal journal_id_data = 18;
+  repeated File files = 19;
 }
 
 message GetArticleReq {
@@ -73,20 +69,18 @@ message GetArticleRes {
   string author_id = 5;
   string description = 6;
   string status = 7;
-  string editor_id = 8;
-  string editor_comment = 9;
-  string step = 10;
-  string editor_status = 11;
-  string reviewer_status = 12;
-  string group_id = 13;
-  string manuscript = 14;
-  string cover_letter = 15;
-  string supplemental = 16;
-  string editor_manuscript_comment = 17;
-  string editor_cover_letter_comment = 18;
-  string editor_supplemental_comment = 19;
-  string created_at = 20;
-  string updated_at = 21;
+  string step = 8;
+  string editor_status = 9;
+  string reviewer_status = 10;
+  string group_id = 11;
+  bool conflict = 12;
+  string availability = 113;
+  string funding = 14;
+  string draft_step = 15;
+  string created_at = 16;
+  string updated_at = 17;
+  Journal journal_id_data = 18;
+  repeated File files = 19;
 }
 
 message GetArticleListReq {
@@ -112,20 +106,14 @@ message UpdateArticleReq {
   string author_id = 5;
   string description = 6;
   string status = 7;
-  string editor_id = 8;
-  string editor_comment = 9;
-  string step = 10;
-  string editor_status = 11;
-  string reviewer_status = 12;
-  string group_id = 13;
-  string manuscript = 14;
-  string cover_letter = 15;
-  string supplemental = 16;
-  string editor_manuscript_comment = 17;
-  string editor_cover_letter_comment = 18;
-  string editor_supplemental_comment = 19;
-  string created_at = 20;
-  string updated_at = 21;
+  string step = 8;
+  string editor_status = 9;
+  string reviewer_status = 10;
+  string group_id = 11;
+  bool conflict = 12;
+  string availability = 113;
+  string funding = 14;
+  string draft_step = 15;
 }
 
 message UpdateArticleRes {
@@ -136,37 +124,47 @@ message UpdateArticleRes {
   string author_id = 5;
   string description = 6;
   string status = 7;
-  string editor_id = 8;
-  string editor_comment = 9;
-  string step = 10;
-  string editor_status = 11;
-  string reviewer_status = 12;
-  string group_id = 13;
-  string manuscript = 14;
-  string cover_letter = 15;
-  string supplemental = 16;
-  string editor_manuscript_comment = 17;
-  string editor_cover_letter_comment = 18;
-  string editor_supplemental_comment = 19;
-  string created_at = 20;
-  string updated_at = 21;
+  string step = 8;
+  string editor_status = 9;
+  string reviewer_status = 10;
+  string group_id = 11;
+  bool conflict = 12;
+  string availability = 113;
+  string funding = 14;
+  string draft_step = 15;
+  string created_at = 16;
+  string updated_at = 17;
+  Journal journal_id_data = 18;
+  repeated File files = 19;
 }
 
 message DeleteArticleReq {
   string id = 1;
 }
 
-//message CreateFileReq {
-//  string url = 1;
-//  string type = 2;
-//  string draft_id = 3;
-//  string article_id = 4;
-//}
-//
-//message UpdateFileReq {
-//  string id = 1;
-//  string url = 2;
-//  string type = 3;
-//  string draft_id = 4;
-//  string article_id = 5;
-//}
+message AddFilesReq {
+  string url = 1;
+  string type = 2;
+  string article_id = 3;
+}
+
+message AddFilesRes {
+  string id = 1;
+  string url = 2;
+  string type = 3;
+  string article_id = 4;
+}
+
+message GetFilesReq {
+  string type = 1;
+  string article_id = 5;
+}
+
+message GetFilesRes {
+  repeated File files = 1;
+  int32 count = 2;
+}
+
+message DeleteFilesReq {
+  string ids = 1;
+}

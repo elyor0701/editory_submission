@@ -12,16 +12,16 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-type reviewerService struct {
+type checkerService struct {
 	cfg      config.Config
 	log      logger.LoggerI
 	strg     storage.StorageI
 	services client.ServiceManagerI
-	pb.UnimplementedReviewerServiceServer
+	pb.UnimplementedCheckerServiceServer
 }
 
-func NewReviewerService(cfg config.Config, log logger.LoggerI, strg storage.StorageI, svcs client.ServiceManagerI) *reviewerService {
-	return &reviewerService{
+func NewCheckerService(cfg config.Config, log logger.LoggerI, strg storage.StorageI, svcs client.ServiceManagerI) *checkerService {
+	return &checkerService{
 		cfg:      cfg,
 		log:      log,
 		strg:     strg,
@@ -29,48 +29,48 @@ func NewReviewerService(cfg config.Config, log logger.LoggerI, strg storage.Stor
 	}
 }
 
-func (s *reviewerService) CreateArticleReviewer(ctx context.Context, req *pb.CreateArticleReviewerReq) (res *pb.CreateArticleReviewerRes, err error) {
-	s.log.Info("---CreateReviewer--->", logger.Any("req", req))
+func (s *checkerService) CreateArticleChecker(ctx context.Context, req *pb.CreateArticleCheckerReq) (res *pb.CreateArticleCheckerRes, err error) {
+	s.log.Info("---CreateChecker--->", logger.Any("req", req))
 
 	res, err = s.strg.Submission().Reviewer().Create(ctx, req)
 	if err != nil {
-		s.log.Error("!!!CreateReviewer--->", logger.Error(err))
+		s.log.Error("!!!CreateChecker--->", logger.Error(err))
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	return res, nil
 }
 
-func (s *reviewerService) GetArticleReviewer(ctx context.Context, req *pb.GetArticleReviewerReq) (res *pb.GetArticleReviewerRes, err error) {
-	s.log.Info("---GetReviewer--->", logger.Any("req", req))
+func (s *checkerService) GetArticleChecker(ctx context.Context, req *pb.GetArticleCheckerReq) (res *pb.GetArticleCheckerRes, err error) {
+	s.log.Info("---GetChecker--->", logger.Any("req", req))
 
 	res, err = s.strg.Submission().Reviewer().Get(ctx, req)
 	if err != nil {
-		s.log.Error("!!!GetReviewer--->", logger.Error(err))
+		s.log.Error("!!!GetChecker--->", logger.Error(err))
 		return nil, status.Error(codes.NotFound, err.Error())
 	}
 
 	return res, nil
 }
 
-func (s *reviewerService) GetArticleReviewerList(ctx context.Context, req *pb.GetArticleReviewerListReq) (res *pb.GetArticleReviewerListRes, err error) {
-	s.log.Info("---GetReviewerList--->", logger.Any("req", req))
+func (s *checkerService) GetArticleCheckerList(ctx context.Context, req *pb.GetArticleCheckerListReq) (res *pb.GetArticleCheckerListRes, err error) {
+	s.log.Info("---GetCheckerList--->", logger.Any("req", req))
 
 	res, err = s.strg.Submission().Reviewer().GetList(ctx, req)
 	if err != nil {
-		s.log.Error("!!!GetReviewerList--->", logger.Error(err))
+		s.log.Error("!!!GetCheckerList--->", logger.Error(err))
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	return res, nil
 }
 
-func (s *reviewerService) UpdateArticleReviewer(ctx context.Context, req *pb.UpdateArticleReviewerReq) (res *pb.UpdateArticleReviewerRes, err error) {
-	s.log.Info("---UpdateReviewer--->", logger.Any("req", req))
+func (s *checkerService) UpdateArticleChecker(ctx context.Context, req *pb.UpdateArticleCheckerReq) (res *pb.UpdateArticleCheckerRes, err error) {
+	s.log.Info("---UpdateChecker--->", logger.Any("req", req))
 
 	rowsAffected, err := s.strg.Submission().Reviewer().Update(ctx, req)
 	if err != nil {
-		s.log.Error("!!!UpdateReviewer--->", logger.Error(err))
+		s.log.Error("!!!UpdateChecker--->", logger.Error(err))
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
@@ -78,17 +78,17 @@ func (s *reviewerService) UpdateArticleReviewer(ctx context.Context, req *pb.Upd
 		return nil, status.Error(codes.InvalidArgument, "no rows were affected")
 	}
 
-	return &pb.UpdateArticleReviewerRes{}, nil
+	return &pb.UpdateArticleCheckerRes{}, nil
 }
 
-func (s *reviewerService) DeleteArticleReviewer(ctx context.Context, req *pb.DeleteArticleReviewerReq) (res *emptypb.Empty, err error) {
-	s.log.Info("---DeleteReviewer--->", logger.Any("req", req))
+func (s *checkerService) DeleteArticleChecker(ctx context.Context, req *pb.DeleteArticleCheckerReq) (res *emptypb.Empty, err error) {
+	s.log.Info("---DeleteChecker--->", logger.Any("req", req))
 
 	res = &emptypb.Empty{}
 
 	rowsAffected, err := s.strg.Submission().Reviewer().Delete(ctx, req)
 	if err != nil {
-		s.log.Error("!!!DeleteReviewer--->", logger.Error(err))
+		s.log.Error("!!!DeleteChecker--->", logger.Error(err))
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 

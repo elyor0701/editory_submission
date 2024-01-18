@@ -48,6 +48,7 @@ const (
 
 const (
 	// article status
+	ARTICLE_STATUS_DRAFT     = `DRAFT`
 	ARTICLE_STATUS_NEW       = `NEW`
 	ARTICLE_STATUS_PENDING   = `PENDING`
 	ARTICLE_STATUS_DENIED    = `DENIED`
@@ -57,6 +58,7 @@ const (
 
 const (
 	// article status
+	ARTICLE_REVIEWER_STATUS_NEW                 = `NEW`
 	ARTICLE_REVIEWER_STATUS_PENDING             = `PENDING`
 	ARTICLE_REVIEWER_STATUS_APPROVED            = `APPROVED`
 	ARTICLE_REVIEWER_STATUS_REJECTED            = `REJECTED`

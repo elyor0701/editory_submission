@@ -20,237 +20,237 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ReviewerService_CreateArticleReviewer_FullMethodName  = "/submission_service.ReviewerService/CreateArticleReviewer"
-	ReviewerService_GetArticleReviewer_FullMethodName     = "/submission_service.ReviewerService/GetArticleReviewer"
-	ReviewerService_GetArticleReviewerList_FullMethodName = "/submission_service.ReviewerService/GetArticleReviewerList"
-	ReviewerService_UpdateArticleReviewer_FullMethodName  = "/submission_service.ReviewerService/UpdateArticleReviewer"
-	ReviewerService_DeleteArticleReviewer_FullMethodName  = "/submission_service.ReviewerService/DeleteArticleReviewer"
+	CheckerService_CreateArticleChecker_FullMethodName  = "/submission_service.CheckerService/CreateArticleChecker"
+	CheckerService_GetArticleChecker_FullMethodName     = "/submission_service.CheckerService/GetArticleChecker"
+	CheckerService_GetArticleCheckerList_FullMethodName = "/submission_service.CheckerService/GetArticleCheckerList"
+	CheckerService_UpdateArticleChecker_FullMethodName  = "/submission_service.CheckerService/UpdateArticleChecker"
+	CheckerService_DeleteArticleChecker_FullMethodName  = "/submission_service.CheckerService/DeleteArticleChecker"
 )
 
-// ReviewerServiceClient is the client API for ReviewerService service.
+// CheckerServiceClient is the client API for CheckerService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ReviewerServiceClient interface {
-	CreateArticleReviewer(ctx context.Context, in *CreateArticleReviewerReq, opts ...grpc.CallOption) (*CreateArticleReviewerRes, error)
-	GetArticleReviewer(ctx context.Context, in *GetArticleReviewerReq, opts ...grpc.CallOption) (*GetArticleReviewerRes, error)
-	GetArticleReviewerList(ctx context.Context, in *GetArticleReviewerListReq, opts ...grpc.CallOption) (*GetArticleReviewerListRes, error)
-	UpdateArticleReviewer(ctx context.Context, in *UpdateArticleReviewerReq, opts ...grpc.CallOption) (*UpdateArticleReviewerRes, error)
-	DeleteArticleReviewer(ctx context.Context, in *DeleteArticleReviewerReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+type CheckerServiceClient interface {
+	CreateArticleChecker(ctx context.Context, in *CreateArticleCheckerReq, opts ...grpc.CallOption) (*CreateArticleCheckerRes, error)
+	GetArticleChecker(ctx context.Context, in *GetArticleCheckerReq, opts ...grpc.CallOption) (*GetArticleCheckerRes, error)
+	GetArticleCheckerList(ctx context.Context, in *GetArticleCheckerListReq, opts ...grpc.CallOption) (*GetArticleCheckerListRes, error)
+	UpdateArticleChecker(ctx context.Context, in *UpdateArticleCheckerReq, opts ...grpc.CallOption) (*UpdateArticleCheckerRes, error)
+	DeleteArticleChecker(ctx context.Context, in *DeleteArticleCheckerReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-type reviewerServiceClient struct {
+type checkerServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewReviewerServiceClient(cc grpc.ClientConnInterface) ReviewerServiceClient {
-	return &reviewerServiceClient{cc}
+func NewCheckerServiceClient(cc grpc.ClientConnInterface) CheckerServiceClient {
+	return &checkerServiceClient{cc}
 }
 
-func (c *reviewerServiceClient) CreateArticleReviewer(ctx context.Context, in *CreateArticleReviewerReq, opts ...grpc.CallOption) (*CreateArticleReviewerRes, error) {
-	out := new(CreateArticleReviewerRes)
-	err := c.cc.Invoke(ctx, ReviewerService_CreateArticleReviewer_FullMethodName, in, out, opts...)
+func (c *checkerServiceClient) CreateArticleChecker(ctx context.Context, in *CreateArticleCheckerReq, opts ...grpc.CallOption) (*CreateArticleCheckerRes, error) {
+	out := new(CreateArticleCheckerRes)
+	err := c.cc.Invoke(ctx, CheckerService_CreateArticleChecker_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *reviewerServiceClient) GetArticleReviewer(ctx context.Context, in *GetArticleReviewerReq, opts ...grpc.CallOption) (*GetArticleReviewerRes, error) {
-	out := new(GetArticleReviewerRes)
-	err := c.cc.Invoke(ctx, ReviewerService_GetArticleReviewer_FullMethodName, in, out, opts...)
+func (c *checkerServiceClient) GetArticleChecker(ctx context.Context, in *GetArticleCheckerReq, opts ...grpc.CallOption) (*GetArticleCheckerRes, error) {
+	out := new(GetArticleCheckerRes)
+	err := c.cc.Invoke(ctx, CheckerService_GetArticleChecker_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *reviewerServiceClient) GetArticleReviewerList(ctx context.Context, in *GetArticleReviewerListReq, opts ...grpc.CallOption) (*GetArticleReviewerListRes, error) {
-	out := new(GetArticleReviewerListRes)
-	err := c.cc.Invoke(ctx, ReviewerService_GetArticleReviewerList_FullMethodName, in, out, opts...)
+func (c *checkerServiceClient) GetArticleCheckerList(ctx context.Context, in *GetArticleCheckerListReq, opts ...grpc.CallOption) (*GetArticleCheckerListRes, error) {
+	out := new(GetArticleCheckerListRes)
+	err := c.cc.Invoke(ctx, CheckerService_GetArticleCheckerList_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *reviewerServiceClient) UpdateArticleReviewer(ctx context.Context, in *UpdateArticleReviewerReq, opts ...grpc.CallOption) (*UpdateArticleReviewerRes, error) {
-	out := new(UpdateArticleReviewerRes)
-	err := c.cc.Invoke(ctx, ReviewerService_UpdateArticleReviewer_FullMethodName, in, out, opts...)
+func (c *checkerServiceClient) UpdateArticleChecker(ctx context.Context, in *UpdateArticleCheckerReq, opts ...grpc.CallOption) (*UpdateArticleCheckerRes, error) {
+	out := new(UpdateArticleCheckerRes)
+	err := c.cc.Invoke(ctx, CheckerService_UpdateArticleChecker_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *reviewerServiceClient) DeleteArticleReviewer(ctx context.Context, in *DeleteArticleReviewerReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *checkerServiceClient) DeleteArticleChecker(ctx context.Context, in *DeleteArticleCheckerReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, ReviewerService_DeleteArticleReviewer_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, CheckerService_DeleteArticleChecker_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ReviewerServiceServer is the server API for ReviewerService service.
-// All implementations must embed UnimplementedReviewerServiceServer
+// CheckerServiceServer is the server API for CheckerService service.
+// All implementations must embed UnimplementedCheckerServiceServer
 // for forward compatibility
-type ReviewerServiceServer interface {
-	CreateArticleReviewer(context.Context, *CreateArticleReviewerReq) (*CreateArticleReviewerRes, error)
-	GetArticleReviewer(context.Context, *GetArticleReviewerReq) (*GetArticleReviewerRes, error)
-	GetArticleReviewerList(context.Context, *GetArticleReviewerListReq) (*GetArticleReviewerListRes, error)
-	UpdateArticleReviewer(context.Context, *UpdateArticleReviewerReq) (*UpdateArticleReviewerRes, error)
-	DeleteArticleReviewer(context.Context, *DeleteArticleReviewerReq) (*emptypb.Empty, error)
-	mustEmbedUnimplementedReviewerServiceServer()
+type CheckerServiceServer interface {
+	CreateArticleChecker(context.Context, *CreateArticleCheckerReq) (*CreateArticleCheckerRes, error)
+	GetArticleChecker(context.Context, *GetArticleCheckerReq) (*GetArticleCheckerRes, error)
+	GetArticleCheckerList(context.Context, *GetArticleCheckerListReq) (*GetArticleCheckerListRes, error)
+	UpdateArticleChecker(context.Context, *UpdateArticleCheckerReq) (*UpdateArticleCheckerRes, error)
+	DeleteArticleChecker(context.Context, *DeleteArticleCheckerReq) (*emptypb.Empty, error)
+	mustEmbedUnimplementedCheckerServiceServer()
 }
 
-// UnimplementedReviewerServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedReviewerServiceServer struct {
+// UnimplementedCheckerServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedCheckerServiceServer struct {
 }
 
-func (UnimplementedReviewerServiceServer) CreateArticleReviewer(context.Context, *CreateArticleReviewerReq) (*CreateArticleReviewerRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateArticleReviewer not implemented")
+func (UnimplementedCheckerServiceServer) CreateArticleChecker(context.Context, *CreateArticleCheckerReq) (*CreateArticleCheckerRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateArticleChecker not implemented")
 }
-func (UnimplementedReviewerServiceServer) GetArticleReviewer(context.Context, *GetArticleReviewerReq) (*GetArticleReviewerRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetArticleReviewer not implemented")
+func (UnimplementedCheckerServiceServer) GetArticleChecker(context.Context, *GetArticleCheckerReq) (*GetArticleCheckerRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticleChecker not implemented")
 }
-func (UnimplementedReviewerServiceServer) GetArticleReviewerList(context.Context, *GetArticleReviewerListReq) (*GetArticleReviewerListRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetArticleReviewerList not implemented")
+func (UnimplementedCheckerServiceServer) GetArticleCheckerList(context.Context, *GetArticleCheckerListReq) (*GetArticleCheckerListRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetArticleCheckerList not implemented")
 }
-func (UnimplementedReviewerServiceServer) UpdateArticleReviewer(context.Context, *UpdateArticleReviewerReq) (*UpdateArticleReviewerRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateArticleReviewer not implemented")
+func (UnimplementedCheckerServiceServer) UpdateArticleChecker(context.Context, *UpdateArticleCheckerReq) (*UpdateArticleCheckerRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateArticleChecker not implemented")
 }
-func (UnimplementedReviewerServiceServer) DeleteArticleReviewer(context.Context, *DeleteArticleReviewerReq) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticleReviewer not implemented")
+func (UnimplementedCheckerServiceServer) DeleteArticleChecker(context.Context, *DeleteArticleCheckerReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticleChecker not implemented")
 }
-func (UnimplementedReviewerServiceServer) mustEmbedUnimplementedReviewerServiceServer() {}
+func (UnimplementedCheckerServiceServer) mustEmbedUnimplementedCheckerServiceServer() {}
 
-// UnsafeReviewerServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ReviewerServiceServer will
+// UnsafeCheckerServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CheckerServiceServer will
 // result in compilation errors.
-type UnsafeReviewerServiceServer interface {
-	mustEmbedUnimplementedReviewerServiceServer()
+type UnsafeCheckerServiceServer interface {
+	mustEmbedUnimplementedCheckerServiceServer()
 }
 
-func RegisterReviewerServiceServer(s grpc.ServiceRegistrar, srv ReviewerServiceServer) {
-	s.RegisterService(&ReviewerService_ServiceDesc, srv)
+func RegisterCheckerServiceServer(s grpc.ServiceRegistrar, srv CheckerServiceServer) {
+	s.RegisterService(&CheckerService_ServiceDesc, srv)
 }
 
-func _ReviewerService_CreateArticleReviewer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateArticleReviewerReq)
+func _CheckerService_CreateArticleChecker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateArticleCheckerReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReviewerServiceServer).CreateArticleReviewer(ctx, in)
+		return srv.(CheckerServiceServer).CreateArticleChecker(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ReviewerService_CreateArticleReviewer_FullMethodName,
+		FullMethod: CheckerService_CreateArticleChecker_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReviewerServiceServer).CreateArticleReviewer(ctx, req.(*CreateArticleReviewerReq))
+		return srv.(CheckerServiceServer).CreateArticleChecker(ctx, req.(*CreateArticleCheckerReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ReviewerService_GetArticleReviewer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetArticleReviewerReq)
+func _CheckerService_GetArticleChecker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticleCheckerReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReviewerServiceServer).GetArticleReviewer(ctx, in)
+		return srv.(CheckerServiceServer).GetArticleChecker(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ReviewerService_GetArticleReviewer_FullMethodName,
+		FullMethod: CheckerService_GetArticleChecker_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReviewerServiceServer).GetArticleReviewer(ctx, req.(*GetArticleReviewerReq))
+		return srv.(CheckerServiceServer).GetArticleChecker(ctx, req.(*GetArticleCheckerReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ReviewerService_GetArticleReviewerList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetArticleReviewerListReq)
+func _CheckerService_GetArticleCheckerList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetArticleCheckerListReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReviewerServiceServer).GetArticleReviewerList(ctx, in)
+		return srv.(CheckerServiceServer).GetArticleCheckerList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ReviewerService_GetArticleReviewerList_FullMethodName,
+		FullMethod: CheckerService_GetArticleCheckerList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReviewerServiceServer).GetArticleReviewerList(ctx, req.(*GetArticleReviewerListReq))
+		return srv.(CheckerServiceServer).GetArticleCheckerList(ctx, req.(*GetArticleCheckerListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ReviewerService_UpdateArticleReviewer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateArticleReviewerReq)
+func _CheckerService_UpdateArticleChecker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateArticleCheckerReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReviewerServiceServer).UpdateArticleReviewer(ctx, in)
+		return srv.(CheckerServiceServer).UpdateArticleChecker(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ReviewerService_UpdateArticleReviewer_FullMethodName,
+		FullMethod: CheckerService_UpdateArticleChecker_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReviewerServiceServer).UpdateArticleReviewer(ctx, req.(*UpdateArticleReviewerReq))
+		return srv.(CheckerServiceServer).UpdateArticleChecker(ctx, req.(*UpdateArticleCheckerReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ReviewerService_DeleteArticleReviewer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteArticleReviewerReq)
+func _CheckerService_DeleteArticleChecker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteArticleCheckerReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReviewerServiceServer).DeleteArticleReviewer(ctx, in)
+		return srv.(CheckerServiceServer).DeleteArticleChecker(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ReviewerService_DeleteArticleReviewer_FullMethodName,
+		FullMethod: CheckerService_DeleteArticleChecker_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReviewerServiceServer).DeleteArticleReviewer(ctx, req.(*DeleteArticleReviewerReq))
+		return srv.(CheckerServiceServer).DeleteArticleChecker(ctx, req.(*DeleteArticleCheckerReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ReviewerService_ServiceDesc is the grpc.ServiceDesc for ReviewerService service.
+// CheckerService_ServiceDesc is the grpc.ServiceDesc for CheckerService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ReviewerService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "submission_service.ReviewerService",
-	HandlerType: (*ReviewerServiceServer)(nil),
+var CheckerService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "submission_service.CheckerService",
+	HandlerType: (*CheckerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateArticleReviewer",
-			Handler:    _ReviewerService_CreateArticleReviewer_Handler,
+			MethodName: "CreateArticleChecker",
+			Handler:    _CheckerService_CreateArticleChecker_Handler,
 		},
 		{
-			MethodName: "GetArticleReviewer",
-			Handler:    _ReviewerService_GetArticleReviewer_Handler,
+			MethodName: "GetArticleChecker",
+			Handler:    _CheckerService_GetArticleChecker_Handler,
 		},
 		{
-			MethodName: "GetArticleReviewerList",
-			Handler:    _ReviewerService_GetArticleReviewerList_Handler,
+			MethodName: "GetArticleCheckerList",
+			Handler:    _CheckerService_GetArticleCheckerList_Handler,
 		},
 		{
-			MethodName: "UpdateArticleReviewer",
-			Handler:    _ReviewerService_UpdateArticleReviewer_Handler,
+			MethodName: "UpdateArticleChecker",
+			Handler:    _CheckerService_UpdateArticleChecker_Handler,
 		},
 		{
-			MethodName: "DeleteArticleReviewer",
-			Handler:    _ReviewerService_DeleteArticleReviewer_Handler,
+			MethodName: "DeleteArticleChecker",
+			Handler:    _CheckerService_DeleteArticleChecker_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

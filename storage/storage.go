@@ -40,6 +40,7 @@ type NotificationRepoI interface {
 
 type SubmissionRepoI interface {
 	Article() ArticleRepoI
+	File() FileRepoI
 	Reviewer() ReviewerRepoI
 }
 
@@ -158,10 +159,18 @@ type ArticleRepoI interface {
 	Delete(ctx context.Context, in *submission_service.DeleteArticleReq) (rowsAffected int64, err error)
 }
 
+type FileRepoI interface {
+	Create(ctx context.Context, in *submission_service.AddFilesReq) (*submission_service.AddFilesRes, error)
+	//Get(ctx context.Context, in *cs_pb.GetSubjectReq) (*cs_pb.GetSubjectRes, error)
+	GetList(ctx context.Context, in *submission_service.GetFilesReq) (*submission_service.GetFilesRes, error)
+	//Update(ctx context.Context, in *cs_pb.UpdateSubjectReq) (*cs_pb.UpdateSubjectRes, error)
+	Delete(ctx context.Context, in *submission_service.DeleteFilesReq) (rowsAffected int64, err error)
+}
+
 type ReviewerRepoI interface {
-	Create(ctx context.Context, in *submission_service.CreateArticleReviewerReq) (*submission_service.CreateArticleReviewerRes, error)
-	Get(ctx context.Context, in *submission_service.GetArticleReviewerReq) (*submission_service.GetArticleReviewerRes, error)
-	GetList(ctx context.Context, in *submission_service.GetArticleReviewerListReq) (*submission_service.GetArticleReviewerListRes, error)
-	Update(ctx context.Context, in *submission_service.UpdateArticleReviewerReq) (rowsAffected int64, err error)
-	Delete(ctx context.Context, in *submission_service.DeleteArticleReviewerReq) (rowsAffected int64, err error)
+	Create(ctx context.Context, in *submission_service.CreateArticleCheckerReq) (*submission_service.CreateArticleCheckerRes, error)
+	Get(ctx context.Context, in *submission_service.GetArticleCheckerReq) (*submission_service.GetArticleCheckerRes, error)
+	GetList(ctx context.Context, in *submission_service.GetArticleCheckerListReq) (*submission_service.GetArticleCheckerListRes, error)
+	Update(ctx context.Context, in *submission_service.UpdateArticleCheckerReq) (rowsAffected int64, err error)
+	Delete(ctx context.Context, in *submission_service.DeleteArticleCheckerReq) (rowsAffected int64, err error)
 }

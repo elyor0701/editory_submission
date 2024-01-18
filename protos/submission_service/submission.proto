@@ -3,14 +3,16 @@ syntax="proto3";
 package submission_service;
 option go_package="genproto/submission_service";
 
-message ArticleReviewer {
+message ArticleChecker {
   string id = 1;
-  string reviewer_id = 2;
+  string checker_id = 2;
   string article_id = 3;
   string status = 4;
   string comment = 5;
-  string created_at = 6;
-  string updated_at = 7;
+  string type = 6;
+  string created_at = 7;
+  string updated_at = 8;
+  repeated FileComment comments = 9;
 }
 
 message Article {
@@ -21,26 +23,38 @@ message Article {
   string author_id = 5;
   string description = 6;
   string status = 7;
-  string editor_id = 8;
-  string editor_comment = 9;
-  string step = 10;
-  string editor_status = 11;
-  string reviewer_status = 12;
-  string group_id = 13;
-  string manuscript = 14;
-  string cover_letter = 15;
-  string supplemental = 16;
-  string editor_manuscript_comment = 17;
-  string editor_cover_letter_comment = 18;
-  string editor_supplemental_comment = 19;
-  string created_at = 20;
-  string updated_at = 21;
+  string step = 8;
+  string editor_status = 9;
+  string reviewer_status = 10;
+  string group_id = 11;
+  bool conflict = 12;
+  string availability = 113;
+  string funding = 14;
+  string draft_step = 15;
+  string created_at = 16;
+  string updated_at = 17;
+  Journal journal_id_data = 18;
+  repeated File files = 19;
+}
+
+message Journal {
+  string id = 1;
+  string title = 2;
 }
 
 message File {
   string id = 1;
   string url = 2;
   string type = 3;
-  string draft_id = 4;
-  string article_id = 5;
+  string article_id = 4;
+}
+
+message FileComment {
+  string id = 1;
+  string type = 2;
+  string file_id = 4;
+  string draft_checker_id = 5;
+  string comment = 6;
+  string created_at = 7;
+  string updated_at = 8;
 }

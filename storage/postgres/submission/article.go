@@ -7,6 +7,7 @@ import (
 	"editory_submission/pkg/helper"
 	"editory_submission/pkg/util"
 	"editory_submission/storage"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -33,11 +34,11 @@ func (s *ArticleRepo) Create(ctx context.Context, req *pb.CreateArticleReq) (res
     	description,
         status,
         step,
-        editor_status,
         group_id,
-        manuscript,
-        cover_letter,
-        supplemental
+        conflict,
+        availability,
+        funding,
+        draft_step
 	) VALUES (
 		$1,
 		$2,
@@ -61,17 +62,13 @@ func (s *ArticleRepo) Create(ctx context.Context, req *pb.CreateArticleReq) (res
 		description,
 		status,
 	    step,
-        editor_status,
         group_id,
-        manuscript,
-        cover_letter,
-        supplemental,
-		COALESCE(editor_id::VARCHAR, '') as editor_id,
-		COALESCE(editor_comment, '') as editor_comment,
-		COALESCE(editor_cover_letter_comment, '') as editor_cover_letter_comment,
-		COALESCE(editor_manuscript_comment, '') as editor_manuscript_comment,
-		COALESCE(editor_supplemental_comment, '') as editor_supplemental_comment,
+        conflict,
+        COALESCE(availability, '') as availability,
+        COALESCE(funding, '') as funding,
+		COALESCE(editor_status::VARCHAR, '') as editor_status,
 		COALESCE(reviewer_status::VARCHAR, '') as reviewer_status,
+		COALESCE(draft_step, '') as draft_step,
 		TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
 		TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at`
 
@@ -98,11 +95,11 @@ func (s *ArticleRepo) Create(ctx context.Context, req *pb.CreateArticleReq) (res
 		req.GetDescription(),
 		req.GetStatus(),
 		req.GetStep(),
-		req.GetEditorStatus(),
 		req.GetGroupId(),
-		req.GetManuscript(),
-		req.GetCoverLetter(),
-		req.GetSupplemental(),
+		req.GetConflict(),
+		req.GetAvailability(),
+		req.GetFunding(),
+		req.GetDraftStep(),
 	).Scan(
 		&res.Id,
 		&res.JournalId,
@@ -112,17 +109,13 @@ func (s *ArticleRepo) Create(ctx context.Context, req *pb.CreateArticleReq) (res
 		&res.Description,
 		&res.Status,
 		&res.Step,
-		&res.EditorStatus,
 		&res.GroupId,
-		&res.Manuscript,
-		&res.CoverLetter,
-		&res.Supplemental,
-		&res.EditorId,
-		&res.EditorComment,
-		&res.EditorCoverLetterComment,
-		&res.EditorManuscriptComment,
-		&res.EditorSupplementalComment,
+		&res.Conflict,
+		&res.Availability,
+		&res.Funding,
+		&res.EditorStatus,
 		&res.ReviewerStatus,
+		&res.DraftStep,
 		&res.CreatedAt,
 		&res.UpdatedAt,
 	)
@@ -136,33 +129,33 @@ func (s *ArticleRepo) Create(ctx context.Context, req *pb.CreateArticleReq) (res
 
 func (s *ArticleRepo) Get(ctx context.Context, req *pb.GetArticleReq) (res *pb.GetArticleRes, err error) {
 	res = &pb.GetArticleRes{}
+	journal := &pb.Journal{}
 
 	query := `SELECT
-		id,
-		journal_id,
-		type,
-		title,
-		author_id,
-		description,
-		status,
-	    step,
-        editor_status,
-        group_id,
-        manuscript,
-        cover_letter,
-        supplemental,
-		COALESCE(editor_id::VARCHAR, '') as editor_id,
-		COALESCE(editor_comment, '') as editor_comment,
-		COALESCE(editor_cover_letter_comment, '') as editor_cover_letter_comment,
-		COALESCE(editor_manuscript_comment, '') as editor_manuscript_comment,
-		COALESCE(editor_supplemental_comment, '') as editor_supplemental_comment,
+		d.id,
+		d.journal_id,
+		d.type,
+		d.title,
+		d.author_id,
+		d.description,
+		d.status,
+	    d.step,
+        d.group_id,
+        d.conflict,
+        COALESCE(availability, '') as availability,
+        COALESCE(funding, '') as funding,
+		COALESCE(editor_status::VARCHAR, '') as editor_status,
 		COALESCE(reviewer_status::VARCHAR, '') as reviewer_status,
-		TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
-		TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at
+		COALESCE(draft_step, '') as draft_step,
+		TO_CHAR(d.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
+		TO_CHAR(d.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at,
+		j.id,
+		j.title
 	FROM
-		"draft"
+		"draft" d
+	INNER JOIN "journal" j on d.journal_id = j.id
 	WHERE
-		id = $1`
+		d.id = $1`
 
 	err = s.db.QueryRow(
 		ctx,
@@ -176,19 +169,17 @@ func (s *ArticleRepo) Get(ctx context.Context, req *pb.GetArticleReq) (res *pb.G
 		&res.Description,
 		&res.Status,
 		&res.Step,
-		&res.EditorStatus,
 		&res.GroupId,
-		&res.Manuscript,
-		&res.CoverLetter,
-		&res.Supplemental,
-		&res.EditorId,
-		&res.EditorComment,
-		&res.EditorCoverLetterComment,
-		&res.EditorManuscriptComment,
-		&res.EditorSupplementalComment,
+		&res.Conflict,
+		&res.Availability,
+		&res.Funding,
+		&res.EditorStatus,
 		&res.ReviewerStatus,
+		&res.DraftStep,
 		&res.CreatedAt,
 		&res.UpdatedAt,
+		&journal.Id,
+		&journal.Title,
 	)
 
 	if err != nil {
@@ -204,6 +195,7 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 	var arr []interface{}
 
 	validArticleStatus := map[string]bool{
+		config.ARTICLE_STATUS_DRAFT:                        true,
 		config.ARTICLE_STATUS_NEW:                          true,
 		config.ARTICLE_STATUS_PENDING:                      true,
 		config.ARTICLE_STATUS_DENIED:                       true,
@@ -213,29 +205,28 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 	}
 
 	query := `SELECT
-		draft.id,
-		journal_id,
-		type,
-		title,
-		author_id,
-		description,
-		status,
-	    step,
-        editor_status,
-        group_id,
-        manuscript,
-        cover_letter,
-        supplemental,
-		COALESCE(editor_id::VARCHAR, '') as editor_id,
-		COALESCE(editor_comment, '') as editor_comment,
-		COALESCE(editor_cover_letter_comment, '') as editor_cover_letter_comment,
-		COALESCE(editor_manuscript_comment, '') as editor_manuscript_comment,
-		COALESCE(editor_supplemental_comment, '') as editor_supplemental_comment,
+		d.id,
+		d.journal_id,
+		d.type,
+		d.title,
+		d.author_id,
+		d.description,
+		d.status,
+	    d.step,
+        d.group_id,
+        d.conflict,
+        COALESCE(availability, '') as availability,
+        COALESCE(funding, '') as funding,
+		COALESCE(editor_status::VARCHAR, '') as editor_status,
 		COALESCE(reviewer_status::VARCHAR, '') as reviewer_status,
-		TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
-		TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at
+		COALESCE(draft_step, '') as draft_step,
+		TO_CHAR(d.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
+		TO_CHAR(d.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at,
+		j.id,
+		j.title
 	FROM
-		"draft"`
+		"draft" d
+	INNER JOIN "journal" j on d.journal_id = j.id`
 
 	filter := ` WHERE 1=1`
 	group := ``
@@ -247,7 +238,7 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 	}
 
 	if util.IsValidUUID(req.GetAuthorId()) {
-		filter += " AND author_id = :author_id"
+		filter += " AND d.author_id = :author_id"
 		params["author_id"] = req.GetAuthorId()
 	}
 
@@ -260,11 +251,11 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 		filter += " AND group_id = :group_id"
 		params["group_id"] = req.GroupId
 	} else {
-		query += `	INNER JOIN (
+		query += ` INNER JOIN (
 						SELECT DISTINCT
 							FIRST_VALUE(id) OVER (PARTITION BY group_id ORDER BY created_at DESC) AS id
 						FROM "draft"
-					) d2 ON draft.id = d2.id`
+					) d2 ON d.id = d2.id`
 		group = ` GROUP BY group_id`
 	}
 
@@ -288,9 +279,11 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 		limit = " LIMIT :limit"
 	}
 
-	cQ := `SELECT count(1) over() FROM "draft"` + filter + group
+	cQ := `SELECT count(1) over() FROM "draft" d` + filter + group
 
 	cQ, arr = helper.ReplaceQueryParams(cQ, params)
+
+	fmt.Println(cQ)
 
 	err = s.db.QueryRow(ctx, cQ, arr...).Scan(
 		&res.Count,
@@ -311,6 +304,7 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 
 	for rows.Next() {
 		obj := &pb.Article{}
+		journal := &pb.Journal{}
 
 		err = rows.Scan(
 			&obj.Id,
@@ -321,19 +315,17 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 			&obj.Description,
 			&obj.Status,
 			&obj.Step,
-			&obj.EditorStatus,
 			&obj.GroupId,
-			&obj.Manuscript,
-			&obj.CoverLetter,
-			&obj.Supplemental,
-			&obj.EditorId,
-			&obj.EditorComment,
-			&obj.EditorCoverLetterComment,
-			&obj.EditorManuscriptComment,
-			&obj.EditorSupplementalComment,
+			&obj.Conflict,
+			&obj.Availability,
+			&obj.Funding,
+			&obj.EditorStatus,
 			&obj.ReviewerStatus,
+			&obj.DraftStep,
 			&obj.CreatedAt,
 			&obj.UpdatedAt,
+			&journal.Id,
+			&journal.Title,
 		)
 		if err != nil {
 			return res, err
@@ -347,11 +339,13 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 func (s *ArticleRepo) Update(ctx context.Context, req *pb.UpdateArticleReq) (rowsAffected int64, err error) {
 
 	validArticleStatus := map[string]bool{
-		config.ARTICLE_STATUS_NEW:       true,
-		config.ARTICLE_STATUS_PENDING:   true,
-		config.ARTICLE_STATUS_DENIED:    true,
-		config.ARTICLE_STATUS_CONFIRMED: true,
-		config.ARTICLE_STATUS_PUBLISHED: true,
+		config.ARTICLE_STATUS_DRAFT:                        true,
+		config.ARTICLE_STATUS_NEW:                          true,
+		config.ARTICLE_STATUS_PENDING:                      true,
+		config.ARTICLE_STATUS_DENIED:                       true,
+		config.ARTICLE_STATUS_CONFIRMED:                    true,
+		config.ARTICLE_STATUS_PUBLISHED:                    true,
+		config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION: true,
 	}
 
 	params := make(map[string]interface{})
@@ -375,6 +369,11 @@ func (s *ArticleRepo) Update(ctx context.Context, req *pb.UpdateArticleReq) (row
 	if req.GetTitle() != "" {
 		querySet += `, title = :title`
 		params["title"] = req.GetTitle()
+	}
+
+	if req.GetDraftStep() != "" {
+		querySet += `, draft_step = :draft_step`
+		params["draft_step"] = req.GetDraftStep()
 	}
 
 	if util.IsValidUUID(req.GetAuthorId()) {
@@ -412,44 +411,19 @@ func (s *ArticleRepo) Update(ctx context.Context, req *pb.UpdateArticleReq) (row
 		params["reviewer_status"] = req.ReviewerStatus
 	}
 
-	if util.IsValidUUID(req.EditorId) {
-		querySet += `, editor_id = :editor_id`
-		params["editor_id"] = req.EditorId
+	if req.Conflict {
+		querySet += `, conflict = :conflict`
+		params["conflict"] = req.Conflict
 	}
 
-	if req.EditorComment != "" {
-		querySet += `, editor_comment = :editor_comment`
-		params["editor_comment"] = req.EditorComment
+	if req.Availability != "" {
+		querySet += `, availability = :availability`
+		params["availability"] = req.Availability
 	}
 
-	if req.EditorManuscriptComment != "" {
-		querySet += `, editor_manuscript_comment = :editor_manuscript_comment`
-		params["editor_manuscript_comment"] = req.EditorManuscriptComment
-	}
-
-	if req.EditorCoverLetterComment != "" {
-		querySet += `, editor_cover_letter_comment = :editor_cover_letter_comment`
-		params["editor_cover_letter_comment"] = req.EditorCoverLetterComment
-	}
-
-	if req.EditorSupplementalComment != "" {
-		querySet += `, editor_supplemental_comment = :editor_supplemental_comment`
-		params["editor_supplemental_comment"] = req.EditorSupplementalComment
-	}
-
-	if req.Manuscript != "" {
-		querySet += `, manuscript = :manuscript`
-		params["manuscript"] = req.Manuscript
-	}
-
-	if req.CoverLetter != "" {
-		querySet += `, cover_letter = :cover_letter`
-		params["cover_letter"] = req.CoverLetter
-	}
-
-	if req.Supplemental != "" {
-		querySet += `, supplemental = :supplemental`
-		params["supplemental"] = req.Supplemental
+	if req.Funding != "" {
+		querySet += `, funding = :funding`
+		params["funding"] = req.Funding
 	}
 
 	query := querySet + filter

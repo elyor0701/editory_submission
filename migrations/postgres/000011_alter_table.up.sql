@@ -17,6 +17,8 @@ alter table "article_reviewer" rename to "draft_checker";
 alter table "draft_checker" rename column "reviewer_id" to "checker_id";
 alter table "draft_checker" rename column "article_id" to "draft_id";
 
+alter type "article_status" add value 'DRAFT';
+
 create type "checker_type" as enum(
     'EDITOR',
     'REVIEWER'
@@ -40,18 +42,17 @@ alter table "draft_checker" add column status checker_status default 'NEW';
 create table "file_comment" (
   id uuid primary key,
   type file_type,
-  draft_id uuid,
   file_id uuid,
-  commentator_id uuid,
+  draft_checker_id uuid,
   comment text,
   created_at timestamp,
   updated_at timestamp
 );
 
-alter table "file_comment" add foreign key ("draft_id") references draft("id") on delete cascade;
 alter table "file_comment" add foreign key ("file_id") references file("id") on delete cascade;
-alter table "file_comment" add foreign key ("commentator_id") references "user"("id") on delete set null;
+alter table "file_comment" add foreign key ("draft_checker_id") references "draft_checker"("id") on delete set null;
 
 alter table "draft" add column conflict bool default false;
 alter table "draft" add column availability text;
 alter table "draft" add column funding text;
+alter table "draft" add column draft_step varchar;

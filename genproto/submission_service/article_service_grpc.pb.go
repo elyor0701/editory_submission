@@ -25,6 +25,9 @@ const (
 	ArticleService_GetArticleList_FullMethodName = "/submission_service.ArticleService/GetArticleList"
 	ArticleService_UpdateArticle_FullMethodName  = "/submission_service.ArticleService/UpdateArticle"
 	ArticleService_DeleteArticle_FullMethodName  = "/submission_service.ArticleService/DeleteArticle"
+	ArticleService_AddFiles_FullMethodName       = "/submission_service.ArticleService/AddFiles"
+	ArticleService_GetFiles_FullMethodName       = "/submission_service.ArticleService/GetFiles"
+	ArticleService_DeleteFiles_FullMethodName    = "/submission_service.ArticleService/DeleteFiles"
 )
 
 // ArticleServiceClient is the client API for ArticleService service.
@@ -37,6 +40,10 @@ type ArticleServiceClient interface {
 	GetArticleList(ctx context.Context, in *GetArticleListReq, opts ...grpc.CallOption) (*GetArticleListRes, error)
 	UpdateArticle(ctx context.Context, in *UpdateArticleReq, opts ...grpc.CallOption) (*UpdateArticleRes, error)
 	DeleteArticle(ctx context.Context, in *DeleteArticleReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// File
+	AddFiles(ctx context.Context, in *AddFilesReq, opts ...grpc.CallOption) (*AddFilesRes, error)
+	GetFiles(ctx context.Context, in *GetFilesReq, opts ...grpc.CallOption) (*GetFilesRes, error)
+	DeleteFiles(ctx context.Context, in *DeleteFilesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type articleServiceClient struct {
@@ -92,6 +99,33 @@ func (c *articleServiceClient) DeleteArticle(ctx context.Context, in *DeleteArti
 	return out, nil
 }
 
+func (c *articleServiceClient) AddFiles(ctx context.Context, in *AddFilesReq, opts ...grpc.CallOption) (*AddFilesRes, error) {
+	out := new(AddFilesRes)
+	err := c.cc.Invoke(ctx, ArticleService_AddFiles_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articleServiceClient) GetFiles(ctx context.Context, in *GetFilesReq, opts ...grpc.CallOption) (*GetFilesRes, error) {
+	out := new(GetFilesRes)
+	err := c.cc.Invoke(ctx, ArticleService_GetFiles_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articleServiceClient) DeleteFiles(ctx context.Context, in *DeleteFilesReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ArticleService_DeleteFiles_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ArticleServiceServer is the server API for ArticleService service.
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility
@@ -102,6 +136,10 @@ type ArticleServiceServer interface {
 	GetArticleList(context.Context, *GetArticleListReq) (*GetArticleListRes, error)
 	UpdateArticle(context.Context, *UpdateArticleReq) (*UpdateArticleRes, error)
 	DeleteArticle(context.Context, *DeleteArticleReq) (*emptypb.Empty, error)
+	// File
+	AddFiles(context.Context, *AddFilesReq) (*AddFilesRes, error)
+	GetFiles(context.Context, *GetFilesReq) (*GetFilesRes, error)
+	DeleteFiles(context.Context, *DeleteFilesReq) (*emptypb.Empty, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
 
@@ -123,6 +161,15 @@ func (UnimplementedArticleServiceServer) UpdateArticle(context.Context, *UpdateA
 }
 func (UnimplementedArticleServiceServer) DeleteArticle(context.Context, *DeleteArticleReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticle not implemented")
+}
+func (UnimplementedArticleServiceServer) AddFiles(context.Context, *AddFilesReq) (*AddFilesRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddFiles not implemented")
+}
+func (UnimplementedArticleServiceServer) GetFiles(context.Context, *GetFilesReq) (*GetFilesRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFiles not implemented")
+}
+func (UnimplementedArticleServiceServer) DeleteFiles(context.Context, *DeleteFilesReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteFiles not implemented")
 }
 func (UnimplementedArticleServiceServer) mustEmbedUnimplementedArticleServiceServer() {}
 
@@ -227,6 +274,60 @@ func _ArticleService_DeleteArticle_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ArticleService_AddFiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddFilesReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).AddFiles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_AddFiles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).AddFiles(ctx, req.(*AddFilesReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticleService_GetFiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFilesReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).GetFiles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_GetFiles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).GetFiles(ctx, req.(*GetFilesReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticleService_DeleteFiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteFilesReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).DeleteFiles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_DeleteFiles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).DeleteFiles(ctx, req.(*DeleteFilesReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ArticleService_ServiceDesc is the grpc.ServiceDesc for ArticleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -253,6 +354,18 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteArticle",
 			Handler:    _ArticleService_DeleteArticle_Handler,
+		},
+		{
+			MethodName: "AddFiles",
+			Handler:    _ArticleService_AddFiles_Handler,
+		},
+		{
+			MethodName: "GetFiles",
+			Handler:    _ArticleService_GetFiles_Handler,
+		},
+		{
+			MethodName: "DeleteFiles",
+			Handler:    _ArticleService_DeleteFiles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -62,6 +62,13 @@ definitions:
       version:
         type: string
     type: object
+  editory_submission_api_models.AddFileReq:
+    properties:
+      type:
+        type: string
+      url:
+        type: string
+    type: object
   editory_submission_api_models.AdminJournalCreateReq:
     properties:
       author:
@@ -211,17 +218,25 @@ definitions:
     type: object
   editory_submission_api_models.CreateUserDraftReq:
     properties:
-      cover_letter:
+      availability:
         type: string
+      conflict:
+        type: boolean
       description:
+        type: string
+      draft_step:
+        type: string
+      files:
+        items:
+          $ref: '#/definitions/editory_submission_api_models.AddFileReq'
+        type: array
+      funding:
         type: string
       group_id:
         type: string
       journal_id:
         type: string
-      manuscript:
-        type: string
-      supplemental:
+      status:
         type: string
       title:
         type: string
@@ -1204,27 +1219,38 @@ definitions:
       type:
         type: string
     type: object
+  editory_submission_genproto_submission_service.AddFilesRes:
+    properties:
+      article_id:
+        type: string
+      id:
+        type: string
+      type:
+        type: string
+      url:
+        type: string
+    type: object
   editory_submission_genproto_submission_service.Article:
     properties:
       author_id:
         type: string
-      cover_letter:
+      availability:
         type: string
+      conflict:
+        type: boolean
       created_at:
         type: string
       description:
         type: string
-      editor_comment:
-        type: string
-      editor_cover_letter_comment:
-        type: string
-      editor_id:
-        type: string
-      editor_manuscript_comment:
+      draft_step:
         type: string
       editor_status:
         type: string
-      editor_supplemental_comment:
+      files:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.File'
+        type: array
+      funding:
         type: string
       group_id:
         type: string
@@ -1232,17 +1258,49 @@ definitions:
         type: string
       journal_id:
         type: string
-      manuscript:
-        type: string
+      journal_id_data:
+        $ref: '#/definitions/editory_submission_genproto_submission_service.Journal'
       reviewer_status:
         type: string
       status:
         type: string
       step:
         type: string
-      supplemental:
-        type: string
       title:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  editory_submission_genproto_submission_service.Checker:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+    type: object
+  editory_submission_genproto_submission_service.CreateArticleCheckerRes:
+    properties:
+      article_id:
+        type: string
+      checker_id:
+        type: string
+      comment:
+        type: string
+      comments:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.FileComment'
+        type: array
+      created_at:
+        type: string
+      id:
+        type: string
+      status:
         type: string
       type:
         type: string
@@ -1253,23 +1311,23 @@ definitions:
     properties:
       author_id:
         type: string
-      cover_letter:
+      availability:
         type: string
+      conflict:
+        type: boolean
       description:
         type: string
-      editor_status:
+      draft_step:
+        type: string
+      funding:
         type: string
       group_id:
         type: string
       journal_id:
         type: string
-      manuscript:
-        type: string
       status:
         type: string
       step:
-        type: string
-      supplemental:
         type: string
       title:
         type: string
@@ -1280,23 +1338,23 @@ definitions:
     properties:
       author_id:
         type: string
-      cover_letter:
+      availability:
         type: string
+      conflict:
+        type: boolean
       created_at:
         type: string
       description:
         type: string
-      editor_comment:
-        type: string
-      editor_cover_letter_comment:
-        type: string
-      editor_id:
-        type: string
-      editor_manuscript_comment:
+      draft_step:
         type: string
       editor_status:
         type: string
-      editor_supplemental_comment:
+      files:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.File'
+        type: array
+      funding:
         type: string
       group_id:
         type: string
@@ -1304,15 +1362,13 @@ definitions:
         type: string
       journal_id:
         type: string
-      manuscript:
-        type: string
+      journal_id_data:
+        $ref: '#/definitions/editory_submission_genproto_submission_service.Journal'
       reviewer_status:
         type: string
       status:
         type: string
       step:
-        type: string
-      supplemental:
         type: string
       title:
         type: string
@@ -1321,25 +1377,89 @@ definitions:
       updated_at:
         type: string
     type: object
-  editory_submission_genproto_submission_service.CreateArticleReviewerRes:
+  editory_submission_genproto_submission_service.File:
     properties:
       article_id:
         type: string
+      id:
+        type: string
+      type:
+        type: string
+      url:
+        type: string
+    type: object
+  editory_submission_genproto_submission_service.FileComment:
+    properties:
       comment:
         type: string
-      cover_letter_comment:
+      created_at:
+        type: string
+      draft_checker_id:
+        type: string
+      file_id:
+        type: string
+      id:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  editory_submission_genproto_submission_service.GetArticleCheckerListRes:
+    properties:
+      article_checkers:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleCheckerListRes_ArticleChecker'
+        type: array
+      count:
+        type: integer
+    type: object
+  editory_submission_genproto_submission_service.GetArticleCheckerListRes_ArticleChecker:
+    properties:
+      article_id:
+        type: string
+      article_id_data:
+        $ref: '#/definitions/editory_submission_genproto_submission_service.Article'
+      checker_id:
+        type: string
+      checker_id_data:
+        $ref: '#/definitions/editory_submission_genproto_submission_service.Checker'
+      comment:
         type: string
       created_at:
         type: string
       id:
         type: string
-      manuscript_comment:
+      status:
         type: string
-      reviewer_id:
+      type:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  editory_submission_genproto_submission_service.GetArticleCheckerRes:
+    properties:
+      article_id:
+        type: string
+      article_id_data:
+        $ref: '#/definitions/editory_submission_genproto_submission_service.Article'
+      checker_id:
+        type: string
+      checker_id_data:
+        $ref: '#/definitions/editory_submission_genproto_submission_service.Checker'
+      comment:
+        type: string
+      comments:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.FileComment'
+        type: array
+      created_at:
+        type: string
+      id:
         type: string
       status:
         type: string
-      supplemental_comment:
+      type:
         type: string
       updated_at:
         type: string
@@ -1353,101 +1473,60 @@ definitions:
       count:
         type: integer
     type: object
-  editory_submission_genproto_submission_service.GetArticleReviewerListRes:
+  editory_submission_genproto_submission_service.GetFilesRes:
     properties:
-      article_reviewers:
-        items:
-          $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleReviewerListRes_ArticleReview'
-        type: array
       count:
         type: integer
+      files:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.File'
+        type: array
     type: object
-  editory_submission_genproto_submission_service.GetArticleReviewerListRes_ArticleReview:
+  editory_submission_genproto_submission_service.Journal:
     properties:
-      article:
-        $ref: '#/definitions/editory_submission_genproto_submission_service.Article'
+      id:
+        type: string
+      title:
+        type: string
+    type: object
+  editory_submission_genproto_submission_service.UpdateArticleCheckerRes:
+    properties:
       article_id:
+        type: string
+      checker_id:
         type: string
       comment:
         type: string
-      cover_letter_comment:
-        type: string
+      comments:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.FileComment'
+        type: array
       created_at:
         type: string
       id:
         type: string
-      manuscript_comment:
-        type: string
-      reviewer:
-        $ref: '#/definitions/editory_submission_genproto_submission_service.Reviewer'
-      reviewer_id:
-        type: string
       status:
         type: string
-      supplemental_comment:
+      type:
         type: string
       updated_at:
-        type: string
-    type: object
-  editory_submission_genproto_submission_service.GetArticleReviewerRes:
-    properties:
-      article:
-        $ref: '#/definitions/editory_submission_genproto_submission_service.Article'
-      article_id:
-        type: string
-      comment:
-        type: string
-      cover_letter_comment:
-        type: string
-      created_at:
-        type: string
-      id:
-        type: string
-      manuscript_comment:
-        type: string
-      reviewer:
-        $ref: '#/definitions/editory_submission_genproto_submission_service.Reviewer'
-      reviewer_id:
-        type: string
-      status:
-        type: string
-      supplemental_comment:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  editory_submission_genproto_submission_service.Reviewer:
-    properties:
-      email:
-        type: string
-      first_name:
-        type: string
-      id:
-        type: string
-      last_name:
         type: string
     type: object
   editory_submission_genproto_submission_service.UpdateArticleReq:
     properties:
       author_id:
         type: string
-      cover_letter:
+      availability:
         type: string
-      created_at:
-        type: string
+      conflict:
+        type: boolean
       description:
         type: string
-      editor_comment:
-        type: string
-      editor_cover_letter_comment:
-        type: string
-      editor_id:
-        type: string
-      editor_manuscript_comment:
+      draft_step:
         type: string
       editor_status:
         type: string
-      editor_supplemental_comment:
+      funding:
         type: string
       group_id:
         type: string
@@ -1455,44 +1534,38 @@ definitions:
         type: string
       journal_id:
         type: string
-      manuscript:
-        type: string
       reviewer_status:
         type: string
       status:
         type: string
       step:
         type: string
-      supplemental:
-        type: string
       title:
         type: string
       type:
-        type: string
-      updated_at:
         type: string
     type: object
   editory_submission_genproto_submission_service.UpdateArticleRes:
     properties:
       author_id:
         type: string
-      cover_letter:
+      availability:
         type: string
+      conflict:
+        type: boolean
       created_at:
         type: string
       description:
         type: string
-      editor_comment:
-        type: string
-      editor_cover_letter_comment:
-        type: string
-      editor_id:
-        type: string
-      editor_manuscript_comment:
+      draft_step:
         type: string
       editor_status:
         type: string
-      editor_supplemental_comment:
+      files:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.File'
+        type: array
+      funding:
         type: string
       group_id:
         type: string
@@ -1500,42 +1573,17 @@ definitions:
         type: string
       journal_id:
         type: string
-      manuscript:
-        type: string
+      journal_id_data:
+        $ref: '#/definitions/editory_submission_genproto_submission_service.Journal'
       reviewer_status:
         type: string
       status:
         type: string
       step:
         type: string
-      supplemental:
-        type: string
       title:
         type: string
       type:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  editory_submission_genproto_submission_service.UpdateArticleReviewerRes:
-    properties:
-      article_id:
-        type: string
-      comment:
-        type: string
-      cover_letter_comment:
-        type: string
-      created_at:
-        type: string
-      id:
-        type: string
-      manuscript_comment:
-        type: string
-      reviewer_id:
-        type: string
-      status:
-        type: string
-      supplemental_comment:
         type: string
       updated_at:
         type: string
@@ -2158,7 +2206,7 @@ definitions:
       extKeyUsage:
         description: Sequence of extended key usages.
         items:
-          $ref: '#/definitions/x509.ExtKeyUsage'
+          type: integer
         type: array
       extensions:
         description: |-
@@ -2193,7 +2241,7 @@ definitions:
           type: string
         type: array
       keyUsage:
-        $ref: '#/definitions/x509.KeyUsage'
+        type: integer
       maxPathLen:
         description: |-
           MaxPathLen and MaxPathLenZero indicate the presence and
@@ -2251,7 +2299,7 @@ definitions:
         type: array
       publicKey: {}
       publicKeyAlgorithm:
-        $ref: '#/definitions/x509.PublicKeyAlgorithm'
+        type: integer
       raw:
         description: Complete ASN.1 DER content (certificate, signature algorithm
           and signature).
@@ -2285,7 +2333,7 @@ definitions:
           type: integer
         type: array
       signatureAlgorithm:
-        $ref: '#/definitions/x509.SignatureAlgorithm'
+        type: integer
       subject:
         $ref: '#/definitions/pkix.Name'
       subjectKeyId:
@@ -2321,123 +2369,6 @@ definitions:
       version:
         type: integer
     type: object
-  x509.ExtKeyUsage:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
-    - 6
-    - 7
-    - 8
-    - 9
-    - 10
-    - 11
-    - 12
-    - 13
-    type: integer
-    x-enum-varnames:
-    - ExtKeyUsageAny
-    - ExtKeyUsageServerAuth
-    - ExtKeyUsageClientAuth
-    - ExtKeyUsageCodeSigning
-    - ExtKeyUsageEmailProtection
-    - ExtKeyUsageIPSECEndSystem
-    - ExtKeyUsageIPSECTunnel
-    - ExtKeyUsageIPSECUser
-    - ExtKeyUsageTimeStamping
-    - ExtKeyUsageOCSPSigning
-    - ExtKeyUsageMicrosoftServerGatedCrypto
-    - ExtKeyUsageNetscapeServerGatedCrypto
-    - ExtKeyUsageMicrosoftCommercialCodeSigning
-    - ExtKeyUsageMicrosoftKernelCodeSigning
-  x509.KeyUsage:
-    enum:
-    - 1
-    - 2
-    - 4
-    - 8
-    - 16
-    - 32
-    - 64
-    - 128
-    - 256
-    type: integer
-    x-enum-varnames:
-    - KeyUsageDigitalSignature
-    - KeyUsageContentCommitment
-    - KeyUsageKeyEncipherment
-    - KeyUsageDataEncipherment
-    - KeyUsageKeyAgreement
-    - KeyUsageCertSign
-    - KeyUsageCRLSign
-    - KeyUsageEncipherOnly
-    - KeyUsageDecipherOnly
-  x509.PublicKeyAlgorithm:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    type: integer
-    x-enum-comments:
-      DSA: Unsupported.
-    x-enum-varnames:
-    - UnknownPublicKeyAlgorithm
-    - RSA
-    - DSA
-    - ECDSA
-    - Ed25519
-  x509.SignatureAlgorithm:
-    enum:
-    - 0
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
-    - 6
-    - 7
-    - 8
-    - 9
-    - 10
-    - 11
-    - 12
-    - 13
-    - 14
-    - 15
-    - 16
-    type: integer
-    x-enum-comments:
-      DSAWithSHA1: Unsupported.
-      DSAWithSHA256: Unsupported.
-      ECDSAWithSHA1: Only supported for signing, and verification of CRLs, CSRs, and
-        OCSP responses.
-      MD2WithRSA: Unsupported.
-      MD5WithRSA: Only supported for signing, not verification.
-      SHA1WithRSA: Only supported for signing, and verification of CRLs, CSRs, and
-        OCSP responses.
-    x-enum-varnames:
-    - UnknownSignatureAlgorithm
-    - MD2WithRSA
-    - MD5WithRSA
-    - SHA1WithRSA
-    - SHA256WithRSA
-    - SHA384WithRSA
-    - SHA512WithRSA
-    - DSAWithSHA1
-    - DSAWithSHA256
-    - ECDSAWithSHA1
-    - ECDSAWithSHA256
-    - ECDSAWithSHA384
-    - ECDSAWithSHA512
-    - SHA256WithRSAPSS
-    - SHA384WithRSAPSS
-    - SHA512WithRSAPSS
-    - PureEd25519
 info:
   contact: {}
   description: This is a api gateway
@@ -5186,7 +5117,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleReviewerListRes'
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleCheckerListRes'
               type: object
         "400":
           description: Invalid Argument
@@ -5241,7 +5172,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleReviewerRes'
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleCheckerRes'
               type: object
         "400":
           description: Invalid Argument
@@ -5297,7 +5228,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.CreateArticleReviewerRes'
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.CreateArticleCheckerRes'
               type: object
         "400":
           description: Bad Request
@@ -6753,6 +6684,159 @@ paths:
       summary: Get Draft By ID
       tags:
       - User
+  /user/{user-id}/draft/{draft-id}/file:
+    get:
+      consumes:
+      - application/json
+      description: Get Draft File
+      operationId: get_draft_file
+      parameters:
+      - description: user Id
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Draft data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetFilesRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Draft File
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Add Draft File
+      operationId: add_draft_file
+      parameters:
+      - description: user Id
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      - description: AddFileReq
+        in: body
+        name: file
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_api_models.AddFileReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Draft data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.AddFilesRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Add Draft File
+      tags:
+      - User
+  /user/{user-id}/draft/{draft-id}/file/{file-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Draft File
+      operationId: delete_draft_file
+      parameters:
+      - description: user Id
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      - description: file-id
+        in: path
+        name: file-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Draft File
+      tags:
+      - User
   /user/{user-id}/review:
     get:
       consumes:
@@ -6775,7 +6859,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleReviewerListRes'
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleCheckerListRes'
               type: object
         "400":
           description: Invalid Argument
@@ -6825,7 +6909,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.UpdateArticleReviewerRes'
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.UpdateArticleCheckerRes'
               type: object
         "400":
           description: Bad Request
@@ -6875,7 +6959,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleReviewerRes'
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleCheckerRes'
               type: object
         "400":
           description: Invalid Argument

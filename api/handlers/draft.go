@@ -51,7 +51,6 @@ func (h *Handler) CreateUserDraft(c *gin.Context) {
 	}
 
 	articlePB.AuthorId = userId
-	articlePB.Status = config.ARTICLE_STATUS_NEW
 
 	resp, err := h.services.ArticleService().CreateArticle(
 		c.Request.Context(),
@@ -61,6 +60,22 @@ func (h *Handler) CreateUserDraft(c *gin.Context) {
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
+	}
+
+	for _, val := range article.Files {
+		_, err := h.services.ArticleService().AddFiles(
+			c.Request.Context(),
+			&submission_service.AddFilesReq{
+				Url:       val.Url,
+				Type:      val.Type,
+				ArticleId: resp.Id,
+			},
+		)
+
+		if err != nil {
+			h.handleResponse(c, http.GRPCError, err.Error())
+			return
+		}
 	}
 
 	h.handleResponse(c, http.Created, resp)
@@ -156,6 +171,19 @@ func (h *Handler) GetUserDraftByID(c *gin.Context) {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
+
+	files, err := h.services.ArticleService().GetFiles(
+		c.Request.Context(),
+		&submission_service.GetFilesReq{
+			ArticleId: articleID,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	resp.Files = files.GetFiles()
 
 	h.handleResponse(c, http.OK, resp)
 }
@@ -365,6 +393,19 @@ func (h *Handler) GetJournalDraftByID(c *gin.Context) {
 		return
 	}
 
+	files, err := h.services.ArticleService().GetFiles(
+		c.Request.Context(),
+		&submission_service.GetFilesReq{
+			ArticleId: articleID,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	resp.Files = files.GetFiles()
+
 	h.handleResponse(c, http.OK, resp)
 }
 
@@ -525,5 +566,179 @@ func (h *Handler) GetAdminDraftByID(c *gin.Context) {
 		return
 	}
 
+	files, err := h.services.ArticleService().GetFiles(
+		c.Request.Context(),
+		&submission_service.GetFilesReq{
+			ArticleId: articleID,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	resp.Files = files.GetFiles()
+
 	h.handleResponse(c, http.OK, resp)
+}
+
+// AddDraftFile godoc
+// @ID add_draft_file
+// @Router /user/{user-id}/draft/{draft-id}/file [POST]
+// @Summary Add Draft File
+// @Description Add Draft File
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user-id path string true "user Id"
+// @Param draft-id path string true "draft-id"
+// @Param file body models.AddFileReq true "AddFileReq"
+// @Success 201 {object} http.Response{data=submission_service.AddFilesRes} "Draft data"
+// @Response 400 {object} http.Response{data=string} "Bad Request"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) AddDraftFile(c *gin.Context) {
+	var (
+		file   models.AddFileReq
+		filePB submission_service.AddFilesReq
+	)
+
+	userId := c.Param("user-id")
+	if !util.IsValidUUID(userId) {
+		err := errors.New("user id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	draftId := c.Param("draft-id")
+	if !util.IsValidUUID(draftId) {
+		err := errors.New("draft id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	err := c.ShouldBindJSON(&file)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	fileJSON, err := json.Marshal(file)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	err = json.Unmarshal(fileJSON, &filePB)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	filePB.ArticleId = draftId
+
+	resp, err := h.services.ArticleService().AddFiles(
+		c.Request.Context(),
+		&filePB,
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.Created, resp)
+}
+
+// GetDraftFiles godoc
+// @ID get_draft_file
+// @Router /user/{user-id}/draft/{draft-id}/file [GET]
+// @Summary Get Draft File
+// @Description Get Draft File
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user-id path string true "user Id"
+// @Param draft-id path string true "draft-id"
+// @Success 201 {object} http.Response{data=submission_service.GetFilesRes} "Draft data"
+// @Response 400 {object} http.Response{data=string} "Bad Request"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetDraftFiles(c *gin.Context) {
+
+	userId := c.Param("user-id")
+	if !util.IsValidUUID(userId) {
+		err := errors.New("user id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	draftId := c.Param("draft-id")
+	if !util.IsValidUUID(draftId) {
+		err := errors.New("draft id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	resp, err := h.services.ArticleService().GetFiles(
+		c.Request.Context(),
+		&submission_service.GetFilesReq{
+			ArticleId: draftId,
+		},
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.Created, resp)
+}
+
+// DeleteDraftFiles godoc
+// @ID delete_draft_file
+// @Router /user/{user-id}/draft/{draft-id}/file/{file-id} [DELETE]
+// @Summary Delete Draft File
+// @Description Delete Draft File
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user-id path string true "user Id"
+// @Param draft-id path string true "draft-id"
+// @Param file-id path string true "file-id"
+// @Success 204
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) DeleteDraftFiles(c *gin.Context) {
+	userId := c.Param("user-id")
+	if !util.IsValidUUID(userId) {
+		err := errors.New("user id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	draftId := c.Param("draft-id")
+	if !util.IsValidUUID(draftId) {
+		err := errors.New("draft id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	fileId := c.Param("file-id")
+	if !util.IsValidUUID(fileId) {
+		err := errors.New("file id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	_, err := h.services.ArticleService().DeleteFiles(
+		c.Request.Context(),
+		&submission_service.DeleteFilesReq{
+			Ids: fileId,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.NoContent, "")
 }

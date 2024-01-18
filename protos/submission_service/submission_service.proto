@@ -6,116 +6,110 @@ option go_package="genproto/submission_service";
 import "google/protobuf/empty.proto";
 import "submission.proto";
 
-service ReviewerService {
-  rpc CreateArticleReviewer(CreateArticleReviewerReq) returns (CreateArticleReviewerRes) {}
-  rpc GetArticleReviewer(GetArticleReviewerReq) returns (GetArticleReviewerRes) {}
-  rpc GetArticleReviewerList(GetArticleReviewerListReq) returns (GetArticleReviewerListRes) {}
-  rpc UpdateArticleReviewer(UpdateArticleReviewerReq) returns (UpdateArticleReviewerRes) {}
-  rpc DeleteArticleReviewer(DeleteArticleReviewerReq) returns (google.protobuf.Empty) {}
+service CheckerService {
+  rpc CreateArticleChecker(CreateArticleCheckerReq) returns (CreateArticleCheckerRes) {}
+  rpc GetArticleChecker(GetArticleCheckerReq) returns (GetArticleCheckerRes) {}
+  rpc GetArticleCheckerList(GetArticleCheckerListReq) returns (GetArticleCheckerListRes) {}
+  rpc UpdateArticleChecker(UpdateArticleCheckerReq) returns (UpdateArticleCheckerRes) {}
+  rpc DeleteArticleChecker(DeleteArticleCheckerReq) returns (google.protobuf.Empty) {}
 }
 
-message Reviewer {
+message Checker {
   string id = 1;
   string email = 2;
   string first_name = 3;
   string last_name = 4;
 }
 
-message CreateArticleReviewerReq {
-  string reviewer_id = 1;
+message CreateArticleCheckerReq {
+  string checker_id = 1;
   string article_id = 2;
   string status = 3;
   string comment = 4;
-  string manuscript_comment = 5;
-  string cover_letter_comment = 6;
-  string supplemental_comment = 7;
+  string type = 5;
+  repeated FileComment comments = 6;
 }
 
-message CreateArticleReviewerRes {
+message CreateArticleCheckerRes {
   string id = 1;
-  string reviewer_id = 2;
+  string checker_id = 2;
   string article_id = 3;
   string status = 4;
   string comment = 5;
-  string manuscript_comment = 6;
-  string cover_letter_comment = 7;
-  string supplemental_comment = 8;
-  string created_at = 9;
-  string updated_at = 10;
+  string type = 6;
+  string created_at = 7;
+  string updated_at = 8;
+  repeated FileComment comments = 9;
 }
 
-message GetArticleReviewerReq {
+message GetArticleCheckerReq {
   string id = 1;
 }
 
-message GetArticleReviewerRes {
+message GetArticleCheckerRes {
   string id = 1;
-  string reviewer_id = 2;
+  string checker_id = 2;
   string article_id = 3;
   string status = 4;
   string comment = 5;
-  string manuscript_comment = 6;
-  string cover_letter_comment = 7;
-  string supplemental_comment = 8;
-  string created_at = 9;
-  string updated_at = 10;
-  Article article = 11;
-  Reviewer reviewer = 12;
+  string type = 6;
+  string created_at = 7;
+  string updated_at = 8;
+  repeated FileComment comments = 9;
+  Article article_id_data = 11;
+  Checker checker_id_data = 12;
 }
 
-message GetArticleReviewerListReq {
+message GetArticleCheckerListReq {
   int32 limit = 1;
   int32 offset = 2;
   string search = 3;
-  string reviewer_id = 4;
+  string checker_id = 4;
   string article_id = 5;
+  string type = 6;
 }
 
-message GetArticleReviewerListRes {
-  message ArticleReview {
+message GetArticleCheckerListRes {
+  message ArticleChecker {
     string id = 1;
-    string reviewer_id = 2;
+    string checker_id = 2;
     string article_id = 3;
     string status = 4;
     string comment = 5;
-    string manuscript_comment = 6;
-    string cover_letter_comment = 7;
-    string supplemental_comment = 8;
-    string created_at = 9;
-    string updated_at = 10;
-    Article article = 11;
-    Reviewer reviewer = 12;
+    string type = 6;
+    string created_at = 7;
+    string updated_at = 8;
+    Article article_id_data = 9;
+    Checker checker_id_data = 10;
   }
-  repeated ArticleReview article_reviewers = 1;
+  repeated ArticleChecker article_checkers = 1;
   int32 count = 2;
 }
 
-message UpdateArticleReviewerReq {
+message UpdateArticleCheckerReq {
   string id = 1;
-  string reviewer_id = 2;
+  string checker_id = 2;
   string article_id = 3;
   string status = 4;
   string comment = 5;
-  string manuscript_comment = 6;
-  string cover_letter_comment = 7;
-  string supplemental_comment = 8;
-  string created_at = 9;
-  string updated_at = 10;
+  string type = 6;
+  string created_at = 7;
+  string updated_at = 8;
+  repeated FileComment comments = 9;
 }
 
-message UpdateArticleReviewerRes {
+message UpdateArticleCheckerRes {
   string id = 1;
-  string reviewer_id = 2;
+  string checker_id = 2;
   string article_id = 3;
   string status = 4;
   string comment = 5;
-  string manuscript_comment = 6;
-  string cover_letter_comment = 7;
-  string supplemental_comment = 8;
-  string created_at = 9;
-  string updated_at = 10;
+  string type = 6;
+  string created_at = 7;
+  string updated_at = 8;
+  repeated FileComment comments = 9;
 }
 
-message DeleteArticleReviewerReq {
+message DeleteArticleCheckerReq {
   string id = 1;
 }

@@ -22,7 +22,7 @@ import (
 // @Param journal-id path string true "journal Id"
 // @Param draft-id path string true "draft Id"
 // @Param article body models.CreateArticleReviewerReq true "CreateArticleRequestBody"
-// @Success 201 {object} http.Response{data=pb.CreateArticleReviewerRes} "CreateArticleReviewerRes"
+// @Success 201 {object} http.Response{data=pb.CreateArticleCheckerRes} "CreateArticleReviewerRes"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) CreateArticleReviewer(c *gin.Context) {
@@ -92,12 +92,12 @@ func (h *Handler) CreateArticleReviewer(c *gin.Context) {
 		}
 	}
 
-	resp, err := h.services.ReviewerService().CreateArticleReviewer(
+	resp, err := h.services.CheckerService().CreateArticleChecker(
 		c.Request.Context(),
-		&pb.CreateArticleReviewerReq{
-			ReviewerId: userPb.Id,
-			ArticleId:  articleId,
-			Status:     "PENDING",
+		&pb.CreateArticleCheckerReq{
+			CheckerId: userPb.Id,
+			ArticleId: articleId,
+			Status:    "NEW",
 		},
 	)
 
@@ -156,9 +156,9 @@ func (h *Handler) DeleteArticleReviewer(c *gin.Context) {
 		return
 	}
 
-	_, err := h.services.ReviewerService().DeleteArticleReviewer(
+	_, err := h.services.CheckerService().DeleteArticleChecker(
 		c.Request.Context(),
-		&pb.DeleteArticleReviewerReq{
+		&pb.DeleteArticleCheckerReq{
 			Id: reviewerID,
 		},
 	)
@@ -183,7 +183,7 @@ func (h *Handler) DeleteArticleReviewer(c *gin.Context) {
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
 // @Param search query string false "search"
-// @Success 200 {object} http.Response{data=pb.GetArticleReviewerListRes} "GetArticleReviewerListRes"
+// @Success 200 {object} http.Response{data=pb.GetArticleCheckerListRes} "GetArticleReviewerListRes"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetArticleReviewList(c *gin.Context) {
@@ -206,9 +206,9 @@ func (h *Handler) GetArticleReviewList(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.services.ReviewerService().GetArticleReviewerList(
+	resp, err := h.services.CheckerService().GetArticleCheckerList(
 		c.Request.Context(),
-		&pb.GetArticleReviewerListReq{
+		&pb.GetArticleCheckerListReq{
 			Limit:     int32(limit),
 			Offset:    int32(offset),
 			Search:    c.DefaultQuery("search", ""),
@@ -235,7 +235,7 @@ func (h *Handler) GetArticleReviewList(c *gin.Context) {
 // @Param journal-id path string true "journal-id"
 // @Param draft-id path string true "draft-id"
 // @Param review-id path string true "review-id"
-// @Success 200 {object} http.Response{data=pb.GetArticleReviewerRes} "GetArticleReviewerRes"
+// @Success 200 {object} http.Response{data=pb.GetArticleCheckerRes} "GetArticleReviewerRes"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetArticleReviewByID(c *gin.Context) {
@@ -252,9 +252,9 @@ func (h *Handler) GetArticleReviewByID(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.services.ReviewerService().GetArticleReviewer(
+	resp, err := h.services.CheckerService().GetArticleChecker(
 		c.Request.Context(),
-		&pb.GetArticleReviewerReq{
+		&pb.GetArticleCheckerReq{
 			Id: reviewId,
 		},
 	)
@@ -276,7 +276,7 @@ func (h *Handler) GetArticleReviewByID(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user-id path string true "user-id"
-// @Success 200 {object} http.Response{data=pb.GetArticleReviewerListRes} "GetArticleReviewerListRes"
+// @Success 200 {object} http.Response{data=pb.GetArticleCheckerListRes} "GetArticleReviewerListRes"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetUserReviewList(c *gin.Context) {
@@ -299,13 +299,13 @@ func (h *Handler) GetUserReviewList(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.services.ReviewerService().GetArticleReviewerList(
+	resp, err := h.services.CheckerService().GetArticleCheckerList(
 		c.Request.Context(),
-		&pb.GetArticleReviewerListReq{
-			Limit:      int32(limit),
-			Offset:     int32(offset),
-			Search:     c.DefaultQuery("search", ""),
-			ReviewerId: userId,
+		&pb.GetArticleCheckerListReq{
+			Limit:     int32(limit),
+			Offset:    int32(offset),
+			Search:    c.DefaultQuery("search", ""),
+			CheckerId: userId,
 		},
 	)
 
@@ -327,7 +327,7 @@ func (h *Handler) GetUserReviewList(c *gin.Context) {
 // @Produce json
 // @Param user-id path string true "user-id"
 // @Param review-id path string true "review-id"
-// @Success 200 {object} http.Response{data=pb.GetArticleReviewerRes} "GetArticleReviewerRes"
+// @Success 200 {object} http.Response{data=pb.GetArticleCheckerRes} "GetArticleReviewerRes"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) GetUserReviewByID(c *gin.Context) {
@@ -344,9 +344,9 @@ func (h *Handler) GetUserReviewByID(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.services.ReviewerService().GetArticleReviewer(
+	resp, err := h.services.CheckerService().GetArticleChecker(
 		c.Request.Context(),
-		&pb.GetArticleReviewerReq{
+		&pb.GetArticleCheckerReq{
 			Id: reviewId,
 		},
 	)
@@ -369,7 +369,7 @@ func (h *Handler) GetUserReviewByID(c *gin.Context) {
 // @Produce json
 // @Param user-id path string true "user-id"
 // @Param review body models.UpdateUserReviewReq true "UpdateUserReviewReq"
-// @Success 200 {object} http.Response{data=pb.UpdateArticleReviewerRes} "UpdateArticleReviewerRes"
+// @Success 200 {object} http.Response{data=pb.UpdateArticleCheckerRes} "UpdateArticleReviewerRes"
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) UpdateUserReview(c *gin.Context) {
@@ -387,15 +387,12 @@ func (h *Handler) UpdateUserReview(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.services.ReviewerService().UpdateArticleReviewer(
+	resp, err := h.services.CheckerService().UpdateArticleChecker(
 		c.Request.Context(),
-		&pb.UpdateArticleReviewerReq{
-			Id:                  review.Id,
-			Status:              review.Status,
-			Comment:             review.Comment,
-			ManuscriptComment:   review.ManuscriptComment,
-			CoverLetterComment:  review.CoverLetterComment,
-			SupplementalComment: review.SupplementalComment,
+		&pb.UpdateArticleCheckerReq{
+			Id:      review.Id,
+			Status:  review.Status,
+			Comment: review.Comment,
 		},
 	)
 

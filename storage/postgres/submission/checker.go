@@ -7,6 +7,7 @@ import (
 	"editory_submission/pkg/helper"
 	"editory_submission/pkg/util"
 	"editory_submission/storage"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -21,37 +22,31 @@ func NewReviewerRepo(db *pgxpool.Pool) storage.ReviewerRepoI {
 	}
 }
 
-func (s *ReviewerRepo) Create(ctx context.Context, req *pb.CreateArticleReviewerReq) (res *pb.CreateArticleReviewerRes, err error) {
+func (s *ReviewerRepo) Create(ctx context.Context, req *pb.CreateArticleCheckerReq) (res *pb.CreateArticleCheckerRes, err error) {
 
-	res = &pb.CreateArticleReviewerRes{}
+	res = &pb.CreateArticleCheckerRes{}
 
-	query := `INSERT INTO "article_reviewer" (
+	query := `INSERT INTO "draft_checker" (
 		id,                            
-    	reviewer_id,
-        article_id,
+    	checker_id,
+        draft_id,
         status,
-        comment,
-        manuscript_comment,
-        cover_letter_comment,
-        supplemental_comment
+    	type,
+        comment
 	) VALUES (
 		$1,
 		$2,
 		$3,
 		$4,
 		$5,
-		$6,
-		$7,
-		$8
+		$6
 	) RETURNING 
 	    id, 
-	    reviewer_id,
-        article_id,
+	    checker_id,
+        draft_id,
         status,
+	    type,
         COALESCE(comment, '') as comment,
-        COALESCE(manuscript_comment, '') as manuscript_comment,
-        COALESCE(cover_letter_comment, '') as cover_letter_comment,
-        COALESCE(supplemental_comment, '') as supplemental_comment,
         TO_CHAR(created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
         TO_CHAR(updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at`
 
@@ -62,22 +57,18 @@ func (s *ReviewerRepo) Create(ctx context.Context, req *pb.CreateArticleReviewer
 
 	err = s.db.QueryRow(ctx, query,
 		id.String(),
-		req.ReviewerId,
+		req.CheckerId,
 		req.ArticleId,
-		util.NewNullString(req.Status),
+		req.Status,
+		req.Type,
 		util.NewNullString(req.Comment),
-		util.NewNullString(req.ManuscriptComment),
-		util.NewNullString(req.CoverLetterComment),
-		util.NewNullString(req.SupplementalComment),
 	).Scan(
 		&res.Id,
-		&res.ReviewerId,
+		&res.CheckerId,
 		&res.ArticleId,
 		&res.Status,
+		&res.Type,
 		&res.Comment,
-		&res.ManuscriptComment,
-		&res.CoverLetterComment,
-		&res.SupplementalComment,
 		&res.CreatedAt,
 		&res.UpdatedAt,
 	)
@@ -85,25 +76,58 @@ func (s *ReviewerRepo) Create(ctx context.Context, req *pb.CreateArticleReviewer
 		return nil, err
 	}
 
+	queryComment := `INSERT INTO "file_comment" (
+		id,                            
+    	type,
+        file_id,
+    	draft_checker_id,
+        comment
+	) VALUES (
+		$1,
+		$2,
+		$3,
+		$4,
+		$5
+	)`
+
+	for _, val := range req.GetComments() {
+		commentId, err := uuid.NewRandom()
+		if err != nil {
+			return nil, err
+		}
+
+		_, err = s.db.Exec(
+			ctx,
+			queryComment,
+			commentId.String(),
+			val.Type,
+			val.FileId,
+			id.String(),
+			val.Comment,
+		)
+		if err != nil {
+			fmt.Printf("Checker------>Create: %s", err.Error())
+			continue
+		}
+	}
+
 	return res, nil
 }
 
-func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (res *pb.GetArticleReviewerRes, err error) {
-	res = &pb.GetArticleReviewerRes{}
+func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleCheckerReq) (res *pb.GetArticleCheckerRes, err error) {
+	res = &pb.GetArticleCheckerRes{}
 	article := &pb.Article{}
-	user := &pb.Reviewer{}
+	user := &pb.Checker{}
 
 	query := `SELECT
 		r.id, 
-	    r.reviewer_id,
-        r.article_id,
-        COALESCE(r.status::VARCHAR, '') as status,
+	    r.checker_id,
+        r.draft_id,
+        r.status,
+	    r.type,
         COALESCE(r.comment, '') as comment,
-        COALESCE(r.manuscript_comment, '') as manuscript_comment,
-        COALESCE(r.cover_letter_comment, '') as cover_letter_comment,
-        COALESCE(r.supplemental_comment, '') as supplemental_comment,
-        TO_CHAR(r.created_at, ` + config.DatabaseQueryTimeLayout + `) AS r_created_at,
-        TO_CHAR(r.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS r_updated_at,
+        TO_CHAR(r.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
+        TO_CHAR(r.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at,
 		a.id,                 
     	COALESCE(a.journal_id::VARCHAR, '') AS journal_id,           
     	a.type,         
@@ -111,12 +135,9 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (
     	COALESCE(a.author_id::VARCHAR, '') AS author_id,              
     	a.description,
 		a.status,
-		COALESCE(a.editor_id::VARCHAR, '') AS editor_id,
-		COALESCE(a.editor_comment::VARCHAR, '') AS editor_comment,
+		a.availability,
+		a.funding,
 		a.group_id,
-		a.manuscript,
-		a.cover_letter,
-		a.supplemental,
     	TO_CHAR(a.created_at, ` + config.DatabaseQueryTimeLayout + `) AS a_created_at,
     	TO_CHAR(a.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS a_updated_at,
 		u.id,
@@ -124,9 +145,9 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (
 		COALESCE(u.last_name, ''),
 		u.email
 	FROM
-		"article_reviewer" r
-	INNER JOIN "draft" a ON r.article_id = a.id
-	INNER JOIN "user" u ON r.reviewer_id = u.id
+		"draft_checker" r
+	INNER JOIN "draft" a ON r.draft_id = a.id
+	INNER JOIN "user" u ON r.checker_id = u.id
 	WHERE
 		r.id = $1`
 
@@ -135,13 +156,11 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (
 		query,
 		req.GetId()).Scan(
 		&res.Id,
-		&res.ReviewerId,
+		&res.CheckerId,
 		&res.ArticleId,
 		&res.Status,
+		&res.Type,
 		&res.Comment,
-		&res.ManuscriptComment,
-		&res.CoverLetterComment,
-		&res.SupplementalComment,
 		&res.CreatedAt,
 		&res.UpdatedAt,
 		&article.Id,
@@ -151,12 +170,9 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (
 		&article.AuthorId,
 		&article.Description,
 		&article.Status,
-		&article.EditorId,
-		&article.EditorComment,
+		&article.Availability,
+		&article.Funding,
 		&article.GroupId,
-		&article.Manuscript,
-		&article.CoverLetter,
-		&article.Supplemental,
 		&article.CreatedAt,
 		&article.UpdatedAt,
 		&user.Id,
@@ -169,27 +185,65 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleReviewerReq) (
 		return res, err
 	}
 
-	res.Article = article
-	res.Reviewer = user
+	queryComment := `SELECT
+		id,                            
+    	type,
+    	file_id,
+    	draft_checker_id,
+    	comment,
+    	created_at,
+    	updated_at
+	FROM
+		"file_comment"
+	WHERE
+		draft_checker_id = $1`
+
+	rows, err := s.db.Query(
+		ctx,
+		queryComment,
+		req.GetId(),
+	)
+	if err != nil {
+		return res, err
+	}
+
+	var comments []*pb.FileComment
+	for rows.Next() {
+		obj := &pb.FileComment{}
+		err = rows.Scan(
+			&obj.Id,
+			&obj.Type,
+			&obj.FileId,
+			&obj.DraftCheckerId,
+			&obj.Comment,
+			&obj.CreatedAt,
+			&obj.UpdatedAt,
+		)
+
+		comments = append(comments, obj)
+	}
+
+	res.Comments = comments
+	res.ArticleIdData = article
+	res.CheckerIdData = user
+
 	return res, nil
 }
 
-func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerListReq) (res *pb.GetArticleReviewerListRes, err error) {
-	res = &pb.GetArticleReviewerListRes{}
+func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleCheckerListReq) (res *pb.GetArticleCheckerListRes, err error) {
+	res = &pb.GetArticleCheckerListRes{}
 	params := make(map[string]interface{})
 	var arr []interface{}
 
 	query := `SELECT
 		r.id, 
-	    r.reviewer_id,
-        r.article_id,
-        COALESCE(r.status::VARCHAR, '') as status,
+	    r.checker_id,
+        r.draft_id,
+        r.status,
+	    r.type,
         COALESCE(r.comment, '') as comment,
-		COALESCE(r.manuscript_comment, '') as manuscript_comment,
-        COALESCE(r.cover_letter_comment, '') as cover_letter_comment,
-        COALESCE(r.supplemental_comment, '') as supplemental_comment,
-        TO_CHAR(r.created_at, ` + config.DatabaseQueryTimeLayout + `) AS r_created_at,
-        TO_CHAR(r.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS r_updated_at,
+        TO_CHAR(r.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
+        TO_CHAR(r.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at,
 		a.id,                 
     	COALESCE(a.journal_id::VARCHAR, '') AS journal_id,           
     	a.type,         
@@ -197,12 +251,9 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
     	COALESCE(a.author_id::VARCHAR, '') AS author_id,              
     	a.description,
 		a.status,
-		COALESCE(a.editor_id::VARCHAR, '') AS editor_id,
-		COALESCE(a.editor_comment::VARCHAR, '') AS editor_comment,
+		a.availability,
+		a.funding,
 		a.group_id,
-		a.manuscript,
-		a.cover_letter,
-		a.supplemental,
     	TO_CHAR(a.created_at, ` + config.DatabaseQueryTimeLayout + `) AS a_created_at,
     	TO_CHAR(a.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS a_updated_at,
 		u.id,
@@ -210,9 +261,9 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 		COALESCE(u.last_name, ''),
 		u.email
 	FROM
-		"article_reviewer" r
-	INNER JOIN "draft" a ON r.article_id = a.id
-	INNER JOIN "user" u ON r.reviewer_id = u.id`
+		"draft_checker" r
+	INNER JOIN "draft" a ON r.draft_id = a.id
+	INNER JOIN "user" u ON r.checker_id = u.id`
 	filter := " WHERE 1=1"
 
 	offset := " OFFSET 0"
@@ -224,14 +275,14 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 		filter += ` AND (status ILIKE '%' || :search || '%')`
 	}
 
-	if util.IsValidUUID(req.ReviewerId) {
-		params["reviewer_id"] = req.ReviewerId
-		filter += ` AND reviewer_id = :reviewer_id`
+	if util.IsValidUUID(req.CheckerId) {
+		params["checker_id"] = req.CheckerId
+		filter += ` AND checker_id = :checker_id`
 	}
 
 	if util.IsValidUUID(req.ArticleId) {
-		params["article_id"] = req.ArticleId
-		filter += ` AND article_id = :article_id`
+		params["draft_id"] = req.ArticleId
+		filter += ` AND draft_id = :draft_id`
 	}
 
 	if req.Offset > 0 {
@@ -244,7 +295,7 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 		limit = " LIMIT :limit"
 	}
 
-	cQ := `SELECT count(1) FROM "article_reviewer"` + filter
+	cQ := `SELECT count(1) FROM "draft_checker"` + filter
 
 	cQ, arr = helper.ReplaceQueryParams(cQ, params)
 
@@ -265,19 +316,17 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 	defer rows.Close()
 
 	for rows.Next() {
-		obj := &pb.GetArticleReviewerListRes_ArticleReview{}
+		obj := &pb.GetArticleCheckerListRes_ArticleChecker{}
 		article := &pb.Article{}
-		user := &pb.Reviewer{}
+		user := &pb.Checker{}
 
 		err = rows.Scan(
 			&obj.Id,
-			&obj.ReviewerId,
+			&obj.CheckerId,
 			&obj.ArticleId,
 			&obj.Status,
+			&obj.Type,
 			&obj.Comment,
-			&obj.ManuscriptComment,
-			&obj.CoverLetterComment,
-			&obj.SupplementalComment,
 			&obj.CreatedAt,
 			&obj.UpdatedAt,
 			&article.Id,
@@ -287,12 +336,9 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 			&article.AuthorId,
 			&article.Description,
 			&article.Status,
-			&article.EditorId,
-			&article.EditorComment,
+			&article.Availability,
+			&article.Funding,
 			&article.GroupId,
-			&article.Manuscript,
-			&article.CoverLetter,
-			&article.Supplemental,
 			&article.CreatedAt,
 			&article.UpdatedAt,
 			&user.Id,
@@ -304,25 +350,26 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleReviewerLi
 			return res, err
 		}
 
-		obj.Article = article
-		obj.Reviewer = user
+		obj.ArticleIdData = article
+		obj.CheckerIdData = user
 
-		res.ArticleReviewers = append(res.ArticleReviewers, obj)
+		res.ArticleCheckers = append(res.ArticleCheckers, obj)
 	}
 
 	return res, nil
 }
 
-func (s *ReviewerRepo) Update(ctx context.Context, req *pb.UpdateArticleReviewerReq) (rowsAffected int64, err error) {
-
+func (s *ReviewerRepo) Update(ctx context.Context, req *pb.UpdateArticleCheckerReq) (rowsAffected int64, err error) {
+	rowsAffected = 0
 	validArticleReviewerStatus := map[string]bool{
+		config.ARTICLE_REVIEWER_STATUS_NEW:                 true,
 		config.ARTICLE_REVIEWER_STATUS_PENDING:             true,
 		config.ARTICLE_REVIEWER_STATUS_APPROVED:            true,
 		config.ARTICLE_REVIEWER_STATUS_REJECTED:            true,
 		config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION: true,
 	}
 
-	querySet := `UPDATE "article_reviewer" SET                
+	querySet := `UPDATE "draft_checker" SET                
     	updated_at = CURRENT_TIMESTAMP`
 
 	filter := ` WHERE id = :id`
@@ -341,21 +388,6 @@ func (s *ReviewerRepo) Update(ctx context.Context, req *pb.UpdateArticleReviewer
 		params["comment"] = req.Comment
 	}
 
-	if req.ManuscriptComment != "" {
-		querySet += `, manuscript_comment = :manuscript_comment`
-		params["manuscript_comment"] = req.ManuscriptComment
-	}
-
-	if req.CoverLetterComment != "" {
-		querySet += `, cover_letter_comment = :cover_letter_comment`
-		params["cover_letter_comment"] = req.CoverLetterComment
-	}
-
-	if req.SupplementalComment != "" {
-		querySet += `, supplemental_comment = :supplemental_comment`
-		params["supplemental_comment"] = req.SupplementalComment
-	}
-
 	query := querySet + filter
 
 	q, arr := helper.ReplaceQueryParams(query, params)
@@ -363,11 +395,70 @@ func (s *ReviewerRepo) Update(ctx context.Context, req *pb.UpdateArticleReviewer
 	if err != nil {
 		return 0, err
 	}
+	rowsAffected += result.RowsAffected()
 
-	return result.RowsAffected(), nil
+	queryCommentInsert := `INSERT INTO "file_comment" (
+		id,
+		type,
+		file_id,
+		draft_checker_id,
+		comment
+	) VALUES (
+		$1,
+		$2,
+		$3,
+		$4,
+		$5
+	)`
+
+	queryCommentUpdate := `UPDATE "file_comment" SET
+		comment = $1,
+		updated_at = CURRENT_TIMESTAMP
+	WHERE id = $2`
+
+	for _, val := range req.GetComments() {
+		if util.IsValidUUID(val.Id) {
+			c, err := s.db.Exec(
+				ctx,
+				queryCommentUpdate,
+				val.Comment,
+				val.Id,
+			)
+			if err != nil {
+				fmt.Printf("Checker------>Update: %s", err.Error())
+				continue
+			}
+
+			rowsAffected += c.RowsAffected()
+		} else {
+			commentId, err := uuid.NewRandom()
+			if err != nil {
+				fmt.Printf("Checker--------->Create: %s", err.Error())
+				continue
+			}
+
+			c, err := s.db.Exec(
+				ctx,
+				queryCommentInsert,
+				commentId.String(),
+				val.Type,
+				val.FileId,
+				req.Id,
+				val.Comment,
+			)
+			if err != nil {
+				fmt.Printf("Checker------>Create: %s", err.Error())
+				continue
+			}
+
+			rowsAffected += c.RowsAffected()
+		}
+	}
+
+	return rowsAffected, nil
 }
-func (s *ReviewerRepo) Delete(ctx context.Context, req *pb.DeleteArticleReviewerReq) (rowsAffected int64, err error) {
-	query := `DELETE FROM "article_reviewer" WHERE id = $1 OR reviewer_id = $1`
+func (s *ReviewerRepo) Delete(ctx context.Context, req *pb.DeleteArticleCheckerReq) (rowsAffected int64, err error) {
+	query := `DELETE FROM "draft_checker" WHERE id = $1 OR checker_id = $1`
 
 	result, err := s.db.Exec(ctx, query, req.GetId())
 	if err != nil {

@@ -38,7 +38,7 @@ func SetUpServer(cfg config.Config, log logger.LoggerI, strg storage.StorageI, s
 
 	// submission
 	submission_service.RegisterArticleServiceServer(grpcServer, submission.NewArticleService(cfg, log, strg, svcs))
-	submission_service.RegisterReviewerServiceServer(grpcServer, submission.NewReviewerService(cfg, log, strg, svcs))
+	submission_service.RegisterCheckerServiceServer(grpcServer, submission.NewCheckerService(cfg, log, strg, svcs))
 
 	reflection.Register(grpcServer)
 	return

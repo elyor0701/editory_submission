@@ -21,7 +21,7 @@ type ServiceManagerI interface {
 	NotificationService() notification_service.NotificationServiceClient
 	EmailTmpService() notification_service.EmailTmpServiceClient
 	ArticleService() submission_service.ArticleServiceClient
-	ReviewerService() submission_service.ReviewerServiceClient
+	CheckerService() submission_service.CheckerServiceClient
 }
 
 type grpcClients struct {
@@ -41,8 +41,8 @@ type grpcClients struct {
 	emailTmpService     notification_service.EmailTmpServiceClient
 
 	// submission
-	articleService  submission_service.ArticleServiceClient
-	reviewerService submission_service.ReviewerServiceClient
+	articleService submission_service.ArticleServiceClient
+	checkerService submission_service.CheckerServiceClient
 }
 
 func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
@@ -66,7 +66,7 @@ func NewGrpcClients(cfg config.Config) (ServiceManagerI, error) {
 		emailTmpService:     notification_service.NewEmailTmpServiceClient(connAuthService),
 		notificationService: notification_service.NewNotificationServiceClient(connAuthService),
 		articleService:      submission_service.NewArticleServiceClient(connAuthService),
-		reviewerService:     submission_service.NewReviewerServiceClient(connAuthService),
+		checkerService:      submission_service.NewCheckerServiceClient(connAuthService),
 	}, nil
 }
 
@@ -109,6 +109,6 @@ func (g *grpcClients) EmailTmpService() notification_service.EmailTmpServiceClie
 func (g *grpcClients) ArticleService() submission_service.ArticleServiceClient {
 	return g.articleService
 }
-func (g *grpcClients) ReviewerService() submission_service.ReviewerServiceClient {
-	return g.reviewerService
+func (g *grpcClients) CheckerService() submission_service.CheckerServiceClient {
+	return g.checkerService
 }
