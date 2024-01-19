@@ -1,17 +1,18 @@
 package models
 
 type CreateUserDraftReq struct {
-	JournalId    string        `json:"journal_id,omitempty"`
-	Type         string        `json:"type,omitempty"`
-	Title        string        `json:"title,omitempty"`
-	Description  string        `json:"description,omitempty"`
-	GroupId      string        `json:"group_id,omitempty"`
-	Conflict     bool          `json:"conflict,omitempty"`
-	Availability string        `json:"availability,omitempty"`
-	Funding      string        `json:"funding,omitempty"`
-	Status       string        `json:"status,omitempty"`
-	DraftStep    string        `json:"draft_step,omitempty"`
-	Files        []*AddFileReq `json:"files,omitempty"`
+	JournalId    string            `json:"journal_id,omitempty"`
+	Type         string            `json:"type,omitempty"`
+	Title        string            `json:"title,omitempty"`
+	Description  string            `json:"description,omitempty"`
+	GroupId      string            `json:"group_id,omitempty"`
+	Conflict     bool              `json:"conflict,omitempty"`
+	Availability string            `json:"availability,omitempty"`
+	Funding      string            `json:"funding,omitempty"`
+	Status       string            `json:"status,omitempty"`
+	DraftStep    string            `json:"draft_step,omitempty"`
+	Files        []*AddFileReq     `json:"files,omitempty"`
+	Coauthors    []*AddCoAuthorReq `json:"coauthors"`
 }
 
 type AddFileReq struct {

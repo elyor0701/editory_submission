@@ -85,6 +85,67 @@ func (h *Handler) CreateUserDraft(c *gin.Context) {
 		}
 	}
 
+	for _, val := range article.Coauthors {
+		userPb, err := h.services.UserService().GetUser(
+			c.Request.Context(),
+			&auth_service.GetUserReq{
+				Email: val.Email,
+			},
+		)
+		if err != nil {
+			if util.IsErrNoRows(err) {
+				userPb, err = h.services.UserService().CreateUser(
+					c.Request.Context(),
+					&auth_service.User{
+						FirstName:    val.FirstName,
+						LastName:     val.LastName,
+						Email:        val.Email,
+						UniversityId: val.UniversityId,
+						CountryId:    val.CountryId,
+						Password:     config.DEFAULT_PASSWORD,
+					},
+				)
+
+				if err != nil {
+					h.handleResponse(c, http.GRPCError, err.Error())
+					return
+				}
+			} else {
+				h.handleResponse(c, http.GRPCError, err.Error())
+				return
+			}
+		}
+
+		role := auth_service.Role{
+			RoleType: config.AUTHOR,
+			UserId:   userPb.GetId(),
+		}
+
+		_, err = h.services.RoleService().CreateRole(
+			c.Request.Context(),
+			&role,
+		)
+		if err != nil {
+			if !util.IsErrDuplicateKey(err) {
+				h.handleResponse(c, http.GRPCError, err.Error())
+				return
+			}
+		}
+
+		_, err = h.services.ArticleService().AddCoAuthor(
+			c.Request.Context(),
+			&submission_service.AddCoAuthorReq{
+				ArticleId: resp.Id,
+				UserId:    userPb.Id,
+			},
+		)
+
+		if err != nil {
+			h.handleResponse(c, http.GRPCError, err.Error())
+			return
+		}
+	}
+
 	h.handleResponse(c, http.Created, resp)
 }
 
