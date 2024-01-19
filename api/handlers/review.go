@@ -98,6 +98,7 @@ func (h *Handler) CreateArticleReviewer(c *gin.Context) {
 			CheckerId: userPb.Id,
 			ArticleId: articleId,
 			Status:    "NEW",
+			Type:      config.REVIEWER,
 		},
 	)
 
@@ -355,6 +356,19 @@ func (h *Handler) GetUserReviewByID(c *gin.Context) {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
 	}
+
+	files, err := h.services.ArticleService().GetFiles(
+		c.Request.Context(),
+		&pb.GetFilesReq{
+			ArticleId: resp.ArticleId,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	resp.ArticleIdData.Files = files.GetFiles()
 
 	h.handleResponse(c, http.OK, resp)
 }

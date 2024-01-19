@@ -11,7 +11,6 @@ type CreateUserDraftReq struct {
 	Funding      string        `json:"funding,omitempty"`
 	Status       string        `json:"status,omitempty"`
 	DraftStep    string        `json:"draft_step,omitempty"`
-	Step         string        `json:"step,omitempty"`
 	Files        []*AddFileReq `json:"files,omitempty"`
 }
 
@@ -25,4 +24,34 @@ type File struct {
 	Url       string `json:"url,omitempty"`
 	Type      string `json:"type,omitempty"`
 	ArticleId string `json:"article_id,omitempty"`
+}
+
+type UpdateJournalDraftReq struct {
+	Status        string         `json:"status,omitempty"`
+	EditorId      string         `json:"editor_id,omitempty"`
+	Id            string         `json:"id,omitempty"`
+	CheckerStatus string         `json:"checker_status,omitempty"`
+	Comment       string         `json:"comment"`
+	FileComments  []*FileComment `json:"file_comment,omitempty"`
+}
+
+type FileComment struct {
+	Id      string `json:"id"`
+	Type    string `json:"type,omitempty"`
+	FileId  string `json:"file_id,omitempty"`
+	Comment string `json:"comment,omitempty"`
+}
+
+type UpdateUserDraftReq struct {
+	Id           string        `json:"id"`
+	JournalId    string        `json:"journal_id,omitempty"`
+	Type         string        `json:"type,omitempty"`
+	Title        string        `json:"title,omitempty"`
+	Description  string        `json:"description,omitempty"`
+	Conflict     bool          `json:"conflict,omitempty"`
+	Availability string        `json:"availability,omitempty"`
+	Funding      string        `json:"funding,omitempty"`
+	Status       string        `json:"status,omitempty"`
+	DraftStep    string        `json:"draft_step,omitempty"`
+	Files        []*AddFileReq `json:"files,omitempty"`
 }

@@ -71,6 +71,12 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	r.PUT("/user/:user-id/draft", h.UpdateUserDraft)
 	r.DELETE("/user/:user-id/draft/:draft-id", h.DeleteUserDraft)
 
+	r.POST("/user/:user-id/draft/:draft-id/file", h.AddDraftFile)
+	r.DELETE("/user/:user-id/draft/:draft-id/file/:file-id", h.DeleteDraftFiles)
+
+	r.GET("/user/:user-id/draft/:draft-id/check", h.GetUserDraftCheckList)
+	r.GET("/user/:user-id/draft/:draft-id/check/:check-id", h.GetUserDraftCheckByID)
+
 	r.GET("/user/:user-id/review", h.GetUserReviewList)
 	r.GET("/user/:user-id/review/:review-id", h.GetUserReviewByID)
 	r.PUT("/user/:user-id/review", h.UpdateUserReview)
@@ -82,11 +88,17 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		journal.PUT("", h.UpdateJournal)
 		journal.DELETE("/:journal-id", h.DeleteJournal) // @TODO
 
-		journal.POST("/:journal-id/draft", h.CreateJournalArticle)
-		journal.GET("/:journal-id/draft", h.GetJournalArticleList)
-		journal.GET("/:journal-id/draft/:draft-id", h.GetJournalArticleByID)
-		journal.PUT("/:journal-id/draft", h.UpdateJournalArticle)
-		journal.DELETE("/:journal-id/draft/:draft-id", h.DeleteJournalArticle)
+		//journal.POST("/:journal-id/draft", h.CreateJournalArticle)
+		journal.GET("/:journal-id/draft", h.GetJournalDraftList)
+		journal.GET("/:journal-id/draft/:draft-id", h.GetJournalDraftByID)
+		journal.PUT("/:journal-id/draft", h.UpdateJournalDraft)
+		//journal.DELETE("/:journal-id/draft/:draft-id", h.DeleteJournalArticle)
+
+		journal.POST("/:journal-id/draft/:draft-id/check", h.CreateArticleCheck)
+		journal.PUT("/:journal-id/draft/:draft-id/check", h.UpdateArticleCheck)
+		journal.GET("/:journal-id/draft/:draft-id/check", h.GetArticleCheckList)
+		journal.GET("/:journal-id/draft/:draft-id/check/:check-id", h.GetArticleCheckByID)
+		journal.DELETE("/:journal-id/draft/:draft-id/check/:check-id", h.DeleteArticleCheck)
 
 		journal.POST("/:journal-id/draft/:draft-id/reviewer", h.CreateArticleReviewer)
 		journal.DELETE("/:journal-id/draft/:draft-id/reviewer/:reviewer-id", h.DeleteArticleReviewer)

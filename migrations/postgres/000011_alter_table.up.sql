@@ -45,8 +45,8 @@ create table "file_comment" (
   file_id uuid,
   draft_checker_id uuid,
   comment text,
-  created_at timestamp,
-  updated_at timestamp
+  created_at timestamp default CURRENT_TIMESTAMP,
+  updated_at timestamp default CURRENT_TIMESTAMP
 );
 
 alter table "file_comment" add foreign key ("file_id") references file("id") on delete cascade;

@@ -127,6 +127,17 @@ definitions:
       title:
         type: string
     type: object
+  editory_submission_api_models.CreateArticleCheckReq:
+    properties:
+      comment:
+        type: string
+      editor_id:
+        type: string
+      file_comments:
+        items:
+          $ref: '#/definitions/editory_submission_api_models.FileComment'
+        type: array
+    type: object
   editory_submission_api_models.CreateArticleReviewerReq:
     properties:
       email:
@@ -255,6 +266,17 @@ definitions:
       status:
         type: boolean
       user_id:
+        type: string
+    type: object
+  editory_submission_api_models.FileComment:
+    properties:
+      comment:
+        type: string
+      file_id:
+        type: string
+      id:
+        type: string
+      type:
         type: string
     type: object
   editory_submission_api_models.GetAdminUserRes:
@@ -450,6 +472,63 @@ definitions:
       last_name:
         type: string
       password:
+        type: string
+    type: object
+  editory_submission_api_models.UpdateArticleCheckReq:
+    properties:
+      comment:
+        type: string
+      fileComments:
+        items:
+          $ref: '#/definitions/editory_submission_api_models.FileComment'
+        type: array
+      id:
+        type: string
+      status:
+        type: string
+    type: object
+  editory_submission_api_models.UpdateJournalDraftReq:
+    properties:
+      checker_status:
+        type: string
+      comment:
+        type: string
+      editor_id:
+        type: string
+      file_comment:
+        items:
+          $ref: '#/definitions/editory_submission_api_models.FileComment'
+        type: array
+      id:
+        type: string
+      status:
+        type: string
+    type: object
+  editory_submission_api_models.UpdateUserDraftReq:
+    properties:
+      availability:
+        type: string
+      conflict:
+        type: boolean
+      description:
+        type: string
+      draft_step:
+        type: string
+      files:
+        items:
+          $ref: '#/definitions/editory_submission_api_models.AddFileReq'
+        type: array
+      funding:
+        type: string
+      id:
+        type: string
+      journal_id:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      type:
         type: string
     type: object
   editory_submission_api_models.UpdateUserReviewReq:
@@ -1473,6 +1552,49 @@ definitions:
       count:
         type: integer
     type: object
+  editory_submission_genproto_submission_service.GetArticleRes:
+    properties:
+      author_id:
+        type: string
+      availability:
+        type: string
+      conflict:
+        type: boolean
+      created_at:
+        type: string
+      description:
+        type: string
+      draft_step:
+        type: string
+      editor_status:
+        type: string
+      files:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.File'
+        type: array
+      funding:
+        type: string
+      group_id:
+        type: string
+      id:
+        type: string
+      journal_id:
+        type: string
+      journal_id_data:
+        $ref: '#/definitions/editory_submission_genproto_submission_service.Journal'
+      reviewer_status:
+        type: string
+      status:
+        type: string
+      step:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+    type: object
   editory_submission_genproto_submission_service.GetFilesRes:
     properties:
       count:
@@ -1510,39 +1632,6 @@ definitions:
       type:
         type: string
       updated_at:
-        type: string
-    type: object
-  editory_submission_genproto_submission_service.UpdateArticleReq:
-    properties:
-      author_id:
-        type: string
-      availability:
-        type: string
-      conflict:
-        type: boolean
-      description:
-        type: string
-      draft_step:
-        type: string
-      editor_status:
-        type: string
-      funding:
-        type: string
-      group_id:
-        type: string
-      id:
-        type: string
-      journal_id:
-        type: string
-      reviewer_status:
-        type: string
-      status:
-        type: string
-      step:
-        type: string
-      title:
-        type: string
-      type:
         type: string
     type: object
   editory_submission_genproto_submission_service.UpdateArticleRes:
@@ -2206,7 +2295,7 @@ definitions:
       extKeyUsage:
         description: Sequence of extended key usages.
         items:
-          type: integer
+          $ref: '#/definitions/x509.ExtKeyUsage'
         type: array
       extensions:
         description: |-
@@ -2241,7 +2330,7 @@ definitions:
           type: string
         type: array
       keyUsage:
-        type: integer
+        $ref: '#/definitions/x509.KeyUsage'
       maxPathLen:
         description: |-
           MaxPathLen and MaxPathLenZero indicate the presence and
@@ -2299,7 +2388,7 @@ definitions:
         type: array
       publicKey: {}
       publicKeyAlgorithm:
-        type: integer
+        $ref: '#/definitions/x509.PublicKeyAlgorithm'
       raw:
         description: Complete ASN.1 DER content (certificate, signature algorithm
           and signature).
@@ -2333,7 +2422,7 @@ definitions:
           type: integer
         type: array
       signatureAlgorithm:
-        type: integer
+        $ref: '#/definitions/x509.SignatureAlgorithm'
       subject:
         $ref: '#/definitions/pkix.Name'
       subjectKeyId:
@@ -2369,6 +2458,123 @@ definitions:
       version:
         type: integer
     type: object
+  x509.ExtKeyUsage:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    type: integer
+    x-enum-varnames:
+    - ExtKeyUsageAny
+    - ExtKeyUsageServerAuth
+    - ExtKeyUsageClientAuth
+    - ExtKeyUsageCodeSigning
+    - ExtKeyUsageEmailProtection
+    - ExtKeyUsageIPSECEndSystem
+    - ExtKeyUsageIPSECTunnel
+    - ExtKeyUsageIPSECUser
+    - ExtKeyUsageTimeStamping
+    - ExtKeyUsageOCSPSigning
+    - ExtKeyUsageMicrosoftServerGatedCrypto
+    - ExtKeyUsageNetscapeServerGatedCrypto
+    - ExtKeyUsageMicrosoftCommercialCodeSigning
+    - ExtKeyUsageMicrosoftKernelCodeSigning
+  x509.KeyUsage:
+    enum:
+    - 1
+    - 2
+    - 4
+    - 8
+    - 16
+    - 32
+    - 64
+    - 128
+    - 256
+    type: integer
+    x-enum-varnames:
+    - KeyUsageDigitalSignature
+    - KeyUsageContentCommitment
+    - KeyUsageKeyEncipherment
+    - KeyUsageDataEncipherment
+    - KeyUsageKeyAgreement
+    - KeyUsageCertSign
+    - KeyUsageCRLSign
+    - KeyUsageEncipherOnly
+    - KeyUsageDecipherOnly
+  x509.PublicKeyAlgorithm:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    type: integer
+    x-enum-comments:
+      DSA: Unsupported.
+    x-enum-varnames:
+    - UnknownPublicKeyAlgorithm
+    - RSA
+    - DSA
+    - ECDSA
+    - Ed25519
+  x509.SignatureAlgorithm:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    type: integer
+    x-enum-comments:
+      DSAWithSHA1: Unsupported.
+      DSAWithSHA256: Unsupported.
+      ECDSAWithSHA1: Only supported for signing, and verification of CRLs, CSRs, and
+        OCSP responses.
+      MD2WithRSA: Unsupported.
+      MD5WithRSA: Only supported for signing, not verification.
+      SHA1WithRSA: Only supported for signing, and verification of CRLs, CSRs, and
+        OCSP responses.
+    x-enum-varnames:
+    - UnknownSignatureAlgorithm
+    - MD2WithRSA
+    - MD5WithRSA
+    - SHA1WithRSA
+    - SHA256WithRSA
+    - SHA384WithRSA
+    - SHA512WithRSA
+    - DSAWithSHA1
+    - DSAWithSHA256
+    - ECDSAWithSHA1
+    - ECDSAWithSHA256
+    - ECDSAWithSHA384
+    - ECDSAWithSHA512
+    - SHA256WithRSAPSS
+    - SHA384WithRSAPSS
+    - SHA512WithRSAPSS
+    - PureEd25519
 info:
   contact: {}
   description: This is a api gateway
@@ -4952,7 +5158,7 @@ paths:
         name: draft
         required: true
         schema:
-          $ref: '#/definitions/editory_submission_genproto_submission_service.UpdateArticleReq'
+          $ref: '#/definitions/editory_submission_api_models.UpdateJournalDraftReq'
       produces:
       - application/json
       responses:
@@ -5055,7 +5261,7 @@ paths:
             - $ref: '#/definitions/http.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/editory_submission_genproto_submission_service.Article'
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleRes'
               type: object
         "400":
           description: Invalid Argument
@@ -5076,6 +5282,280 @@ paths:
                   type: string
               type: object
       summary: Get Draft By ID
+      tags:
+      - Journal
+  /journal/{journal-id}/draft/{draft-id}/check:
+    get:
+      consumes:
+      - application/json
+      description: Get article check list
+      operationId: get_article_check_list
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetArticleReviewerListRes
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleCheckerListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get article check list
+      tags:
+      - Journal
+    post:
+      consumes:
+      - application/json
+      description: Create Article check
+      operationId: create_article_check
+      parameters:
+      - description: journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: draft Id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      - description: CreateArticleCheckReq
+        in: body
+        name: check
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_api_models.CreateArticleCheckReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: CreateArticleReviewerRes
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.CreateArticleCheckerRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Create Article check
+      tags:
+      - Journal
+    put:
+      consumes:
+      - application/json
+      description: update Article check
+      operationId: update_article_check
+      parameters:
+      - description: journal Id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: draft Id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      - description: UpdateArticleCheckReq
+        in: body
+        name: check
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_api_models.UpdateArticleCheckReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: CreateArticleReviewerRes
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.CreateArticleCheckerRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: update Article check
+      tags:
+      - Journal
+  /journal/{journal-id}/draft/{draft-id}/check/{check-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Get Article reviewer
+      operationId: delete_article_check
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      - description: check-id
+        in: path
+        name: check-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Article reviewer
+      tags:
+      - Journal
+    get:
+      consumes:
+      - application/json
+      description: Get article check
+      operationId: get_article_check_by_id
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      - description: check-id
+        in: path
+        name: check-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetArticleReviewerRes
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleCheckerRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get article check
       tags:
       - Journal
   /journal/{journal-id}/draft/{draft-id}/review:
@@ -6558,7 +7038,7 @@ paths:
         name: draft
         required: true
         schema:
-          $ref: '#/definitions/editory_submission_genproto_submission_service.UpdateArticleReq'
+          $ref: '#/definitions/editory_submission_api_models.UpdateUserDraftReq'
       produces:
       - application/json
       responses:
@@ -6682,6 +7162,111 @@ paths:
                   type: string
               type: object
       summary: Get Draft By ID
+      tags:
+      - User
+  /user/{user-id}/draft/{draft-id}/check:
+    get:
+      consumes:
+      - application/json
+      description: Get user draft check list
+      operationId: get_user_draft_check_list
+      parameters:
+      - description: user-id
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetArticleReviewerListRes
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleCheckerListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get user draft check list
+      tags:
+      - User
+  /user/{user-id}/draft/{draft-id}/check/{check-id}:
+    get:
+      consumes:
+      - application/json
+      description: Get user draft check
+      operationId: get_user_draft_check_by_id
+      parameters:
+      - description: user-id
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      - description: check-id
+        in: path
+        name: check-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetArticleReviewerRes
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetArticleCheckerRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get user draft check
       tags:
       - User
   /user/{user-id}/draft/{draft-id}/file:

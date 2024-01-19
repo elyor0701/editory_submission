@@ -282,7 +282,12 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleCheckerLis
 
 	if util.IsValidUUID(req.ArticleId) {
 		params["draft_id"] = req.ArticleId
-		filter += ` AND draft_id = :draft_id`
+		filter += ` AND r.draft_id = :draft_id`
+	}
+
+	if req.Type != "" {
+		params["type"] = req.Type
+		filter += ` AND r.type = :type`
 	}
 
 	if req.Offset > 0 {
@@ -295,7 +300,7 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleCheckerLis
 		limit = " LIMIT :limit"
 	}
 
-	cQ := `SELECT count(1) FROM "draft_checker"` + filter
+	cQ := `SELECT count(1) FROM "draft_checker" r` + filter
 
 	cQ, arr = helper.ReplaceQueryParams(cQ, params)
 

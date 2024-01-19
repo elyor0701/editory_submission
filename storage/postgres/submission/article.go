@@ -243,7 +243,7 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 	}
 
 	if _, ok := validArticleStatus[req.GetStatus()]; ok {
-		filter += " AND status = :status"
+		filter += " AND d.status = :status"
 		params["status"] = req.GetStatus()
 	}
 
@@ -295,6 +295,8 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 	q := query + filter + order + offset + limit
 
 	q, arr = helper.ReplaceQueryParams(q, params)
+
+	fmt.Println(q)
 
 	rows, err := s.db.Query(ctx, q, arr...)
 	if err != nil {
