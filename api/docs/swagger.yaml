@@ -244,6 +244,10 @@ definitions:
     properties:
       availability:
         type: string
+      coauthors:
+        items:
+          $ref: '#/definitions/editory_submission_api_models.AddCoAuthorReq'
+        type: array
       conflict:
         type: boolean
       description:

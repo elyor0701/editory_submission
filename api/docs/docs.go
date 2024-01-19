@@ -9413,6 +9413,12 @@ const docTemplate = `{
                 "availability": {
                     "type": "string"
                 },
+                "coauthors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_api_models.AddCoAuthorReq"
+                    }
+                },
                 "conflict": {
                     "type": "boolean"
                 },
