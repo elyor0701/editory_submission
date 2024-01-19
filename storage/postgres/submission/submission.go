@@ -10,6 +10,7 @@ type submissionRepo struct {
 	reviewer storage.ReviewerRepoI
 	article  storage.ArticleRepoI
 	file     storage.FileRepoI
+	coAuthor storage.CoAuthorRepoI
 }
 
 func NewSubmissionRepo(db *pgxpool.Pool) storage.SubmissionRepoI {
@@ -40,4 +41,12 @@ func (s submissionRepo) File() storage.FileRepoI {
 	}
 
 	return s.file
+}
+
+func (s submissionRepo) CoAuthor() storage.CoAuthorRepoI {
+	if s.coAuthor == nil {
+		s.coAuthor = NewCoAuthorRepo(s.db)
+	}
+
+	return s.coAuthor
 }

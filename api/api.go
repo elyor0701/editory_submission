@@ -74,6 +74,9 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 	r.POST("/user/:user-id/draft/:draft-id/file", h.AddDraftFile)
 	r.DELETE("/user/:user-id/draft/:draft-id/file/:file-id", h.DeleteDraftFiles)
 
+	r.POST("/user/:user-id/draft/:draft-id/coauthor", h.AddDraftCoAuthors)
+	r.DELETE("/user/:user-id/draft/:draft-id/coauthor/:coauthor-id", h.DeleteDraftCoAuthors)
+
 	r.GET("/user/:user-id/draft/:draft-id/check", h.GetUserDraftCheckList)
 	r.GET("/user/:user-id/draft/:draft-id/check/:check-id", h.GetUserDraftCheckByID)
 

@@ -11,34 +11,31 @@ import (
 	"strings"
 )
 
-type FileRepo struct {
+type CoAuthorRepo struct {
 	db *pgxpool.Pool
 }
 
-func NewFileRepo(db *pgxpool.Pool) storage.FileRepoI {
-	return &FileRepo{
+func NewCoAuthorRepo(db *pgxpool.Pool) storage.CoAuthorRepoI {
+	return &CoAuthorRepo{
 		db: db,
 	}
 }
 
-func (s FileRepo) Create(ctx context.Context, req *pb.AddFilesReq) (res *pb.AddFilesRes, err error) {
-	res = &pb.AddFilesRes{}
+func (s CoAuthorRepo) Create(ctx context.Context, req *pb.AddCoAuthorReq) (res *pb.AddCoAuthorRes, err error) {
+	res = &pb.AddCoAuthorRes{}
 
-	query := `INSERT INTO "file" (
+	query := `INSERT INTO "coauthor" (
 		id,                            
-    	url,
-        type,
-        draft_id
+    	article_id,
+        user_id
 	) VALUES (
 		$1,
 		$2,
-		$3,
-		$4
+		$3
 	) RETURNING 
 	    id,                            
-    	url,
-        type,
-        draft_id`
+    	article_id,
+    	user_id`
 
 	id, err := uuid.NewRandom()
 	if err != nil {
@@ -47,14 +44,12 @@ func (s FileRepo) Create(ctx context.Context, req *pb.AddFilesReq) (res *pb.AddF
 
 	err = s.db.QueryRow(ctx, query,
 		id.String(),
-		req.Url,
-		req.Type,
 		req.ArticleId,
+		req.UserId,
 	).Scan(
 		&res.Id,
-		&res.Url,
-		&res.Type,
 		&res.ArticleId,
+		&res.UserId,
 	)
 	if err != nil {
 		return nil, err
@@ -63,35 +58,37 @@ func (s FileRepo) Create(ctx context.Context, req *pb.AddFilesReq) (res *pb.AddF
 	return res, nil
 }
 
-func (s FileRepo) GetList(ctx context.Context, req *pb.GetFilesReq) (res *pb.GetFilesRes, err error) {
-	res = &pb.GetFilesRes{}
+func (s CoAuthorRepo) GetList(ctx context.Context, req *pb.GetCoAuthorsReq) (res *pb.GetCoAuthorsRes, err error) {
+	res = &pb.GetCoAuthorsRes{}
 	params := make(map[string]interface{})
 	var arr []interface{}
 
 	query := `SELECT
-		id,                            
-    	url,
-        type,
-        draft_id
+		c.id,                            
+    	c.article_id,
+        c.user_id,
+        u.id,
+        COALESCE(u.first_name, ''),
+        COALESCE(u.last_name, ''),
+        u.email,
+        COALESCE(u.university_id::VARCHAR, ''),
+        COALESCE(u.country_id::VARCHAR, '')
 	FROM
-		"file"`
+		"coauthor" c
+	INNER JOIN "user" u on c.user_id = u.id`
+
 	filter := " WHERE 1=1"
 
 	offset := " OFFSET 0"
 
 	limit := " LIMIT 50"
 
-	if req.Type != "" {
-		params["type"] = req.Type
-		filter += " AND type = :type"
+	if util.IsValidUUID(req.DraftId) {
+		params["article_id"] = req.DraftId
+		filter += " AND article_id = :article_id"
 	}
 
-	if util.IsValidUUID(req.ArticleId) {
-		params["draft_id"] = req.ArticleId
-		filter += " AND draft_id = :draft_id"
-	}
-
-	cQ := `SELECT count(1) FROM "file"` + filter
+	cQ := `SELECT count(1) FROM "coauthor" c` + filter
 
 	cQ, arr = helper.ReplaceQueryParams(cQ, params)
 
@@ -112,26 +109,33 @@ func (s FileRepo) GetList(ctx context.Context, req *pb.GetFilesReq) (res *pb.Get
 	defer rows.Close()
 
 	for rows.Next() {
-		obj := &pb.File{}
+		obj := &pb.CoAuthor{}
+		author := &pb.CoAuthor_Author{}
 
 		err = rows.Scan(
 			&obj.Id,
-			&obj.Url,
-			&obj.Type,
 			&obj.ArticleId,
+			&obj.UserId,
+			&author.Id,
+			&author.FirstName,
+			&author.LastName,
+			&author.Email,
+			&author.UniversityId,
+			&author.CountryId,
 		)
 		if err != nil {
 			return res, err
 		}
 
-		res.Files = append(res.Files, obj)
+		obj.UserIdData = author
+		res.Coauthors = append(res.Coauthors, obj)
 	}
 
 	return res, nil
 }
 
-func (s FileRepo) Delete(ctx context.Context, req *pb.DeleteFilesReq) (rowsAffected int64, err error) {
-	query := `DELETE FROM "file" WHERE id = $1`
+func (s CoAuthorRepo) Delete(ctx context.Context, req *pb.DeleteCoAuthorReq) (rowsAffected int64, err error) {
+	query := `DELETE FROM "coauthor" WHERE id = $1`
 
 	ids := strings.Split(req.Ids, ",")
 

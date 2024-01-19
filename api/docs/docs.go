@@ -8253,6 +8253,269 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/{user-id}/draft/{draft-id}/coauthor": {
+            "get": {
+                "description": "Get Draft coauthor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get Draft coauthor",
+                "operationId": "get_draft_coauthor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user Id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "draft-id",
+                        "name": "draft-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Draft data",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.GetCoAuthorsRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add Draft Coauthor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Add Draft Coauthor",
+                "operationId": "add_draft_coauthor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user Id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "draft-id",
+                        "name": "draft-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AddCoAuthorReq",
+                        "name": "author",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/editory_submission_api_models.AddCoAuthorReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Draft data",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_submission_service.AddCoAuthorRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{user-id}/draft/{draft-id}/coauthor/{coauthor-id}": {
+            "delete": {
+                "description": "Delete Draft coauthor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete Draft coauthor",
+                "operationId": "delete_draft_coauthor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user Id",
+                        "name": "user-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "draft-id",
+                        "name": "draft-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "coauthor-id",
+                        "name": "coauthor-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/user/{user-id}/draft/{draft-id}/file": {
             "get": {
                 "description": "Get Draft File",
@@ -8866,6 +9129,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_api_models.AddCoAuthorReq": {
+            "type": "object",
+            "properties": {
+                "country_id": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "university_id": {
                     "type": "string"
                 }
             }
@@ -9988,6 +10271,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/editory_submission_genproto_auth_service.Role"
                     }
                 },
+                "university_id": {
+                    "type": "string"
+                },
                 "username": {
                     "type": "string"
                 }
@@ -10770,6 +11056,20 @@ const docTemplate = `{
                 }
             }
         },
+        "editory_submission_genproto_submission_service.AddCoAuthorRes": {
+            "type": "object",
+            "properties": {
+                "article_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "editory_submission_genproto_submission_service.AddFilesRes": {
             "type": "object",
             "properties": {
@@ -10795,6 +11095,12 @@ const docTemplate = `{
                 },
                 "availability": {
                     "type": "string"
+                },
+                "coauthors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_submission_service.CoAuthor"
+                    }
                 },
                 "conflict": {
                     "type": "boolean"
@@ -10865,6 +11171,46 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "last_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.CoAuthor": {
+            "type": "object",
+            "properties": {
+                "article_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "user_id_data": {
+                    "$ref": "#/definitions/editory_submission_genproto_submission_service.CoAuthor_Author"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.CoAuthor_Author": {
+            "type": "object",
+            "properties": {
+                "country_id": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "university_id": {
                     "type": "string"
                 }
             }
@@ -11166,6 +11512,12 @@ const docTemplate = `{
                 "availability": {
                     "type": "string"
                 },
+                "coauthors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_submission_service.CoAuthor"
+                    }
+                },
                 "conflict": {
                     "type": "boolean"
                 },
@@ -11219,6 +11571,20 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "editory_submission_genproto_submission_service.GetCoAuthorsRes": {
+            "type": "object",
+            "properties": {
+                "coauthors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_genproto_submission_service.CoAuthor"
+                    }
+                },
+                "count": {
+                    "type": "integer"
                 }
             }
         },

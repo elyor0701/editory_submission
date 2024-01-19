@@ -41,6 +41,7 @@ type NotificationRepoI interface {
 type SubmissionRepoI interface {
 	Article() ArticleRepoI
 	File() FileRepoI
+	CoAuthor() CoAuthorRepoI
 	Reviewer() ReviewerRepoI
 }
 
@@ -165,6 +166,14 @@ type FileRepoI interface {
 	GetList(ctx context.Context, in *submission_service.GetFilesReq) (*submission_service.GetFilesRes, error)
 	//Update(ctx context.Context, in *cs_pb.UpdateSubjectReq) (*cs_pb.UpdateSubjectRes, error)
 	Delete(ctx context.Context, in *submission_service.DeleteFilesReq) (rowsAffected int64, err error)
+}
+
+type CoAuthorRepoI interface {
+	Create(ctx context.Context, in *submission_service.AddCoAuthorReq) (*submission_service.AddCoAuthorRes, error)
+	//Get(ctx context.Context, in *cs_pb.GetSubjectReq) (*cs_pb.GetSubjectRes, error)
+	GetList(ctx context.Context, in *submission_service.GetCoAuthorsReq) (*submission_service.GetCoAuthorsRes, error)
+	//Update(ctx context.Context, in *cs_pb.UpdateSubjectReq) (*cs_pb.UpdateSubjectRes, error)
+	Delete(ctx context.Context, in *submission_service.DeleteCoAuthorReq) (rowsAffected int64, err error)
 }
 
 type ReviewerRepoI interface {

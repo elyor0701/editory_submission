@@ -45,7 +45,8 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
     	address,            
     	post_code,
         gender,
-        is_completed
+        is_completed,
+        university_id
 	) VALUES (
 		$1,
 		$2,
@@ -62,7 +63,8 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 		$13,
 		$14,
 		$15,
-		$16
+		$16,
+		$17
 	)`
 
 	id, err := uuid.NewRandom()
@@ -87,6 +89,7 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 		util.NewNullString(req.GetPostCode()),
 		util.NewNullString(req.GetGender()),
 		req.GetIsCompleted(),
+		util.NewNullString(req.UniversityId),
 	)
 
 	res = &pb.User{
@@ -106,6 +109,7 @@ func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err 
 		Address:           req.GetAddress(),
 		PostCode:          req.GetPostCode(),
 		Gender:            req.GetGender(),
+		UniversityId:      req.UniversityId,
 	}
 
 	return res, err
@@ -129,7 +133,8 @@ func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, e
     	COALESCE(degree, ''),             
     	COALESCE(address, ''),            
     	COALESCE(post_code, ''), 
-    	COALESCE(gender::VARCHAR, '') 
+    	COALESCE(gender::VARCHAR, ''),
+    	COALESCE(university_id::VARCHAR, '')
 	FROM
 		"user"
 	WHERE
@@ -155,6 +160,7 @@ func (s *UserRepo) Get(ctx context.Context, req *pb.GetUserReq) (res *pb.User, e
 		&res.Address,
 		&res.PostCode,
 		&res.Gender,
+		&res.UniversityId,
 	)
 
 	if err != nil {
@@ -178,7 +184,8 @@ func (s *UserRepo) GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb
     	email,      
     	coalesce(country_id::VARCHAR, ''),         
     	coalesce(city_id::VARCHAR, ''),
-    	coalesce(gender::VARCHAR, '')
+    	coalesce(gender::VARCHAR, ''),
+    	coalesce(university_id::VARCHAR, '')
 	FROM
 		"user"`
 
@@ -241,6 +248,7 @@ func (s *UserRepo) GetList(ctx context.Context, req *pb.GetUserListReq) (res *pb
 			&obj.CountryId,
 			&obj.CityId,
 			&obj.Gender,
+			&obj.UniversityId,
 		)
 		if err != nil {
 			return res, err
@@ -438,6 +446,11 @@ func (s *UserRepo) Update(ctx context.Context, req *pb.User) (rowsAffected int64
 		params["city_id"] = req.GetCityId()
 	}
 
+	if util.IsValidUUID(req.GetUniversityId()) {
+		fieldVal = append(fieldVal, ` university_id = :university_id`)
+		params["university_id"] = req.GetUniversityId()
+	}
+
 	if req.GetProfSphere() != "" {
 		fieldVal = append(fieldVal, ` prof_sphere = :prof_sphere`)
 		params["prof_sphere"] = req.GetProfSphere()
@@ -515,7 +528,8 @@ func (s *UserRepo) GetByEmail(ctx context.Context, req *pb.GetUserReq) (res *pb.
     	coalesce(prof_sphere, ''),        
     	coalesce(degree, ''),             
     	coalesce(address, ''),            
-    	coalesce(post_code, '') 
+    	coalesce(post_code, ''),
+    	coalesce(university_id::VARCHAR, '')
 	FROM
 		"user"
 	WHERE
@@ -540,6 +554,7 @@ func (s *UserRepo) GetByEmail(ctx context.Context, req *pb.GetUserReq) (res *pb.
 		&res.Degree,
 		&res.Address,
 		&res.PostCode,
+		&res.UniversityId,
 	)
 
 	if err != nil {

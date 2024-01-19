@@ -28,6 +28,9 @@ const (
 	ArticleService_AddFiles_FullMethodName       = "/submission_service.ArticleService/AddFiles"
 	ArticleService_GetFiles_FullMethodName       = "/submission_service.ArticleService/GetFiles"
 	ArticleService_DeleteFiles_FullMethodName    = "/submission_service.ArticleService/DeleteFiles"
+	ArticleService_AddCoAuthor_FullMethodName    = "/submission_service.ArticleService/AddCoAuthor"
+	ArticleService_GetCoAuthors_FullMethodName   = "/submission_service.ArticleService/GetCoAuthors"
+	ArticleService_DeleteCoAuthor_FullMethodName = "/submission_service.ArticleService/DeleteCoAuthor"
 )
 
 // ArticleServiceClient is the client API for ArticleService service.
@@ -44,6 +47,10 @@ type ArticleServiceClient interface {
 	AddFiles(ctx context.Context, in *AddFilesReq, opts ...grpc.CallOption) (*AddFilesRes, error)
 	GetFiles(ctx context.Context, in *GetFilesReq, opts ...grpc.CallOption) (*GetFilesRes, error)
 	DeleteFiles(ctx context.Context, in *DeleteFilesReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// CoAuthor
+	AddCoAuthor(ctx context.Context, in *AddCoAuthorReq, opts ...grpc.CallOption) (*AddCoAuthorRes, error)
+	GetCoAuthors(ctx context.Context, in *GetCoAuthorsReq, opts ...grpc.CallOption) (*GetCoAuthorsRes, error)
+	DeleteCoAuthor(ctx context.Context, in *DeleteCoAuthorReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type articleServiceClient struct {
@@ -126,6 +133,33 @@ func (c *articleServiceClient) DeleteFiles(ctx context.Context, in *DeleteFilesR
 	return out, nil
 }
 
+func (c *articleServiceClient) AddCoAuthor(ctx context.Context, in *AddCoAuthorReq, opts ...grpc.CallOption) (*AddCoAuthorRes, error) {
+	out := new(AddCoAuthorRes)
+	err := c.cc.Invoke(ctx, ArticleService_AddCoAuthor_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articleServiceClient) GetCoAuthors(ctx context.Context, in *GetCoAuthorsReq, opts ...grpc.CallOption) (*GetCoAuthorsRes, error) {
+	out := new(GetCoAuthorsRes)
+	err := c.cc.Invoke(ctx, ArticleService_GetCoAuthors_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *articleServiceClient) DeleteCoAuthor(ctx context.Context, in *DeleteCoAuthorReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ArticleService_DeleteCoAuthor_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ArticleServiceServer is the server API for ArticleService service.
 // All implementations must embed UnimplementedArticleServiceServer
 // for forward compatibility
@@ -140,6 +174,10 @@ type ArticleServiceServer interface {
 	AddFiles(context.Context, *AddFilesReq) (*AddFilesRes, error)
 	GetFiles(context.Context, *GetFilesReq) (*GetFilesRes, error)
 	DeleteFiles(context.Context, *DeleteFilesReq) (*emptypb.Empty, error)
+	// CoAuthor
+	AddCoAuthor(context.Context, *AddCoAuthorReq) (*AddCoAuthorRes, error)
+	GetCoAuthors(context.Context, *GetCoAuthorsReq) (*GetCoAuthorsRes, error)
+	DeleteCoAuthor(context.Context, *DeleteCoAuthorReq) (*emptypb.Empty, error)
 	mustEmbedUnimplementedArticleServiceServer()
 }
 
@@ -170,6 +208,15 @@ func (UnimplementedArticleServiceServer) GetFiles(context.Context, *GetFilesReq)
 }
 func (UnimplementedArticleServiceServer) DeleteFiles(context.Context, *DeleteFilesReq) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteFiles not implemented")
+}
+func (UnimplementedArticleServiceServer) AddCoAuthor(context.Context, *AddCoAuthorReq) (*AddCoAuthorRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddCoAuthor not implemented")
+}
+func (UnimplementedArticleServiceServer) GetCoAuthors(context.Context, *GetCoAuthorsReq) (*GetCoAuthorsRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCoAuthors not implemented")
+}
+func (UnimplementedArticleServiceServer) DeleteCoAuthor(context.Context, *DeleteCoAuthorReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCoAuthor not implemented")
 }
 func (UnimplementedArticleServiceServer) mustEmbedUnimplementedArticleServiceServer() {}
 
@@ -328,6 +375,60 @@ func _ArticleService_DeleteFiles_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ArticleService_AddCoAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddCoAuthorReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).AddCoAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_AddCoAuthor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).AddCoAuthor(ctx, req.(*AddCoAuthorReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticleService_GetCoAuthors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCoAuthorsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).GetCoAuthors(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_GetCoAuthors_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).GetCoAuthors(ctx, req.(*GetCoAuthorsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArticleService_DeleteCoAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCoAuthorReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArticleServiceServer).DeleteCoAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArticleService_DeleteCoAuthor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArticleServiceServer).DeleteCoAuthor(ctx, req.(*DeleteCoAuthorReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ArticleService_ServiceDesc is the grpc.ServiceDesc for ArticleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -366,6 +467,18 @@ var ArticleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteFiles",
 			Handler:    _ArticleService_DeleteFiles_Handler,
+		},
+		{
+			MethodName: "AddCoAuthor",
+			Handler:    _ArticleService_AddCoAuthor_Handler,
+		},
+		{
+			MethodName: "GetCoAuthors",
+			Handler:    _ArticleService_GetCoAuthors_Handler,
+		},
+		{
+			MethodName: "DeleteCoAuthor",
+			Handler:    _ArticleService_DeleteCoAuthor_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

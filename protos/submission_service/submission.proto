@@ -35,6 +35,7 @@ message Article {
   string updated_at = 17;
   Journal journal_id_data = 18;
   repeated File files = 19;
+  repeated CoAuthor coauthors = 20;
 }
 
 message Journal {
@@ -47,6 +48,21 @@ message File {
   string url = 2;
   string type = 3;
   string article_id = 4;
+}
+
+message CoAuthor {
+  message Author {
+    string id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    string university_id = 5;
+    string country_id = 6;
+  }
+  string id = 1;
+  string article_id = 2;
+  string user_id = 3;
+  Author user_id_data = 4;
 }
 
 message FileComment {

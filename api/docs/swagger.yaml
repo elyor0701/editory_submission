@@ -62,6 +62,19 @@ definitions:
       version:
         type: string
     type: object
+  editory_submission_api_models.AddCoAuthorReq:
+    properties:
+      country_id:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      university_id:
+        type: string
+    type: object
   editory_submission_api_models.AddFileReq:
     properties:
       type:
@@ -790,6 +803,8 @@ definitions:
         items:
           $ref: '#/definitions/editory_submission_genproto_auth_service.Role'
         type: array
+      university_id:
+        type: string
       username:
         type: string
     type: object
@@ -1298,6 +1313,15 @@ definitions:
       type:
         type: string
     type: object
+  editory_submission_genproto_submission_service.AddCoAuthorRes:
+    properties:
+      article_id:
+        type: string
+      id:
+        type: string
+      user_id:
+        type: string
+    type: object
   editory_submission_genproto_submission_service.AddFilesRes:
     properties:
       article_id:
@@ -1315,6 +1339,10 @@ definitions:
         type: string
       availability:
         type: string
+      coauthors:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.CoAuthor'
+        type: array
       conflict:
         type: boolean
       created_at:
@@ -1361,6 +1389,32 @@ definitions:
       id:
         type: string
       last_name:
+        type: string
+    type: object
+  editory_submission_genproto_submission_service.CoAuthor:
+    properties:
+      article_id:
+        type: string
+      id:
+        type: string
+      user_id:
+        type: string
+      user_id_data:
+        $ref: '#/definitions/editory_submission_genproto_submission_service.CoAuthor_Author'
+    type: object
+  editory_submission_genproto_submission_service.CoAuthor_Author:
+    properties:
+      country_id:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      university_id:
         type: string
     type: object
   editory_submission_genproto_submission_service.CreateArticleCheckerRes:
@@ -1558,6 +1612,10 @@ definitions:
         type: string
       availability:
         type: string
+      coauthors:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.CoAuthor'
+        type: array
       conflict:
         type: boolean
       created_at:
@@ -1594,6 +1652,15 @@ definitions:
         type: string
       updated_at:
         type: string
+    type: object
+  editory_submission_genproto_submission_service.GetCoAuthorsRes:
+    properties:
+      coauthors:
+        items:
+          $ref: '#/definitions/editory_submission_genproto_submission_service.CoAuthor'
+        type: array
+      count:
+        type: integer
     type: object
   editory_submission_genproto_submission_service.GetFilesRes:
     properties:
@@ -7267,6 +7334,159 @@ paths:
                   type: string
               type: object
       summary: Get user draft check
+      tags:
+      - User
+  /user/{user-id}/draft/{draft-id}/coauthor:
+    get:
+      consumes:
+      - application/json
+      description: Get Draft coauthor
+      operationId: get_draft_coauthor
+      parameters:
+      - description: user Id
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Draft data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.GetCoAuthorsRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Draft coauthor
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Add Draft Coauthor
+      operationId: add_draft_coauthor
+      parameters:
+      - description: user Id
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      - description: AddCoAuthorReq
+        in: body
+        name: author
+        required: true
+        schema:
+          $ref: '#/definitions/editory_submission_api_models.AddCoAuthorReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Draft data
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_submission_service.AddCoAuthorRes'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Add Draft Coauthor
+      tags:
+      - User
+  /user/{user-id}/draft/{draft-id}/coauthor/{coauthor-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Draft coauthor
+      operationId: delete_draft_coauthor
+      parameters:
+      - description: user Id
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: draft-id
+        in: path
+        name: draft-id
+        required: true
+        type: string
+      - description: coauthor-id
+        in: path
+        name: coauthor-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Delete Draft coauthor
       tags:
       - User
   /user/{user-id}/draft/{draft-id}/file:

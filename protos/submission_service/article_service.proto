@@ -18,6 +18,11 @@ service ArticleService {
   rpc AddFiles(AddFilesReq) returns (AddFilesRes) {}
   rpc GetFiles(GetFilesReq) returns (GetFilesRes) {}
   rpc DeleteFiles(DeleteFilesReq) returns (google.protobuf.Empty) {}
+
+  // CoAuthor
+  rpc AddCoAuthor(AddCoAuthorReq) returns (AddCoAuthorRes) {}
+  rpc GetCoAuthors(GetCoAuthorsReq) returns (GetCoAuthorsRes) {}
+  rpc DeleteCoAuthor(DeleteCoAuthorReq) returns (google.protobuf.Empty) {}
 }
 
 message CreateArticleReq {
@@ -81,6 +86,7 @@ message GetArticleRes {
   string updated_at = 17;
   Journal journal_id_data = 18;
   repeated File files = 19;
+  repeated CoAuthor coauthors = 20;
 }
 
 message GetArticleListReq {
@@ -166,5 +172,29 @@ message GetFilesRes {
 }
 
 message DeleteFilesReq {
+  string ids = 1;
+}
+
+message AddCoAuthorReq {
+  string article_id = 1;
+  string user_id = 2;
+}
+
+message AddCoAuthorRes {
+  string id = 1;
+  string article_id = 2;
+  string user_id = 3;
+}
+
+message GetCoAuthorsReq {
+  string draft_id = 1;
+}
+
+message GetCoAuthorsRes {
+  repeated CoAuthor coauthors = 1;
+  int32 count = 2;
+}
+
+message DeleteCoAuthorReq {
   string ids = 1;
 }

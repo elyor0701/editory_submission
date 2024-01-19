@@ -55,3 +55,11 @@ type UpdateUserDraftReq struct {
 	DraftStep    string        `json:"draft_step,omitempty"`
 	Files        []*AddFileReq `json:"files,omitempty"`
 }
+
+type AddCoAuthorReq struct {
+	Email        string `json:"email,omitempty"`
+	FirstName    string `json:"first_name,omitempty"`
+	LastName     string `json:"last_name,omitempty"`
+	UniversityId string `json:"university_id,omitempty"`
+	CountryId    string `json:"country_id,omitempty"`
+}

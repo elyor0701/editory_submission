@@ -4,6 +4,7 @@ import (
 	"editory_submission/api/http"
 	"editory_submission/api/models"
 	"editory_submission/config"
+	"editory_submission/genproto/auth_service"
 	"editory_submission/genproto/submission_service"
 	"editory_submission/pkg/util"
 	"encoding/json"
@@ -267,6 +268,19 @@ func (h *Handler) GetUserDraftByID(c *gin.Context) {
 
 	resp.Files = files.GetFiles()
 
+	coauthor, err := h.services.ArticleService().GetCoAuthors(
+		c.Request.Context(),
+		&submission_service.GetCoAuthorsReq{
+			DraftId: articleID,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	resp.Coauthors = coauthor.GetCoauthors()
+
 	h.handleResponse(c, http.OK, resp)
 }
 
@@ -448,6 +462,19 @@ func (h *Handler) GetJournalDraftByID(c *gin.Context) {
 	}
 
 	resp.Files = files.GetFiles()
+
+	coauthor, err := h.services.ArticleService().GetCoAuthors(
+		c.Request.Context(),
+		&submission_service.GetCoAuthorsReq{
+			DraftId: articleID,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	resp.Coauthors = coauthor.GetCoauthors()
 
 	h.handleResponse(c, http.OK, resp)
 }
@@ -834,6 +861,215 @@ func (h *Handler) DeleteDraftFiles(c *gin.Context) {
 		c.Request.Context(),
 		&submission_service.DeleteFilesReq{
 			Ids: fileId,
+		},
+	)
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.NoContent, "")
+}
+
+// AddDraftCoAuthors godoc
+// @ID add_draft_coauthor
+// @Router /user/{user-id}/draft/{draft-id}/coauthor [POST]
+// @Summary Add Draft Coauthor
+// @Description Add Draft Coauthor
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user-id path string true "user Id"
+// @Param draft-id path string true "draft-id"
+// @Param author body models.AddCoAuthorReq true "AddCoAuthorReq"
+// @Success 201 {object} http.Response{data=submission_service.AddCoAuthorRes} "Draft data"
+// @Response 400 {object} http.Response{data=string} "Bad Request"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) AddDraftCoAuthors(c *gin.Context) {
+	var (
+		author   models.AddCoAuthorReq
+		authorPb submission_service.AddCoAuthorReq
+	)
+
+	userId := c.Param("user-id")
+	if !util.IsValidUUID(userId) {
+		err := errors.New("user id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	draftId := c.Param("draft-id")
+	if !util.IsValidUUID(draftId) {
+		err := errors.New("draft id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	err := c.ShouldBindJSON(&author)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	authorJSON, err := json.Marshal(author)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	err = json.Unmarshal(authorJSON, &authorPb)
+	if err != nil {
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	authorPb.ArticleId = draftId
+
+	userPb, err := h.services.UserService().GetUser(
+		c.Request.Context(),
+		&auth_service.GetUserReq{
+			Email: author.Email,
+		},
+	)
+	if err != nil {
+		if util.IsErrNoRows(err) {
+			userPb, err = h.services.UserService().CreateUser(
+				c.Request.Context(),
+				&auth_service.User{
+					FirstName:    author.FirstName,
+					LastName:     author.LastName,
+					Email:        author.Email,
+					UniversityId: author.UniversityId,
+					CountryId:    author.CountryId,
+					Password:     config.DEFAULT_PASSWORD,
+				},
+			)
+
+			if err != nil {
+				h.handleResponse(c, http.GRPCError, err.Error())
+				return
+			}
+		} else {
+			h.handleResponse(c, http.GRPCError, err.Error())
+			return
+		}
+	}
+
+	role := auth_service.Role{
+		RoleType: config.AUTHOR,
+		UserId:   userPb.GetId(),
+	}
+
+	_, err = h.services.RoleService().CreateRole(
+		c.Request.Context(),
+		&role,
+	)
+	if err != nil {
+		if !util.IsErrDuplicateKey(err) {
+			h.handleResponse(c, http.GRPCError, err.Error())
+			return
+		}
+	}
+
+	authorPb.UserId = userPb.Id
+
+	resp, err := h.services.ArticleService().AddCoAuthor(
+		c.Request.Context(),
+		&authorPb,
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.Created, resp)
+}
+
+// GetDraftCoAuthors godoc
+// @ID get_draft_coauthor
+// @Router /user/{user-id}/draft/{draft-id}/coauthor [GET]
+// @Summary Get Draft coauthor
+// @Description Get Draft coauthor
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user-id path string true "user Id"
+// @Param draft-id path string true "draft-id"
+// @Success 201 {object} http.Response{data=submission_service.GetCoAuthorsRes} "Draft data"
+// @Response 400 {object} http.Response{data=string} "Bad Request"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetDraftCoAuthors(c *gin.Context) {
+
+	userId := c.Param("user-id")
+	if !util.IsValidUUID(userId) {
+		err := errors.New("user id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	draftId := c.Param("draft-id")
+	if !util.IsValidUUID(draftId) {
+		err := errors.New("draft id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	resp, err := h.services.ArticleService().GetCoAuthors(
+		c.Request.Context(),
+		&submission_service.GetCoAuthorsReq{
+			DraftId: draftId,
+		},
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.Created, resp)
+}
+
+// DeleteDraftCoAuthors godoc
+// @ID delete_draft_coauthor
+// @Router /user/{user-id}/draft/{draft-id}/coauthor/{coauthor-id} [DELETE]
+// @Summary Delete Draft coauthor
+// @Description Delete Draft coauthor
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user-id path string true "user Id"
+// @Param draft-id path string true "draft-id"
+// @Param coauthor-id path string true "coauthor-id"
+// @Success 204
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) DeleteDraftCoAuthors(c *gin.Context) {
+	userId := c.Param("user-id")
+	if !util.IsValidUUID(userId) {
+		err := errors.New("user id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	draftId := c.Param("draft-id")
+	if !util.IsValidUUID(draftId) {
+		err := errors.New("draft id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	coauthorId := c.Param("coauthor-id")
+	if !util.IsValidUUID(coauthorId) {
+		err := errors.New("coauthor id is not valid")
+		h.handleResponse(c, http.BadRequest, err.Error())
+		return
+	}
+
+	_, err := h.services.ArticleService().DeleteCoAuthor(
+		c.Request.Context(),
+		&submission_service.DeleteCoAuthorReq{
+			Ids: coauthorId,
 		},
 	)
 	if err != nil {
