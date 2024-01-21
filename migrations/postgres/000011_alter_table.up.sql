@@ -34,7 +34,9 @@ create type "checker_status" as enum (
     'PENDING',
     'APPROVED',
     'REJECTED',
-    'BACK_FOR_CORRECTION'
+    'BACK_FOR_CORRECTION',
+    'APPROVED_WITH_CORRECTION',
+    'REJECTED_WITH_CORRECTION'
 );
 
 alter table "draft_checker" add column status checker_status default 'NEW';

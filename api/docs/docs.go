@@ -9273,6 +9273,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/editory_submission_api_models.FileComment"
                     }
+                },
+                "status": {
+                    "type": "string"
                 }
             }
         },

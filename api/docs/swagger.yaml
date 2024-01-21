@@ -150,6 +150,8 @@ definitions:
         items:
           $ref: '#/definitions/editory_submission_api_models.FileComment'
         type: array
+      status:
+        type: string
     type: object
   editory_submission_api_models.CreateArticleReviewerReq:
     properties:
