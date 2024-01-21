@@ -269,7 +269,7 @@ func (s *UserRepo) GetListWithRole(ctx context.Context, req *pb.GetUserListByRol
 	var arr []interface{}
 
 	count := `SELECT
-		count(*)
+		count(*) over()
 	FROM
 		"user" u
 	INNER JOIN role r on u.id = r.user_id`
