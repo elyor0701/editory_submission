@@ -405,6 +405,12 @@ func (s *ArticleRepo) Update(ctx context.Context, req *pb.UpdateArticleReq) (row
 		config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION: true,
 	}
 
+	validDraftStep := map[string]bool{
+		config.DRAFT_STEP_AUTHOR:   true,
+		config.DRAFT_STEP_EDITOR:   true,
+		config.DRAFT_STEP_REVIEWER: true,
+	}
+
 	params := make(map[string]interface{})
 
 	querySet := `UPDATE "draft" SET                                              
@@ -448,7 +454,7 @@ func (s *ArticleRepo) Update(ctx context.Context, req *pb.UpdateArticleReq) (row
 		params["description"] = req.GetDescription()
 	}
 
-	if req.Step != "" {
+	if _, ok := validDraftStep[req.Step]; ok {
 		querySet += `, step = :step`
 		params["step"] = req.Step
 	}

@@ -171,12 +171,44 @@ func (h *Handler) CreateArticleCheck(c *gin.Context) {
 		&pb.CreateArticleCheckerReq{
 			CheckerId: check.EditorId,
 			ArticleId: articleId,
-			Status:    "NEW",
+			Status:    check.Status,
 			Type:      config.EDITOR,
 			Comments:  fileComments,
 		},
 	)
 
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	draftStatus := ""
+	draftStep := ""
+
+	switch check.Status {
+	case config.ARTICLE_EDITOR_STATUS_REJECTED:
+		draftStatus = config.ARTICLE_STATUS_DENIED
+		draftStep = config.DRAFT_STEP_AUTHOR
+	case config.ARTICLE_EDITOR_STATUS_REJECTED_WITH_CORRECTION:
+		draftStatus = config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION
+		draftStep = config.DRAFT_STEP_AUTHOR
+	case config.ARTICLE_EDITOR_STATUS_APPROVED:
+		draftStatus = config.ARTICLE_STATUS_CONFIRMED
+		draftStep = config.DRAFT_STEP_AUTHOR
+	case config.ARTICLE_EDITOR_STATUS_APPROVED_WITH_CORRECTION:
+		draftStatus = config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION
+		draftStep = config.DRAFT_STEP_AUTHOR
+	default:
+		draftStatus = config.ARTICLE_STATUS_PENDING
+	}
+
+	_, err = h.services.ArticleService().UpdateArticle(
+		c.Request.Context(),
+		&pb.UpdateArticleReq{
+			Status: draftStatus,
+			Id:     articleId,
+			Step:   draftStep,
+		})
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return
@@ -244,6 +276,38 @@ func (h *Handler) UpdateArticleCheck(c *gin.Context) {
 		},
 	)
 
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	draftStatus := ""
+	draftStep := ""
+
+	switch check.Status {
+	case config.ARTICLE_EDITOR_STATUS_REJECTED:
+		draftStatus = config.ARTICLE_STATUS_DENIED
+		draftStep = config.DRAFT_STEP_AUTHOR
+	case config.ARTICLE_EDITOR_STATUS_REJECTED_WITH_CORRECTION:
+		draftStatus = config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION
+		draftStep = config.DRAFT_STEP_AUTHOR
+	case config.ARTICLE_EDITOR_STATUS_APPROVED:
+		draftStatus = config.ARTICLE_STATUS_CONFIRMED
+		draftStep = config.DRAFT_STEP_AUTHOR
+	case config.ARTICLE_EDITOR_STATUS_APPROVED_WITH_CORRECTION:
+		draftStatus = config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION
+		draftStep = config.DRAFT_STEP_AUTHOR
+	default:
+		draftStatus = config.ARTICLE_STATUS_PENDING
+	}
+
+	_, err = h.services.ArticleService().UpdateArticle(
+		c.Request.Context(),
+		&pb.UpdateArticleReq{
+			Status: draftStatus,
+			Id:     articleId,
+			Step:   draftStep,
+		})
 	if err != nil {
 		h.handleResponse(c, http.GRPCError, err.Error())
 		return

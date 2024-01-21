@@ -560,6 +560,10 @@ func (h *Handler) UpdateJournalDraft(c *gin.Context) {
 	)
 
 	journalId := c.Param("journal-id")
+	if !util.IsValidUUID(journalId) {
+		h.handleResponse(c, http.BadRequest, errors.New("journal id is not valid"))
+		return
+	}
 
 	err := c.ShouldBindJSON(&article)
 	if err != nil {
@@ -624,8 +628,8 @@ func (h *Handler) UpdateJournalDraft(c *gin.Context) {
 	resp, err := h.services.ArticleService().UpdateArticle(
 		c.Request.Context(),
 		&submission_service.UpdateArticleReq{
-			Status:    article.Status,
-			JournalId: journalId,
+			Status: article.Status,
+			Id:     article.Id,
 		},
 	)
 

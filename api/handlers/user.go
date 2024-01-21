@@ -116,6 +116,7 @@ func (h *Handler) CreateJournalUser(c *gin.Context) {
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
 // @Param search query string false "search"
+// @Param role-type query string false "role-type"
 // @Success 200 {object} http.Response{data=auth_service.GetUserListRes} "GetUserListResponseBody"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
@@ -147,6 +148,7 @@ func (h *Handler) GetJournalUserList(c *gin.Context) {
 			Offset:    int32(offset),
 			Search:    c.DefaultQuery("search", ""),
 			JournalId: journalId,
+			RoleType:  c.Query("role-type"),
 		},
 	)
 
