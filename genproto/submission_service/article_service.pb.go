@@ -419,6 +419,7 @@ type GetArticleRes struct {
 	JournalIdData  *Journal    `protobuf:"bytes,18,opt,name=journal_id_data,json=journalIdData,proto3" json:"journal_id_data,omitempty"`
 	Files          []*File     `protobuf:"bytes,19,rep,name=files,proto3" json:"files,omitempty"`
 	Coauthors      []*CoAuthor `protobuf:"bytes,20,rep,name=coauthors,proto3" json:"coauthors,omitempty"`
+	AuthorIdData   *User       `protobuf:"bytes,21,opt,name=author_id_data,json=authorIdData,proto3" json:"author_id_data,omitempty"`
 }
 
 func (x *GetArticleRes) Reset() {
@@ -589,6 +590,13 @@ func (x *GetArticleRes) GetFiles() []*File {
 func (x *GetArticleRes) GetCoauthors() []*CoAuthor {
 	if x != nil {
 		return x.Coauthors
+	}
+	return nil
+}
+
+func (x *GetArticleRes) GetAuthorIdData() *User {
+	if x != nil {
+		return x.AuthorIdData
 	}
 	return nil
 }
@@ -1769,7 +1777,7 @@ var file_article_service_proto_rawDesc = []byte{
 	0x6e, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x05,
 	0x66, 0x69, 0x6c, 0x65, 0x73, 0x22, 0x1f, 0x0a, 0x0d, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69,
 	0x63, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0xa4, 0x05, 0x0a, 0x0d, 0x47, 0x65, 0x74, 0x41, 0x72,
+	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0xe4, 0x05, 0x0a, 0x0d, 0x47, 0x65, 0x74, 0x41, 0x72,
 	0x74, 0x69, 0x63, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x6a, 0x6f, 0x75, 0x72,
 	0x6e, 0x61, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6a, 0x6f,
@@ -1811,7 +1819,11 @@ var file_article_service_proto_rawDesc = []byte{
 	0x73, 0x12, 0x3a, 0x0a, 0x09, 0x63, 0x6f, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x73, 0x18, 0x14,
 	0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f,
 	0x6e, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x43, 0x6f, 0x41, 0x75, 0x74, 0x68,
-	0x6f, 0x72, 0x52, 0x09, 0x63, 0x6f, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x73, 0x22, 0xc8, 0x01,
+	0x6f, 0x72, 0x52, 0x09, 0x63, 0x6f, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x73, 0x12, 0x3e, 0x0a,
+	0x0e, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x5f, 0x69, 0x64, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x18,
+	0x15, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x73, 0x75, 0x62, 0x6d, 0x69, 0x73, 0x73, 0x69,
+	0x6f, 0x6e, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52,
+	0x0c, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x49, 0x64, 0x44, 0x61, 0x74, 0x61, 0x22, 0xc8, 0x01,
 	0x0a, 0x11, 0x47, 0x65, 0x74, 0x41, 0x72, 0x74, 0x69, 0x63, 0x6c, 0x65, 0x4c, 0x69, 0x73, 0x74,
 	0x52, 0x65, 0x71, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x01, 0x20, 0x01,
 	0x28, 0x05, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x66, 0x66,
@@ -2046,8 +2058,9 @@ var file_article_service_proto_goTypes = []interface{}{
 	(*Journal)(nil),           // 19: submission_service.Journal
 	(*File)(nil),              // 20: submission_service.File
 	(*CoAuthor)(nil),          // 21: submission_service.CoAuthor
-	(*Article)(nil),           // 22: submission_service.Article
-	(*emptypb.Empty)(nil),     // 23: google.protobuf.Empty
+	(*User)(nil),              // 22: submission_service.User
+	(*Article)(nil),           // 23: submission_service.Article
+	(*emptypb.Empty)(nil),     // 24: google.protobuf.Empty
 }
 var file_article_service_proto_depIdxs = []int32{
 	19, // 0: submission_service.CreateArticleRes.journal_id_data:type_name -> submission_service.Journal
@@ -2055,38 +2068,39 @@ var file_article_service_proto_depIdxs = []int32{
 	19, // 2: submission_service.GetArticleRes.journal_id_data:type_name -> submission_service.Journal
 	20, // 3: submission_service.GetArticleRes.files:type_name -> submission_service.File
 	21, // 4: submission_service.GetArticleRes.coauthors:type_name -> submission_service.CoAuthor
-	22, // 5: submission_service.GetArticleListRes.articles:type_name -> submission_service.Article
-	19, // 6: submission_service.UpdateArticleRes.journal_id_data:type_name -> submission_service.Journal
-	20, // 7: submission_service.UpdateArticleRes.files:type_name -> submission_service.File
-	20, // 8: submission_service.GetFilesRes.files:type_name -> submission_service.File
-	21, // 9: submission_service.GetCoAuthorsRes.coauthors:type_name -> submission_service.CoAuthor
-	0,  // 10: submission_service.ArticleService.CreateArticle:input_type -> submission_service.CreateArticleReq
-	2,  // 11: submission_service.ArticleService.GetArticle:input_type -> submission_service.GetArticleReq
-	4,  // 12: submission_service.ArticleService.GetArticleList:input_type -> submission_service.GetArticleListReq
-	6,  // 13: submission_service.ArticleService.UpdateArticle:input_type -> submission_service.UpdateArticleReq
-	8,  // 14: submission_service.ArticleService.DeleteArticle:input_type -> submission_service.DeleteArticleReq
-	9,  // 15: submission_service.ArticleService.AddFiles:input_type -> submission_service.AddFilesReq
-	11, // 16: submission_service.ArticleService.GetFiles:input_type -> submission_service.GetFilesReq
-	13, // 17: submission_service.ArticleService.DeleteFiles:input_type -> submission_service.DeleteFilesReq
-	14, // 18: submission_service.ArticleService.AddCoAuthor:input_type -> submission_service.AddCoAuthorReq
-	16, // 19: submission_service.ArticleService.GetCoAuthors:input_type -> submission_service.GetCoAuthorsReq
-	18, // 20: submission_service.ArticleService.DeleteCoAuthor:input_type -> submission_service.DeleteCoAuthorReq
-	1,  // 21: submission_service.ArticleService.CreateArticle:output_type -> submission_service.CreateArticleRes
-	3,  // 22: submission_service.ArticleService.GetArticle:output_type -> submission_service.GetArticleRes
-	5,  // 23: submission_service.ArticleService.GetArticleList:output_type -> submission_service.GetArticleListRes
-	7,  // 24: submission_service.ArticleService.UpdateArticle:output_type -> submission_service.UpdateArticleRes
-	23, // 25: submission_service.ArticleService.DeleteArticle:output_type -> google.protobuf.Empty
-	10, // 26: submission_service.ArticleService.AddFiles:output_type -> submission_service.AddFilesRes
-	12, // 27: submission_service.ArticleService.GetFiles:output_type -> submission_service.GetFilesRes
-	23, // 28: submission_service.ArticleService.DeleteFiles:output_type -> google.protobuf.Empty
-	15, // 29: submission_service.ArticleService.AddCoAuthor:output_type -> submission_service.AddCoAuthorRes
-	17, // 30: submission_service.ArticleService.GetCoAuthors:output_type -> submission_service.GetCoAuthorsRes
-	23, // 31: submission_service.ArticleService.DeleteCoAuthor:output_type -> google.protobuf.Empty
-	21, // [21:32] is the sub-list for method output_type
-	10, // [10:21] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	22, // 5: submission_service.GetArticleRes.author_id_data:type_name -> submission_service.User
+	23, // 6: submission_service.GetArticleListRes.articles:type_name -> submission_service.Article
+	19, // 7: submission_service.UpdateArticleRes.journal_id_data:type_name -> submission_service.Journal
+	20, // 8: submission_service.UpdateArticleRes.files:type_name -> submission_service.File
+	20, // 9: submission_service.GetFilesRes.files:type_name -> submission_service.File
+	21, // 10: submission_service.GetCoAuthorsRes.coauthors:type_name -> submission_service.CoAuthor
+	0,  // 11: submission_service.ArticleService.CreateArticle:input_type -> submission_service.CreateArticleReq
+	2,  // 12: submission_service.ArticleService.GetArticle:input_type -> submission_service.GetArticleReq
+	4,  // 13: submission_service.ArticleService.GetArticleList:input_type -> submission_service.GetArticleListReq
+	6,  // 14: submission_service.ArticleService.UpdateArticle:input_type -> submission_service.UpdateArticleReq
+	8,  // 15: submission_service.ArticleService.DeleteArticle:input_type -> submission_service.DeleteArticleReq
+	9,  // 16: submission_service.ArticleService.AddFiles:input_type -> submission_service.AddFilesReq
+	11, // 17: submission_service.ArticleService.GetFiles:input_type -> submission_service.GetFilesReq
+	13, // 18: submission_service.ArticleService.DeleteFiles:input_type -> submission_service.DeleteFilesReq
+	14, // 19: submission_service.ArticleService.AddCoAuthor:input_type -> submission_service.AddCoAuthorReq
+	16, // 20: submission_service.ArticleService.GetCoAuthors:input_type -> submission_service.GetCoAuthorsReq
+	18, // 21: submission_service.ArticleService.DeleteCoAuthor:input_type -> submission_service.DeleteCoAuthorReq
+	1,  // 22: submission_service.ArticleService.CreateArticle:output_type -> submission_service.CreateArticleRes
+	3,  // 23: submission_service.ArticleService.GetArticle:output_type -> submission_service.GetArticleRes
+	5,  // 24: submission_service.ArticleService.GetArticleList:output_type -> submission_service.GetArticleListRes
+	7,  // 25: submission_service.ArticleService.UpdateArticle:output_type -> submission_service.UpdateArticleRes
+	24, // 26: submission_service.ArticleService.DeleteArticle:output_type -> google.protobuf.Empty
+	10, // 27: submission_service.ArticleService.AddFiles:output_type -> submission_service.AddFilesRes
+	12, // 28: submission_service.ArticleService.GetFiles:output_type -> submission_service.GetFilesRes
+	24, // 29: submission_service.ArticleService.DeleteFiles:output_type -> google.protobuf.Empty
+	15, // 30: submission_service.ArticleService.AddCoAuthor:output_type -> submission_service.AddCoAuthorRes
+	17, // 31: submission_service.ArticleService.GetCoAuthors:output_type -> submission_service.GetCoAuthorsRes
+	24, // 32: submission_service.ArticleService.DeleteCoAuthor:output_type -> google.protobuf.Empty
+	22, // [22:33] is the sub-list for method output_type
+	11, // [11:22] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_article_service_proto_init() }

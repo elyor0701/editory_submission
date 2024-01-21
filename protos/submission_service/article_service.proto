@@ -87,6 +87,7 @@ message GetArticleRes {
   Journal journal_id_data = 18;
   repeated File files = 19;
   repeated CoAuthor coauthors = 20;
+  User author_id_data = 21;
 }
 
 message GetArticleListReq {

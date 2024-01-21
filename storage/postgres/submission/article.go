@@ -7,8 +7,9 @@ import (
 	"editory_submission/pkg/helper"
 	"editory_submission/pkg/util"
 	"editory_submission/storage"
-	"fmt"
+	"errors"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -130,6 +131,7 @@ func (s *ArticleRepo) Create(ctx context.Context, req *pb.CreateArticleReq) (res
 func (s *ArticleRepo) Get(ctx context.Context, req *pb.GetArticleReq) (res *pb.GetArticleRes, err error) {
 	res = &pb.GetArticleRes{}
 	journal := &pb.Journal{}
+	user := &pb.User{}
 
 	query := `SELECT
 		d.id,
@@ -150,10 +152,24 @@ func (s *ArticleRepo) Get(ctx context.Context, req *pb.GetArticleReq) (res *pb.G
 		TO_CHAR(d.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
 		TO_CHAR(d.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at,
 		j.id,
-		j.title
+		j.title,
+		COALESCE(j.cover_photo, ''),
+		COALESCE(j.isbn, ''),
+		TO_CHAR(j.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
+		u.id,
+		COALESCE(u.first_name, ''),
+		COALESCE(u.last_name, ''),
+		COALESCE(u.phone, ''),
+		u.email,
+		COALESCE(u.country_id::VARCHAR, ''),
+		COALESCE(u.city_id::VARCHAR, ''),
+		COALESCE(u.gender::VARCHAR, ''),
+		COALESCE(u.university_id::VARCHAR, ''),
+		TO_CHAR(u.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at
 	FROM
 		"draft" d
 	INNER JOIN "journal" j on d.journal_id = j.id
+	INNER JOIN "user" u ON d.author_id = u.id
 	WHERE
 		d.id = $1`
 
@@ -180,11 +196,27 @@ func (s *ArticleRepo) Get(ctx context.Context, req *pb.GetArticleReq) (res *pb.G
 		&res.UpdatedAt,
 		&journal.Id,
 		&journal.Title,
+		&journal.CoverPhoto,
+		&journal.Isbn,
+		&journal.CreatedAt,
+		&user.Id,
+		&user.FirstName,
+		&user.LastName,
+		&user.Phone,
+		&user.Email,
+		&user.CountryId,
+		&user.CityId,
+		&user.Gender,
+		&user.UniversityId,
+		&user.CreatedAt,
 	)
 
 	if err != nil {
 		return res, err
 	}
+
+	res.JournalIdData = journal
+	res.AuthorIdData = user
 
 	return res, nil
 }
@@ -223,14 +255,24 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 		TO_CHAR(d.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
 		TO_CHAR(d.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS updated_at,
 		j.id,
-		j.title
+		j.title,
+		COALESCE(j.cover_photo, ''),
+		COALESCE(j.isbn, ''),
+		TO_CHAR(j.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at,
+		u.id,
+		COALESCE(u.first_name, ''),
+		COALESCE(u.last_name, ''),
+		COALESCE(u.phone, ''),
+		u.email,
+		TO_CHAR(u.created_at, ` + config.DatabaseQueryTimeLayout + `) AS created_at
 	FROM
 		"draft" d
-	INNER JOIN "journal" j on d.journal_id = j.id`
+	INNER JOIN "journal" j ON d.journal_id = j.id
+	INNER JOIN "user" u ON d.author_id = u.id`
 
 	filter := ` WHERE 1=1`
 	group := ``
-	order := ` ORDER BY created_at DESC`
+	order := ` ORDER BY d.created_at DESC`
 
 	if util.IsValidUUID(req.GetJournalId()) {
 		filter += " AND journal_id = :journal_id"
@@ -283,30 +325,32 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 
 	cQ, arr = helper.ReplaceQueryParams(cQ, params)
 
-	fmt.Println(cQ)
+	//fmt.Println(cQ)
 
 	err = s.db.QueryRow(ctx, cQ, arr...).Scan(
 		&res.Count,
 	)
-	if err != nil {
-		return res, err
+	if errors.Is(err, pgx.ErrNoRows) {
+		return res, nil
+	} else if err != nil {
+		return nil, err
 	}
-
 	q := query + filter + order + offset + limit
 
 	q, arr = helper.ReplaceQueryParams(q, params)
 
-	fmt.Println(q)
-
 	rows, err := s.db.Query(ctx, q, arr...)
-	if err != nil {
-		return res, err
+	if errors.Is(err, pgx.ErrNoRows) {
+		return res, nil
+	} else if err != nil {
+		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		obj := &pb.Article{}
 		journal := &pb.Journal{}
+		user := &pb.User{}
 
 		err = rows.Scan(
 			&obj.Id,
@@ -328,11 +372,22 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 			&obj.UpdatedAt,
 			&journal.Id,
 			&journal.Title,
+			&journal.CoverPhoto,
+			&journal.Isbn,
+			&journal.CreatedAt,
+			&user.Id,
+			&user.FirstName,
+			&user.LastName,
+			&user.Phone,
+			&user.Email,
+			&user.CreatedAt,
 		)
 		if err != nil {
 			return res, err
 		}
 
+		obj.JournalIdData = journal
+		obj.AuthorIdData = user
 		res.Articles = append(res.Articles, obj)
 	}
 
