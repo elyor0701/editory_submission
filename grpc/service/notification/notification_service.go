@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"net/url"
 	"time"
 )
 
@@ -200,15 +201,27 @@ func (s *notificationService) GenerateMailMessage(ctx context.Context, req *pb.G
 	mailData["last_name"] = user.LastName
 	mailData["email"] = user.Email
 	mailData["phone"] = user.Phone
-	mailData["link"] = req.RedirectLink
 
-	_, err = s.services.UserService().GenerateEmailVerificationToken(ctx, &auth_service.GenerateEmailVerificationTokenReq{
+	token, err := s.services.UserService().GenerateEmailVerificationToken(ctx, &auth_service.GenerateEmailVerificationTokenReq{
 		Email:  user.GetEmail(),
 		UserId: user.GetId(),
 	})
 	if err != nil {
 		return nil, err
 	}
+
+	redirectUrl, err := url.Parse(req.RedirectLink)
+	if err != nil {
+		return nil, err
+	}
+
+	values := url.Values{}
+	values.Add("token", token.Token)
+	values.Add("email", token.Email)
+
+	redirectUrl.RawQuery = values.Encode()
+
+	mailData["link"] = redirectUrl.String()
 
 	tmp, err := s.services.EmailTmpService().GetEmailTmpList(
 		ctx,
