@@ -7711,6 +7711,22 @@ paths:
         name: user-id
         required: true
         type: string
+      - description: status
+        in: query
+        name: status
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:

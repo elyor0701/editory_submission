@@ -288,6 +288,10 @@ func (h *Handler) GetArticleReviewByID(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user-id path string true "user-id"
+// @Param status query string false "status"
+// @Param offset query integer false "offset"
+// @Param limit query integer false "limit"
+// @Param search query string false "search"
 // @Success 200 {object} http.Response{data=pb.GetArticleCheckerListRes} "GetArticleReviewerListRes"
 // @Response 400 {object} http.Response{data=string} "Invalid Argument"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
@@ -318,6 +322,8 @@ func (h *Handler) GetUserReviewList(c *gin.Context) {
 			Offset:    int32(offset),
 			Search:    c.DefaultQuery("search", ""),
 			CheckerId: userId,
+			Type:      config.REVIEWER,
+			Status:    c.Query("status"),
 		},
 	)
 

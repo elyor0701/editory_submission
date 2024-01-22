@@ -232,6 +232,20 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleCheckerReq) (r
 
 func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleCheckerListReq) (res *pb.GetArticleCheckerListRes, err error) {
 	res = &pb.GetArticleCheckerListRes{}
+
+	validCheckerStatus := map[string]bool{
+		config.ARTICLE_REVIEWER_STATUS_NEW:                 true,
+		config.ARTICLE_REVIEWER_STATUS_PENDING:             true,
+		config.ARTICLE_REVIEWER_STATUS_REJECTED:            true,
+		config.ARTICLE_REVIEWER_STATUS_APPROVED:            true,
+		config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION: true,
+	}
+
+	validCheckerType := map[string]bool{
+		config.EDITOR:   true,
+		config.REVIEWER: true,
+	}
+
 	params := make(map[string]interface{})
 	var arr []interface{}
 
@@ -285,9 +299,14 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleCheckerLis
 		filter += ` AND r.draft_id = :draft_id`
 	}
 
-	if req.Type != "" {
+	if _, ok := validCheckerType[req.Type]; ok {
 		params["type"] = req.Type
 		filter += ` AND r.type = :type`
+	}
+
+	if _, ok := validCheckerStatus[req.Status]; ok {
+		params["status"] = req.Status
+		filter += ` AND r.status = :status`
 	}
 
 	if req.Offset > 0 {

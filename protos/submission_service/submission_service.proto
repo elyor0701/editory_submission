@@ -67,6 +67,7 @@ message GetArticleCheckerListReq {
   string checker_id = 4;
   string article_id = 5;
   string type = 6;
+  string status = 7;
 }
 
 message GetArticleCheckerListRes {
