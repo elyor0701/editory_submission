@@ -54,8 +54,8 @@ func (s *sessionService) Login(ctx context.Context, req *pb.LoginReq) (*pb.Login
 		Email: req.GetEmail(),
 	})
 	if err != nil {
-		err := errors.New("invalid username or password")
 		s.log.Error("!!!Login--->", logger.Error(err))
+		err := errors.New("invalid username or password")
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 

@@ -616,6 +616,11 @@ func (h *Handler) RegisterDetail(c *gin.Context) {
 		return
 	}
 
+	if !util.IsValidPhone(user.Phone) {
+		h.handleResponse(c, http.BadRequest, errors.New("invalid phone number"))
+		return
+	}
+
 	userPb = auth_service.UpdateUserReq{
 		Id:         user.Id,
 		Username:   user.Username,
