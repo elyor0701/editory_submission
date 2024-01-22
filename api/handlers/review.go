@@ -225,6 +225,7 @@ func (h *Handler) GetArticleReviewList(c *gin.Context) {
 			Offset:    int32(offset),
 			Search:    c.DefaultQuery("search", ""),
 			ArticleId: articleId,
+			Type:      config.REVIEWER,
 		},
 	)
 

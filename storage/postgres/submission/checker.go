@@ -291,6 +291,8 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleCheckerLis
 
 	limit := " LIMIT 10"
 
+	orderBy := ` ORDER BY r.created_at DESC`
+
 	if len(req.Search) > 0 {
 		params["search"] = req.Search
 		filter += ` AND (status ILIKE '%' || :search || '%')`
@@ -337,7 +339,7 @@ func (s *ReviewerRepo) GetList(ctx context.Context, req *pb.GetArticleCheckerLis
 		return res, err
 	}
 
-	q := query + filter + offset + limit
+	q := query + filter + orderBy + offset + limit
 
 	q, arr = helper.ReplaceQueryParams(q, params)
 	rows, err := s.db.Query(ctx, q, arr...)
