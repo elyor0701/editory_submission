@@ -78,6 +78,7 @@ message FileComment {
   string comment = 6;
   string created_at = 7;
   string updated_at = 8;
+  string file_url = 9;
 }
 
 message User {

@@ -186,15 +186,17 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleCheckerReq) (r
 	}
 
 	queryComment := `SELECT
-		id,                            
-    	type,
+		c.id,                            
+    	c.type,
     	file_id,
     	draft_checker_id,
     	comment,
     	created_at,
-    	updated_at
+    	updated_at,
+    	url
 	FROM
-		"file_comment"
+		"file_comment" c
+	INNER JOIN "file" f on c.file_id = f.id
 	WHERE
 		draft_checker_id = $1`
 
@@ -218,6 +220,7 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleCheckerReq) (r
 			&obj.Comment,
 			&obj.CreatedAt,
 			&obj.UpdatedAt,
+			&obj.FileUrl,
 		)
 
 		comments = append(comments, obj)
