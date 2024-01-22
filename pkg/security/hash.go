@@ -49,6 +49,7 @@ func HashPassword(password string) (hashedPassword string, err error) {
 
 // ComparePassword is used to compare a user-inputted password to a hash to see if the password matches or not.
 func ComparePassword(hashedPassword, password string) (match bool, err error) {
+	fmt.Println(hashedPassword, password)
 	parts := strings.Split(hashedPassword, "$")
 
 	if len(parts) <= 5 {

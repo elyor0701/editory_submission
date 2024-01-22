@@ -29,6 +29,8 @@ func NewUserRepo(db *pgxpool.Pool) storage.UserRepoI {
 }
 
 func (s *UserRepo) Create(ctx context.Context, req *pb.User) (res *pb.User, err error) {
+	fmt.Println("password::::::::::", req.Password)
+
 	query := `INSERT INTO "user" (
 		id,                 
     	username,           
@@ -403,6 +405,9 @@ func (s *UserRepo) GetListWithRole(ctx context.Context, req *pb.GetUserListByRol
 }
 
 func (s *UserRepo) Update(ctx context.Context, req *pb.User) (rowsAffected int64, err error) {
+
+	fmt.Println("password::::::::::", req.Password)
+
 	fieldVal := make([]string, 0)
 	params := make(map[string]interface{})
 	querySet := `UPDATE "user" SET`

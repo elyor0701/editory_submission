@@ -35,6 +35,7 @@ func NewSessionService(cfg config.Config, log logger.LoggerI, strg storage.Stora
 }
 
 func (s *sessionService) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginRes, error) {
+	s.log.Info("---Login--->", logger.Any("req", req))
 	res := &pb.LoginRes{}
 
 	if !util.IsValidEmail(req.GetEmail()) {
