@@ -227,13 +227,13 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 	var arr []interface{}
 
 	validArticleStatus := map[string]bool{
-		config.ARTICLE_STATUS_DRAFT:                        true,
-		config.ARTICLE_STATUS_NEW:                          true,
-		config.ARTICLE_STATUS_PENDING:                      true,
-		config.ARTICLE_STATUS_DENIED:                       true,
-		config.ARTICLE_STATUS_CONFIRMED:                    true,
-		config.ARTICLE_STATUS_PUBLISHED:                    true,
-		config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION: true,
+		config.ARTICLE_STATUS_DRAFT:     true,
+		config.ARTICLE_STATUS_NEW:       true,
+		config.ARTICLE_STATUS_PENDING:   true,
+		config.ARTICLE_STATUS_DENIED:    true,
+		config.ARTICLE_STATUS_CONFIRMED: true,
+		config.ARTICLE_STATUS_PUBLISHED: true,
+		config.ARTICLE_STATUS_CORRECTED: true,
 	}
 
 	query := `SELECT
@@ -396,13 +396,13 @@ func (s *ArticleRepo) GetList(ctx context.Context, req *pb.GetArticleListReq) (r
 func (s *ArticleRepo) Update(ctx context.Context, req *pb.UpdateArticleReq) (rowsAffected int64, err error) {
 
 	validArticleStatus := map[string]bool{
-		config.ARTICLE_STATUS_DRAFT:                        true,
-		config.ARTICLE_STATUS_NEW:                          true,
-		config.ARTICLE_STATUS_PENDING:                      true,
-		config.ARTICLE_STATUS_DENIED:                       true,
-		config.ARTICLE_STATUS_CONFIRMED:                    true,
-		config.ARTICLE_STATUS_PUBLISHED:                    true,
-		config.ARTICLE_REVIEWER_STATUS_BACK_FOR_CORRECTION: true,
+		config.ARTICLE_STATUS_DRAFT:     true,
+		config.ARTICLE_STATUS_NEW:       true,
+		config.ARTICLE_STATUS_PENDING:   true,
+		config.ARTICLE_STATUS_DENIED:    true,
+		config.ARTICLE_STATUS_CONFIRMED: true,
+		config.ARTICLE_STATUS_PUBLISHED: true,
+		config.ARTICLE_STATUS_CORRECTED: true,
 	}
 
 	validDraftStep := map[string]bool{

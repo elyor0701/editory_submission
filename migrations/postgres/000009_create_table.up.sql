@@ -17,6 +17,7 @@ create type "draft_reviewer_status" as enum (
 );
 
 alter type "article_status" add value 'BACK_FOR_CORRECTION';
+alter type "article_status" add value 'CORRECTED';
 alter type "reviewer_ans" add value 'BACK_FOR_CORRECTION';
 
 alter table "draft" add column "step" draft_step default 'AUTHOR';
