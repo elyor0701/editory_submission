@@ -191,8 +191,8 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleCheckerReq) (r
     	file_id,
     	draft_checker_id,
     	comment,
-    	created_at,
-    	updated_at,
+    	TO_CHAR(c.created_at, ` + config.DatabaseQueryTimeLayout + `) AS a_created_at,
+    	TO_CHAR(c.updated_at, ` + config.DatabaseQueryTimeLayout + `) AS a_updated_at,
     	url
 	FROM
 		"file_comment" c
@@ -222,6 +222,10 @@ func (s *ReviewerRepo) Get(ctx context.Context, req *pb.GetArticleCheckerReq) (r
 			&obj.UpdatedAt,
 			&obj.FileUrl,
 		)
+		if err != nil {
+			fmt.Printf("-------Get File Comment-------------> %s", err.Error())
+			continue
+		}
 
 		comments = append(comments, obj)
 	}

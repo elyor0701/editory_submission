@@ -173,6 +173,7 @@ func (h *Handler) CreateArticleCheck(c *gin.Context) {
 			ArticleId: articleId,
 			Status:    check.Status,
 			Type:      config.EDITOR,
+			Comment:   check.Comment,
 			Comments:  fileComments,
 		},
 	)
