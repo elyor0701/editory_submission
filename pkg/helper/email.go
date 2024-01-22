@@ -159,6 +159,9 @@ func MakeEmailMessage(m map[string]string, subject, mailBody string) (string, st
 		subject = strings.ReplaceAll(subject, fmt.Sprintf(`@[#%s](#%s)`, key, key), val)
 		subject = strings.ReplaceAll(subject, fmt.Sprintf(`##%s`, key), val)
 		subject = strings.ReplaceAll(subject, fmt.Sprintf(`#%s`, key), val)
+		mailBody = strings.ReplaceAll(mailBody, fmt.Sprintf("{{%s}}", key), val)
+		mailBody = strings.ReplaceAll(mailBody, fmt.Sprintf(`@[#%s](#%s)`, key, key), val)
+		mailBody = strings.ReplaceAll(mailBody, fmt.Sprintf(`##%s`, key), val)
 		mailBody = strings.ReplaceAll(mailBody, fmt.Sprintf(`#%s`, key), val)
 	}
 
