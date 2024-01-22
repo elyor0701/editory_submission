@@ -53,10 +53,12 @@ func (h *Handler) CreateUserDraft(c *gin.Context) {
 
 	articlePB.AuthorId = userId
 
-	if articlePB.Status == "DRAFT" {
-		articlePB.Step = "AUTHOR"
-	} else if articlePB.Status == "NEW" {
-		articlePB.Step = "EDITOR"
+	if articlePB.Status == config.ARTICLE_STATUS_DRAFT {
+		articlePB.Step = config.DRAFT_STEP_AUTHOR
+	} else if articlePB.Status == config.ARTICLE_STATUS_NEW {
+		articlePB.Step = config.DRAFT_STEP_EDITOR
+	} else if articlePB.Status == config.ARTICLE_STATUS_CORRECTED {
+		articlePB.Step = config.DRAFT_STEP_EDITOR
 	}
 
 	resp, err := h.services.ArticleService().CreateArticle(
@@ -190,10 +192,12 @@ func (h *Handler) UpdateUserDraft(c *gin.Context) {
 
 	articlePB.AuthorId = userId
 
-	if articlePB.Status == "DRAFT" {
-		articlePB.Step = "AUTHOR"
-	} else if articlePB.Status == "NEW" {
-		articlePB.Step = "EDITOR"
+	if articlePB.Status == config.ARTICLE_STATUS_DRAFT {
+		articlePB.Step = config.DRAFT_STEP_AUTHOR
+	} else if articlePB.Status == config.ARTICLE_STATUS_NEW {
+		articlePB.Step = config.DRAFT_STEP_EDITOR
+	} else if articlePB.Status == config.ARTICLE_STATUS_CORRECTED {
+		articlePB.Step = config.DRAFT_STEP_EDITOR
 	}
 
 	resp, err := h.services.ArticleService().UpdateArticle(
