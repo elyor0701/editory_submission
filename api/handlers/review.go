@@ -404,7 +404,10 @@ func (h *Handler) GetUserReviewByID(c *gin.Context) {
 // @Response 400 {object} http.Response{data=string} "Bad Request"
 // @Failure 500 {object} http.Response{data=string} "Server Error"
 func (h *Handler) UpdateUserReview(c *gin.Context) {
-	var review models.UpdateUserReviewReq
+	var (
+		review       models.UpdateUserReviewReq
+		fileComments []*pb.FileComment
+	)
 
 	userId := c.Param("user-id")
 	if !util.IsValidUUID(userId) {
@@ -418,12 +421,22 @@ func (h *Handler) UpdateUserReview(c *gin.Context) {
 		return
 	}
 
+	for _, val := range review.FileComments {
+		fileComments = append(fileComments, &pb.FileComment{
+			Id:      val.Id,
+			Type:    val.Type,
+			FileId:  val.FileId,
+			Comment: val.Comment,
+		})
+	}
+
 	resp, err := h.services.CheckerService().UpdateArticleChecker(
 		c.Request.Context(),
 		&pb.UpdateArticleCheckerReq{
-			Id:      review.Id,
-			Status:  review.Status,
-			Comment: review.Comment,
+			Id:       review.Id,
+			Status:   review.Status,
+			Comment:  review.Comment,
+			Comments: fileComments,
 		},
 	)
 

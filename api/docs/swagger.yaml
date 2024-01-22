@@ -554,15 +554,13 @@ definitions:
     properties:
       comment:
         type: string
-      cover_letter_comment:
-        type: string
+      fileComments:
+        items:
+          $ref: '#/definitions/editory_submission_api_models.FileComment'
+        type: array
       id:
         type: string
-      manuscript_comment:
-        type: string
       status:
-        type: string
-      supplemental_comment:
         type: string
     type: object
   editory_submission_genproto_auth_service.CreateKeywordReq:

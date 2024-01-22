@@ -9918,19 +9918,16 @@ const docTemplate = `{
                 "comment": {
                     "type": "string"
                 },
-                "cover_letter_comment": {
-                    "type": "string"
+                "fileComments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/editory_submission_api_models.FileComment"
+                    }
                 },
                 "id": {
                     "type": "string"
                 },
-                "manuscript_comment": {
-                    "type": "string"
-                },
                 "status": {
-                    "type": "string"
-                },
-                "supplemental_comment": {
                     "type": "string"
                 }
             }

@@ -272,6 +272,7 @@ func (h *Handler) UpdateArticleCheck(c *gin.Context) {
 			Id:        check.Id,
 			Status:    check.Status,
 			ArticleId: articleId,
+			Comment:   check.Comment,
 			Comments:  fileComments,
 		},
 	)
