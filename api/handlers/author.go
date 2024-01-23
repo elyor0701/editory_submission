@@ -383,3 +383,141 @@ func (h *Handler) UpdateJournalAuthor(c *gin.Context) {
 
 	h.handleResponse(c, http.OK, resp)
 }
+
+// DeleteJournalAuthor godoc
+// @ID delete_journal_author_by_id
+// @Router /journal/{journal-id}/author/{author-id} [GET]
+// @Summary Delete Author By ID
+// @Description Delete Author By ID
+// @Tags Journal
+// @Accept json
+// @Produce json
+// @Param journal-id path string true "journal-id"
+// @Param author-id path string true "author-id"
+// @Success 204
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) DeleteJournalAuthor(c *gin.Context) {
+
+	journalId := c.Param("journal-id")
+	if !util.IsValidUUID(journalId) {
+		h.handleResponse(c, http.InvalidArgument, errors.New("journal id is not valid"))
+		return
+	}
+
+	authorID := c.Param("author-id")
+	if !util.IsValidUUID(authorID) {
+		h.handleResponse(c, http.InvalidArgument, "user id is an invalid uuid")
+		return
+	}
+
+	resp, err := h.services.ContentService().DeleteJournalAuthor(
+		c.Request.Context(),
+		&content_service.DeleteJournalAuthorReq{
+			Id: authorID,
+		},
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
+}
+
+// GetGeneralJournalAuthorList godoc
+// @ID get_general_journal_author_list
+// @Router /general/journal/{journal-id}/author [GET]
+// @Summary Get Author List
+// @Description  Get Author List
+// @Tags General
+// @Accept json
+// @Produce json
+// @Param journal-id path integer true "journal-id"
+// @Param offset query integer false "offset"
+// @Param limit query integer false "limit"
+// @Param search query string false "search"
+// @Success 200 {object} http.Response{data=content_service.GetJournalAuthorListRes} "GetEditorListResponseBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetGeneralJournalAuthorList(c *gin.Context) {
+
+	journalId := c.Param("journal-id")
+	if !util.IsValidUUID(journalId) {
+		h.handleResponse(c, http.InvalidArgument, errors.New("journal id is not valid"))
+		return
+	}
+
+	offset, err := h.getOffsetParam(c)
+	if err != nil {
+		h.handleResponse(c, http.InvalidArgument, err.Error())
+		return
+	}
+
+	limit, err := h.getLimitParam(c)
+	if err != nil {
+		h.handleResponse(c, http.InvalidArgument, err.Error())
+		return
+	}
+
+	resp, err := h.services.ContentService().GetJournalAuthorList(
+		c.Request.Context(),
+		&content_service.GetJournalAuthorListReq{
+			Limit:     int32(limit),
+			Offset:    int32(offset),
+			Search:    c.DefaultQuery("search", ""),
+			JournalId: journalId,
+		},
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
+}
+
+// GetGeneralJournalAuthorByID godoc
+// @ID get_general_journal_author_by_id
+// @Router /general/journal/{journal-id}/author/{author-id} [GET]
+// @Summary Get Author By ID
+// @Description Get Author By ID
+// @Tags General
+// @Accept json
+// @Produce json
+// @Param journal-id path string true "journal-id"
+// @Param author-id path string true "author-id"
+// @Success 200 {object} http.Response{data=content_service.GetJournalAuthorRes} "EditorBody"
+// @Response 400 {object} http.Response{data=string} "Invalid Argument"
+// @Failure 500 {object} http.Response{data=string} "Server Error"
+func (h *Handler) GetGeneralJournalAuthorByID(c *gin.Context) {
+
+	journalId := c.Param("journal-id")
+	if !util.IsValidUUID(journalId) {
+		h.handleResponse(c, http.InvalidArgument, errors.New("journal id is not valid"))
+		return
+	}
+
+	authorID := c.Param("author-id")
+
+	if !util.IsValidUUID(authorID) {
+		h.handleResponse(c, http.InvalidArgument, "user id is an invalid uuid")
+		return
+	}
+
+	resp, err := h.services.ContentService().GetJournalAuthor(
+		c.Request.Context(),
+		&content_service.GetJournalAuthorReq{
+			Id: authorID,
+		},
+	)
+
+	if err != nil {
+		h.handleResponse(c, http.GRPCError, err.Error())
+		return
+	}
+
+	h.handleResponse(c, http.OK, resp)
+}

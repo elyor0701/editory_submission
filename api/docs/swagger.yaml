@@ -4728,6 +4728,113 @@ paths:
       summary: Get Journal By ID
       tags:
       - General
+  /general/journal/{journal-id}/author:
+    get:
+      consumes:
+      - application/json
+      description: Get Author List
+      operationId: get_general_journal_author_list
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: integer
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: GetEditorListResponseBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetJournalAuthorListRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Author List
+      tags:
+      - General
+  /general/journal/{journal-id}/author/{author-id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Author By ID
+      operationId: get_general_journal_author_by_id
+      parameters:
+      - description: journal-id
+        in: path
+        name: journal-id
+        required: true
+        type: string
+      - description: author-id
+        in: path
+        name: author-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: EditorBody
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/editory_submission_genproto_content_service.GetJournalAuthorRes'
+              type: object
+        "400":
+          description: Invalid Argument
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "500":
+          description: Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+      summary: Get Author By ID
+      tags:
+      - General
   /has-access:
     post:
       consumes:
@@ -5324,8 +5431,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get Author By ID
-      operationId: get_journal_author_by_id
+      description: Delete Author By ID
+      operationId: delete_journal_author_by_id
       parameters:
       - description: journal-id
         in: path
@@ -5340,15 +5447,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: EditorBody
-          schema:
-            allOf:
-            - $ref: '#/definitions/http.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/editory_submission_genproto_content_service.GetJournalAuthorRes'
-              type: object
+        "204":
+          description: No Content
         "400":
           description: Invalid Argument
           schema:
@@ -5367,7 +5467,7 @@ paths:
                 data:
                   type: string
               type: object
-      summary: Get Author By ID
+      summary: Delete Author By ID
       tags:
       - Journal
   /journal/{journal-id}/draft:

@@ -52,8 +52,8 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		r.GET("/article/:article-id")
 		r.GET("/general/journal", h.GetGeneralJournalList)
 		r.GET("/general/journal/:journal-id", h.GetGeneralJournalByID)
-		r.GET("/general/journal/:journal-id/author")
-		r.GET("/general/journal/:journal-id/author/:author-id")
+		r.GET("/general/journal/:journal-id/author", h.GetGeneralJournalAuthorList)
+		r.GET("/general/journal/:journal-id/author/:author-id", h.GetGeneralJournalAuthorByID)
 	}
 
 	// auth
@@ -94,11 +94,11 @@ func SetUpRouter(h handlers.Handler, cfg config.Config) (r *gin.Engine) {
 		journal.DELETE("/:journal-id", h.DeleteJournal) // @TODO
 
 		// journal author
-		journal.POST("/:journal-id/author")
-		journal.GET("/:journal-id/author")
-		journal.GET("/:journal-id/author/:author-id")
-		journal.PUT("/:journal-id/author")
-		journal.DELETE("/:journal-id/author/:author-id")
+		journal.POST("/:journal-id/author", h.CreateJournalAuthor)
+		journal.GET("/:journal-id/author", h.GetJournalAuthorList)
+		journal.GET("/:journal-id/author/:author-id", h.GetJournalArticleByID)
+		journal.PUT("/:journal-id/author", h.UpdateJournalAuthor)
+		journal.DELETE("/:journal-id/author/:author-id", h.DeleteJournalAuthor)
 
 		//journal.POST("/:journal-id/draft", h.CreateJournalArticle)
 		journal.GET("/:journal-id/draft", h.GetJournalDraftList)

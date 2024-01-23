@@ -3577,6 +3577,193 @@ const docTemplate = `{
                 }
             }
         },
+        "/general/journal/{journal-id}/author": {
+            "get": {
+                "description": "Get Author List",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get Author List",
+                "operationId": "get_general_journal_author_list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "journal-id",
+                        "name": "journal-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "search",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "GetEditorListResponseBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_content_service.GetJournalAuthorListRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/general/journal/{journal-id}/author/{author-id}": {
+            "get": {
+                "description": "Get Author By ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get Author By ID",
+                "operationId": "get_general_journal_author_by_id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "journal-id",
+                        "name": "journal-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "author-id",
+                        "name": "author-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "EditorBody",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/editory_submission_genproto_content_service.GetJournalAuthorRes"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Argument",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/http.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/has-access": {
             "post": {
                 "description": "Has Access",
@@ -4617,7 +4804,7 @@ const docTemplate = `{
         },
         "/journal/{journal-id}/author/{author-id}": {
             "get": {
-                "description": "Get Author By ID",
+                "description": "Delete Author By ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -4627,8 +4814,8 @@ const docTemplate = `{
                 "tags": [
                     "Journal"
                 ],
-                "summary": "Get Author By ID",
-                "operationId": "get_journal_author_by_id",
+                "summary": "Delete Author By ID",
+                "operationId": "delete_journal_author_by_id",
                 "parameters": [
                     {
                         "type": "string",
@@ -4646,23 +4833,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "EditorBody",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/http.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/editory_submission_genproto_content_service.GetJournalAuthorRes"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
+                    "204": {
+                        "description": "No Content"
                     },
                     "400": {
                         "description": "Invalid Argument",
