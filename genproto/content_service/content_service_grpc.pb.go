@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.17.3
-// source: content.proto
+// source: content_service.proto
 
 package content_service
 
@@ -20,23 +20,28 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ContentService_CreateJournal_FullMethodName  = "/content_service.ContentService/CreateJournal"
-	ContentService_GetJournal_FullMethodName     = "/content_service.ContentService/GetJournal"
-	ContentService_GetJournalList_FullMethodName = "/content_service.ContentService/GetJournalList"
-	ContentService_UpdateJournal_FullMethodName  = "/content_service.ContentService/UpdateJournal"
-	ContentService_DeleteJournal_FullMethodName  = "/content_service.ContentService/DeleteJournal"
-	ContentService_CreateEdition_FullMethodName  = "/content_service.ContentService/CreateEdition"
-	ContentService_GetEdition_FullMethodName     = "/content_service.ContentService/GetEdition"
-	ContentService_GetEditionList_FullMethodName = "/content_service.ContentService/GetEditionList"
-	ContentService_UpdateEdition_FullMethodName  = "/content_service.ContentService/UpdateEdition"
-	ContentService_DeleteEdition_FullMethodName  = "/content_service.ContentService/DeleteEdition"
-	ContentService_CreateArticle_FullMethodName  = "/content_service.ContentService/CreateArticle"
-	ContentService_GetArticle_FullMethodName     = "/content_service.ContentService/GetArticle"
-	ContentService_GetArticleList_FullMethodName = "/content_service.ContentService/GetArticleList"
-	ContentService_UpdateArticle_FullMethodName  = "/content_service.ContentService/UpdateArticle"
-	ContentService_DeleteArticle_FullMethodName  = "/content_service.ContentService/DeleteArticle"
-	ContentService_GetCountryList_FullMethodName = "/content_service.ContentService/GetCountryList"
-	ContentService_GetCityList_FullMethodName    = "/content_service.ContentService/GetCityList"
+	ContentService_CreateJournal_FullMethodName        = "/content_service.ContentService/CreateJournal"
+	ContentService_GetJournal_FullMethodName           = "/content_service.ContentService/GetJournal"
+	ContentService_GetJournalList_FullMethodName       = "/content_service.ContentService/GetJournalList"
+	ContentService_UpdateJournal_FullMethodName        = "/content_service.ContentService/UpdateJournal"
+	ContentService_DeleteJournal_FullMethodName        = "/content_service.ContentService/DeleteJournal"
+	ContentService_CreateEdition_FullMethodName        = "/content_service.ContentService/CreateEdition"
+	ContentService_GetEdition_FullMethodName           = "/content_service.ContentService/GetEdition"
+	ContentService_GetEditionList_FullMethodName       = "/content_service.ContentService/GetEditionList"
+	ContentService_UpdateEdition_FullMethodName        = "/content_service.ContentService/UpdateEdition"
+	ContentService_DeleteEdition_FullMethodName        = "/content_service.ContentService/DeleteEdition"
+	ContentService_CreateArticle_FullMethodName        = "/content_service.ContentService/CreateArticle"
+	ContentService_GetArticle_FullMethodName           = "/content_service.ContentService/GetArticle"
+	ContentService_GetArticleList_FullMethodName       = "/content_service.ContentService/GetArticleList"
+	ContentService_UpdateArticle_FullMethodName        = "/content_service.ContentService/UpdateArticle"
+	ContentService_DeleteArticle_FullMethodName        = "/content_service.ContentService/DeleteArticle"
+	ContentService_GetCountryList_FullMethodName       = "/content_service.ContentService/GetCountryList"
+	ContentService_GetCityList_FullMethodName          = "/content_service.ContentService/GetCityList"
+	ContentService_CreateJournalAuthor_FullMethodName  = "/content_service.ContentService/CreateJournalAuthor"
+	ContentService_GetJournalAuthor_FullMethodName     = "/content_service.ContentService/GetJournalAuthor"
+	ContentService_GetJournalAuthorList_FullMethodName = "/content_service.ContentService/GetJournalAuthorList"
+	ContentService_UpdateJournalAuthor_FullMethodName  = "/content_service.ContentService/UpdateJournalAuthor"
+	ContentService_DeleteJournalAuthor_FullMethodName  = "/content_service.ContentService/DeleteJournalAuthor"
 )
 
 // ContentServiceClient is the client API for ContentService service.
@@ -64,6 +69,11 @@ type ContentServiceClient interface {
 	// Countries and cities
 	GetCountryList(ctx context.Context, in *GetCountryListReq, opts ...grpc.CallOption) (*GetCountryListRes, error)
 	GetCityList(ctx context.Context, in *GetCityListReq, opts ...grpc.CallOption) (*GetCityListRes, error)
+	CreateJournalAuthor(ctx context.Context, in *CreateJournalAuthorReq, opts ...grpc.CallOption) (*CreateJournalAuthorRes, error)
+	GetJournalAuthor(ctx context.Context, in *GetJournalAuthorReq, opts ...grpc.CallOption) (*GetJournalAuthorRes, error)
+	GetJournalAuthorList(ctx context.Context, in *GetJournalAuthorListReq, opts ...grpc.CallOption) (*GetJournalAuthorListRes, error)
+	UpdateJournalAuthor(ctx context.Context, in *UpdateJournalAuthorReq, opts ...grpc.CallOption) (*UpdateJournalAuthorRes, error)
+	DeleteJournalAuthor(ctx context.Context, in *DeleteJournalAuthorReq, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type contentServiceClient struct {
@@ -227,6 +237,51 @@ func (c *contentServiceClient) GetCityList(ctx context.Context, in *GetCityListR
 	return out, nil
 }
 
+func (c *contentServiceClient) CreateJournalAuthor(ctx context.Context, in *CreateJournalAuthorReq, opts ...grpc.CallOption) (*CreateJournalAuthorRes, error) {
+	out := new(CreateJournalAuthorRes)
+	err := c.cc.Invoke(ctx, ContentService_CreateJournalAuthor_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) GetJournalAuthor(ctx context.Context, in *GetJournalAuthorReq, opts ...grpc.CallOption) (*GetJournalAuthorRes, error) {
+	out := new(GetJournalAuthorRes)
+	err := c.cc.Invoke(ctx, ContentService_GetJournalAuthor_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) GetJournalAuthorList(ctx context.Context, in *GetJournalAuthorListReq, opts ...grpc.CallOption) (*GetJournalAuthorListRes, error) {
+	out := new(GetJournalAuthorListRes)
+	err := c.cc.Invoke(ctx, ContentService_GetJournalAuthorList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) UpdateJournalAuthor(ctx context.Context, in *UpdateJournalAuthorReq, opts ...grpc.CallOption) (*UpdateJournalAuthorRes, error) {
+	out := new(UpdateJournalAuthorRes)
+	err := c.cc.Invoke(ctx, ContentService_UpdateJournalAuthor_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) DeleteJournalAuthor(ctx context.Context, in *DeleteJournalAuthorReq, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ContentService_DeleteJournalAuthor_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ContentServiceServer is the server API for ContentService service.
 // All implementations must embed UnimplementedContentServiceServer
 // for forward compatibility
@@ -252,6 +307,11 @@ type ContentServiceServer interface {
 	// Countries and cities
 	GetCountryList(context.Context, *GetCountryListReq) (*GetCountryListRes, error)
 	GetCityList(context.Context, *GetCityListReq) (*GetCityListRes, error)
+	CreateJournalAuthor(context.Context, *CreateJournalAuthorReq) (*CreateJournalAuthorRes, error)
+	GetJournalAuthor(context.Context, *GetJournalAuthorReq) (*GetJournalAuthorRes, error)
+	GetJournalAuthorList(context.Context, *GetJournalAuthorListReq) (*GetJournalAuthorListRes, error)
+	UpdateJournalAuthor(context.Context, *UpdateJournalAuthorReq) (*UpdateJournalAuthorRes, error)
+	DeleteJournalAuthor(context.Context, *DeleteJournalAuthorReq) (*emptypb.Empty, error)
 	mustEmbedUnimplementedContentServiceServer()
 }
 
@@ -309,6 +369,21 @@ func (UnimplementedContentServiceServer) GetCountryList(context.Context, *GetCou
 }
 func (UnimplementedContentServiceServer) GetCityList(context.Context, *GetCityListReq) (*GetCityListRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCityList not implemented")
+}
+func (UnimplementedContentServiceServer) CreateJournalAuthor(context.Context, *CreateJournalAuthorReq) (*CreateJournalAuthorRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateJournalAuthor not implemented")
+}
+func (UnimplementedContentServiceServer) GetJournalAuthor(context.Context, *GetJournalAuthorReq) (*GetJournalAuthorRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetJournalAuthor not implemented")
+}
+func (UnimplementedContentServiceServer) GetJournalAuthorList(context.Context, *GetJournalAuthorListReq) (*GetJournalAuthorListRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetJournalAuthorList not implemented")
+}
+func (UnimplementedContentServiceServer) UpdateJournalAuthor(context.Context, *UpdateJournalAuthorReq) (*UpdateJournalAuthorRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateJournalAuthor not implemented")
+}
+func (UnimplementedContentServiceServer) DeleteJournalAuthor(context.Context, *DeleteJournalAuthorReq) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteJournalAuthor not implemented")
 }
 func (UnimplementedContentServiceServer) mustEmbedUnimplementedContentServiceServer() {}
 
@@ -629,6 +704,96 @@ func _ContentService_GetCityList_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ContentService_CreateJournalAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateJournalAuthorReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).CreateJournalAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_CreateJournalAuthor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).CreateJournalAuthor(ctx, req.(*CreateJournalAuthorReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_GetJournalAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetJournalAuthorReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).GetJournalAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_GetJournalAuthor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).GetJournalAuthor(ctx, req.(*GetJournalAuthorReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_GetJournalAuthorList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetJournalAuthorListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).GetJournalAuthorList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_GetJournalAuthorList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).GetJournalAuthorList(ctx, req.(*GetJournalAuthorListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_UpdateJournalAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateJournalAuthorReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).UpdateJournalAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_UpdateJournalAuthor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).UpdateJournalAuthor(ctx, req.(*UpdateJournalAuthorReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_DeleteJournalAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteJournalAuthorReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).DeleteJournalAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_DeleteJournalAuthor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).DeleteJournalAuthor(ctx, req.(*DeleteJournalAuthorReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ContentService_ServiceDesc is the grpc.ServiceDesc for ContentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -704,7 +869,27 @@ var ContentService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetCityList",
 			Handler:    _ContentService_GetCityList_Handler,
 		},
+		{
+			MethodName: "CreateJournalAuthor",
+			Handler:    _ContentService_CreateJournalAuthor_Handler,
+		},
+		{
+			MethodName: "GetJournalAuthor",
+			Handler:    _ContentService_GetJournalAuthor_Handler,
+		},
+		{
+			MethodName: "GetJournalAuthorList",
+			Handler:    _ContentService_GetJournalAuthorList_Handler,
+		},
+		{
+			MethodName: "UpdateJournalAuthor",
+			Handler:    _ContentService_UpdateJournalAuthor_Handler,
+		},
+		{
+			MethodName: "DeleteJournalAuthor",
+			Handler:    _ContentService_DeleteJournalAuthor_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "content.proto",
+	Metadata: "content_service.proto",
 }

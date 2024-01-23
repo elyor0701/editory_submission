@@ -14,6 +14,7 @@ type contentRepo struct {
 	countryAndCity storage.CountryAndCityRepoI
 	university     storage.UniversityRepoI
 	subject        storage.SubjectRepoI
+	journalAuthor  storage.JournalAuthorRepoI
 }
 
 func NewContentRepo(db *pgxpool.Pool) storage.ContentRepoI {
@@ -68,4 +69,12 @@ func (s *contentRepo) Article() storage.ContentArticleRepoI {
 	}
 
 	return s.article
+}
+
+func (s *contentRepo) JournalAuthor() storage.JournalAuthorRepoI {
+	if s.journalAuthor == nil {
+		s.journalAuthor = NewJournalAuthorRepo(s.db)
+	}
+
+	return s.journalAuthor
 }

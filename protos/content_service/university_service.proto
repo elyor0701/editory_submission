@@ -4,6 +4,7 @@ package content_service;
 option go_package="genproto/content_service";
 
 import "google/protobuf/empty.proto";
+import "content.proto";
 
 service UniversityService {
   rpc CreateUniversity(CreateUniversityReq) returns (CreateUniversityRes) {}
@@ -11,12 +12,6 @@ service UniversityService {
   rpc GetUniversityList(GetUniversityListReq) returns (GetUniversityListRes) {}
   rpc UpdateUniversity(UpdateUniversityReq) returns (UpdateUniversityRes) {}
   rpc DeleteUniversity(DeleteUniversityReq) returns (google.protobuf.Empty) {}
-}
-
-message University {
-  string id = 1;
-  string title = 2;
-  string logo = 3;
 }
 
 message CreateUniversityReq {

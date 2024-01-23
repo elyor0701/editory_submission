@@ -4,6 +4,7 @@ package content_service;
 option go_package="genproto/content_service";
 
 import "google/protobuf/empty.proto";
+import "content.proto";
 
 service SubjectService {
   rpc CreateSubject(CreateSubjectReq) returns (CreateSubjectRes) {}
@@ -11,11 +12,6 @@ service SubjectService {
   rpc GetSubjectList(GetSubjectListReq) returns (GetSubjectListRes) {}
   rpc UpdateSubject(UpdateSubjectReq) returns (UpdateSubjectRes) {}
   rpc DeleteSubject(DeleteSubjectReq) returns (google.protobuf.Empty) {}
-}
-
-message Subject {
-  string id = 1;
-  string title = 2;
 }
 
 message CreateSubjectReq {

@@ -1,0 +1,285 @@
+syntax="proto3";
+
+package content_service;
+option go_package="genproto/content_service";
+
+import "google/protobuf/empty.proto";
+import "content.proto";
+
+service ContentService {
+  // Journal
+  rpc CreateJournal(CreateJournalReq) returns (Journal) {}
+  rpc GetJournal(PrimaryKey) returns (Journal) {}
+  rpc GetJournalList(GetList) returns (GetJournalListRes) {}
+  rpc UpdateJournal(Journal) returns (Journal) {}
+  rpc DeleteJournal(PrimaryKey) returns (google.protobuf.Empty) {}
+
+  // Edition
+  rpc CreateEdition(CreateEditionReq) returns (Edition) {}
+  rpc GetEdition(PrimaryKey) returns (Edition) {}
+  rpc GetEditionList(GetEditionListReq) returns (GetEditionListRes) {}
+  rpc UpdateEdition(Edition) returns (Edition) {}
+  rpc DeleteEdition(PrimaryKey) returns (google.protobuf.Empty) {}
+
+  // Article
+  rpc CreateArticle(CreateArticleReq) returns (CreateArticleRes) {}
+  rpc GetArticle(GetArticleReq) returns (GetArticleRes) {}
+  rpc GetArticleList(GetArticleListReq) returns (GetArticleListRes) {}
+  rpc UpdateArticle(UpdateArticleReq) returns (UpdateArticleRes) {}
+  rpc DeleteArticle(DeleteArticleReq) returns (google.protobuf.Empty) {}
+
+
+  // Countries and cities
+  rpc GetCountryList(GetCountryListReq) returns (GetCountryListRes) {}
+  rpc GetCityList(GetCityListReq) returns (GetCityListRes) {}
+
+  rpc CreateJournalAuthor(CreateJournalAuthorReq) returns (CreateJournalAuthorRes) {}
+  rpc GetJournalAuthor(GetJournalAuthorReq) returns (GetJournalAuthorRes) {}
+  rpc GetJournalAuthorList(GetJournalAuthorListReq) returns (GetJournalAuthorListRes) {}
+  rpc UpdateJournalAuthor(UpdateJournalAuthorReq) returns (UpdateJournalAuthorRes) {}
+  rpc DeleteJournalAuthor(DeleteJournalAuthorReq) returns (google.protobuf.Empty) {}
+}
+
+message CreateJournalAuthorReq {
+  string journal_id = 1;
+  string full_name = 2;
+  string photo = 3;
+  string email = 4;
+  string university_id = 5;
+  string faculty_id = 6;
+}
+
+message CreateJournalAuthorRes {
+  string id = 1;
+  string journal_id = 2;
+  string full_name = 3;
+  string photo = 4;
+  string email = 5;
+  string university_id = 6;
+  string faculty_id = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+message GetJournalAuthorReq {
+  string id = 1;
+}
+
+message GetJournalAuthorRes {
+  string id = 1;
+  string journal_id = 2;
+  string full_name = 3;
+  string photo = 4;
+  string email = 5;
+  string university_id = 6;
+  string faculty_id = 7;
+  string created_at = 8;
+  string updated_at = 9;
+  Journal journal_id_data = 10;
+  University university_id_data = 11;
+}
+
+message GetJournalAuthorListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string journal_id = 4;
+}
+
+message GetJournalAuthorListRes {
+  repeated JournalAuthor authors = 1;
+  int32 count = 2;
+}
+
+message UpdateJournalAuthorReq {
+  string id = 1;
+  string journal_id = 2;
+  string full_name = 3;
+  string photo = 4;
+  string email = 5;
+  string university_id = 6;
+  string faculty_id = 7;
+}
+
+message UpdateJournalAuthorRes {
+  string id = 1;
+  string journal_id = 2;
+  string full_name = 3;
+  string photo = 4;
+  string email = 5;
+  string university_id = 6;
+  string faculty_id = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+message DeleteJournalAuthorReq {
+  string id = 1;
+}
+
+message GetCountryListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+}
+
+message GetCountryListRes {
+  repeated Country countries = 1;
+  int32 count = 2;
+}
+
+message GetCityListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string country_id = 4;
+}
+
+message GetCityListRes {
+  repeated City cities = 1;
+  int32 count = 2;
+}
+
+message PrimaryKey {
+  string id = 1;
+}
+
+message PrimaryKeyList {
+  repeated string ids = 1;
+}
+
+message GetList {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string status = 4;
+  string date_from = 5;
+  string date_to = 6;
+  string sort = 7;
+}
+
+message CreateJournalReq {
+  string cover_photo = 2;
+  string title = 3;
+  bool access = 4;
+  string description = 5;
+  int32 price = 6;
+  string isbn = 7;
+  string author_id = 8;
+  string status = 9;
+  repeated JournalData journal_data = 10;
+  string acceptance_rate = 11;
+  string submission_to_final_decision = 12;
+  string acceptance_to_publication = 13;
+  string citation_indicator = 14;
+  string impact_factor = 15;
+  repeated Subject subjects = 16;
+}
+
+message GetJournalListRes {
+  repeated Journal journals = 1;
+  int32 count = 2;
+}
+
+message CreateEditionReq {
+  string journal_id = 1;
+  int32 edition = 2;
+  string file = 3;
+  string title = 4;
+  string description = 5;
+}
+
+message GetEditionListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string journal_id = 4;
+}
+
+message GetEditionListRes {
+  repeated Edition editions = 1;
+  int32 count = 2;
+}
+
+message CreateArticleReq {
+  string title = 1;
+  string description = 2;
+  string journal_id = 3;
+  int32 edition = 4;
+  string file = 5;
+  string author = 6;
+  string content = 7;
+}
+
+message CreateArticleRes {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string journal_id = 4;
+  int32 edition = 5;
+  string file = 6;
+  string author = 7;
+  string content = 8;
+  string created_at = 9;
+  string updated_at = 10;
+}
+
+message GetArticleReq {
+  string id = 1;
+}
+
+message GetArticleRes {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string journal_id = 4;
+  int32 edition = 5;
+  string file = 6;
+  string author = 7;
+  string content = 8;
+  string created_at = 9;
+  string updated_at = 10;
+}
+
+message GetArticleListReq {
+  int32 limit = 1;
+  int32 offset = 2;
+  string search = 3;
+  string date_from = 4;
+  string date_to = 5;
+  string sort = 6;
+  string journal_id = 7;
+}
+
+message GetArticleListRes {
+  repeated Article articles = 1;
+  int32 count = 2;
+}
+
+message UpdateArticleReq {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string journal_id = 4;
+  int32 edition = 5;
+  string file = 6;
+  string author = 7;
+  string content = 8;
+}
+
+message UpdateArticleRes {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string journal_id = 4;
+  int32 edition = 5;
+  string file = 6;
+  string author = 7;
+  string content = 8;
+  string created_at = 9;
+  string updated_at = 10;
+}
+
+message DeleteArticleReq {
+  string id = 1;
+}

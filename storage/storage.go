@@ -26,6 +26,7 @@ type AuthRepoI interface {
 
 type ContentRepoI interface {
 	Journal() JournalRepoI
+	JournalAuthor() JournalAuthorRepoI
 	Edition() EditionRepoI
 	CountryAndCity() CountryAndCityRepoI
 	University() UniversityRepoI
@@ -182,4 +183,12 @@ type ReviewerRepoI interface {
 	GetList(ctx context.Context, in *submission_service.GetArticleCheckerListReq) (*submission_service.GetArticleCheckerListRes, error)
 	Update(ctx context.Context, in *submission_service.UpdateArticleCheckerReq) (rowsAffected int64, err error)
 	Delete(ctx context.Context, in *submission_service.DeleteArticleCheckerReq) (rowsAffected int64, err error)
+}
+
+type JournalAuthorRepoI interface {
+	Create(ctx context.Context, in *cs_pb.CreateJournalAuthorReq) (*cs_pb.CreateJournalAuthorRes, error)
+	Get(ctx context.Context, in *cs_pb.GetJournalAuthorReq) (*cs_pb.GetJournalAuthorRes, error)
+	GetList(ctx context.Context, in *cs_pb.GetJournalAuthorListReq) (*cs_pb.GetJournalAuthorListRes, error)
+	Update(ctx context.Context, in *cs_pb.UpdateJournalAuthorReq) (rowsAffected int64, err error)
+	Delete(ctx context.Context, in *cs_pb.DeleteJournalAuthorReq) (rowsAffected int64, err error)
 }

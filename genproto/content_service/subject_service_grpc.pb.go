@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.17.3
-// source: subject.proto
+// source: subject_service.proto
 
 package content_service
 
@@ -254,5 +254,5 @@ var SubjectService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "subject.proto",
+	Metadata: "subject_service.proto",
 }
