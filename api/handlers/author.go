@@ -209,7 +209,7 @@ func (h *Handler) UpdateAdminAuthor(c *gin.Context) {
 // @Tags Journal
 // @Accept json
 // @Produce json
-// @Param journal-id path integer true "journal-id"
+// @Param journal-id path string true "journal-id"
 // @Param offset query integer false "offset"
 // @Param limit query integer false "limit"
 // @Param search query string false "search"
